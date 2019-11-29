@@ -1,0 +1,30 @@
+{
+  "name": "kim",
+  "version": "1.0.0",
+  "description": "node ioc",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hubvue/kim.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hubvue/kim/issues"
+  },
+  "homepage": "https://github.com/hubvue/kim#readme",
+  "devDependencies": {
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "koa": "^2.11.0",
+    "koa-router": "^7.4.0",
+    "reflect-metadata": "^0.1.13"
+  }
+}
