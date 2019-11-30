@@ -10,19 +10,30 @@ export const Delete = createHTTPMethodDecorator('delete')
 
 
 function createHTTPMethodDecorator(method: string) {
-  return (path: string) => (
+  return (path: string, aopPlugins: RouteAop = {}) => (
     target: any,
     propertyKey: string,
     descripator: PropertyDescriptor
   ) => {
-    let plugins: Set<AsyncGeneratorFunction> = new Set();
-    for(let i = 1; i < arguments.length; i ++) {
-      plugins.add(arguments[i])
+    let beforePlugins: Set<Function> = new Set();
+    let afterPlugins: Set<Function> = new Set();
+    const before = aopPlugins.before
+    const after = aopPlugins.after
+    if(before) {
+      for(let plugin of before) {
+        beforePlugins.add(plugin)
+      }
+    }
+    if(after) {
+      for(let plugin of after) {
+        afterPlugins.add(plugin)
+      }
     }
     Reflect.defineMetadata(META_ROUTER,{
       method,
       path,
-      plugins
+      beforePlugins,
+      afterPlugins
     },descripator.value)
   }
 }

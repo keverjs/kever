@@ -23,11 +23,10 @@ function KoaRuntime(controllers: Set<any>, options:RuntimeOptions) {
       .forEach(name => {
         const metaRoute = Reflect.getMetadata(META_ROUTER,controller[name])
         if(metaRoute){
-          router[metaRoute.method](`${rootPath}${metaRoute.path}`, async (ctx, next) => {
+          const {method, path, beforePlugins, afterPlugins} = metaRoute
+          router[method](`${rootPath}${path}`,...beforePlugins, async (ctx, next) => {
             await controller[name](ctx, next)
-          },async(ctx,next) => {
-            console.log(123)
-          })
+          }, ...afterPlugins)
         }
       })
   }

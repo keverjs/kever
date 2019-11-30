@@ -48,8 +48,6 @@ class InstancePoll {
 
 export const instancePoll = new InstancePoll()
 
-
-
 export const Provide = createIocDecorator(META_PROVIDE)
 export const Inject = createIocDecorator(META_INJECT)
 
