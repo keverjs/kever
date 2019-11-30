@@ -3,18 +3,13 @@ import {
   META_PROVIDE,
   META_INJECT,
 } from '../constants'
-
-interface InstanceMeta {
-  key: symbol;
-  value: (new () => {})
-}
+import {InstanceMeta} from '../interface'
 
 class InstancePoll {
   private providePoll: Map<any, any> = new Map();
   private injectPoll: Map<any, any> = new Map();
   add(type: Symbol, instanceMeta: InstanceMeta) {
     if(type === META_PROVIDE) {
-      console.log(instanceMeta)
       this.providePoll.set(instanceMeta.key, instanceMeta.value)
     }
     if(type === META_INJECT) {
@@ -60,7 +55,7 @@ export const Inject = createIocDecorator(META_INJECT)
 
 
 function createIocDecorator(type) {
-  return (tag) => target => {
+  return tag => target => {
     instancePoll.add(type, {
       key:tag,
       value: target

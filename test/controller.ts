@@ -16,12 +16,12 @@ export class UserController {
     this._user = user;
   }
   @Get('/')
-  async getUser(ctx: any, next: Promise<any>): Promise<any> {
-    console.log(this)
+  async getUser(ctx: any, next: Function): Promise<any> {
     const result = this._user.getUser(1);
     ctx.body = {
       code: 200,
       data: result
     };
+    await next()
   }
 }

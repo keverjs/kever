@@ -1,7 +1,7 @@
 import {
   META_ROUTER,
 } from '../constants'
-
+import { RouteAop } from '../interface'
 // create http request method decorator
 export const Get = createHTTPMethodDecorator('get')
 export const Post = createHTTPMethodDecorator('post')

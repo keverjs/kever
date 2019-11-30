@@ -1,14 +1,13 @@
 import {instancePoll} from '../ioc'
 import {
   META_INJECT,
-  META_PROVIDE
-} from '../constants'
-import {
+  META_PROVIDE,
   META_CONTROLLER
 } from '../constants'
+import { RuntimeOptions } from '../interface'
 import KoaRuntime from '../runtime/koa'
 
-export const createApplication = () => {
+export const createApplication = (options: RuntimeOptions = {}) => {
   const controllers: Set<any> = new Set();
   const controllerPoll: Map<any, any> = instancePoll.getAll(META_INJECT)
   for(let [Controller, tag] of controllerPoll) {
@@ -21,12 +20,13 @@ export const createApplication = () => {
     }
     
   }
-  const app = KoaRuntime(controllers)
+  const app = KoaRuntime(controllers, options)
   return app
 }
 
 export const Controller = (path: string = '/') => {
   return function<T extends { new (...args: any[]): {} }>(constructor: T) {
+    console.log(constructor)
     Reflect.defineMetadata(META_CONTROLLER, path, constructor)
     return constructor
   }
