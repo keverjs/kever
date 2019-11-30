@@ -1,8 +1,6 @@
-import 'reflect-metadata'
 import {
   META_ROUTER,
-  META_HTTP_METHOD
-} from './constants'
+} from '../constants'
 
 // create http request method decorator
 export const Get = createHTTPMethodDecorator('get')
@@ -17,9 +15,14 @@ function createHTTPMethodDecorator(method: string) {
     propertyKey: string,
     descripator: PropertyDescriptor
   ) => {
+    let plugins: Set<AsyncGeneratorFunction> = new Set();
+    for(let i = 1; i < arguments.length; i ++) {
+      plugins.add(arguments[i])
+    }
     Reflect.defineMetadata(META_ROUTER,{
       method,
-      path
+      path,
+      plugins
     },descripator.value)
   }
 }
