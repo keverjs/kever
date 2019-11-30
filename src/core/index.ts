@@ -3,10 +3,10 @@ import {
   META_INJECT,
   META_PROVIDE
 } from '../constants'
-import * as Koa from 'koa'
 import {
   META_CONTROLLER
 } from '../constants'
+import KoaRuntime from '../runtime/koa'
 
 export const createApplication = () => {
   const controllers: Set<any> = new Set();
@@ -21,12 +21,7 @@ export const createApplication = () => {
     }
     
   }
-  const app = new Koa();
-
-  for(let controller of controllers) {
-    app.use(controller.getUser.bind(controller))
-  }
-  
+  const app = KoaRuntime(controllers)
   return app
 }
 
