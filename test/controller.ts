@@ -10,42 +10,42 @@ import {
 import {UserInstance} from './constants'
 
 
-@Controller()
-export class UserController {
-  private _user;
-  constructor(@Inject(UserInstance) user) {
-    this._user = user;
-  }
-  @Get('/getUser', {
-    before: [before1, before2, before3],
-    after: [after1, after2, after3]
-  })
-  async getUser(ctx: any, next: Function): Promise<any> {
-    // console.log(ctx)
-    // console.log('middle')
-    const result = this._user.getUser(1);
-    ctx.body = {
-      code: 200,
-      data: result
-    };
-    await next()
-  }
-}
+// @Controller()
+// export class UserController {
+//   private _user;
+//   constructor(@Inject(UserInstance) user) {
+//     this._user = user;
+//   }
+//   @Get('/getUser', {
+//     before: [before1, before2, before3],
+//     after: [after1, after2, after3]
+//   })
+//   async getUser(ctx: any, next: Function): Promise<any> {
+//     // console.log(ctx)
+//     // console.log('middle')
+//     const result = this._user.getUser(1);
+//     ctx.body = {
+//       code: 200,
+//       data: result
+//     };
+//     await next()
+//   }
+// }
 
 
 
 @Controller()
 export class TestController {
   private _user
-  constructor(@Inject(UserInstance) user) {
-    this._user = user
+  constructor() {
+    // this._user = user
   }
   @Get('/getTestUser')
   async getUser(ctx: any, next: Function): Promise<any> {
-    const result = this._user.getUser(2);
+    // const result = this._user.getUser(2);
     ctx.body = {
       code: 200,
-      data: result
+      // data: result
     };
   }
 

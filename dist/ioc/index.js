@@ -33,15 +33,19 @@ exports.Inject = tag => (target, propertyKey, index) => {
     }
     const injects = Reflect.getMetadata(constants_1.META_INJECT, target);
     if (injects) {
-        Reflect.defineMetadata(constants_1.META_INJECT, injects.concat([{
+        Reflect.defineMetadata(constants_1.META_INJECT, injects.concat([
+            {
                 index,
                 tag
-            }]), target);
+            }
+        ]), target);
     }
     else {
-        Reflect.defineMetadata(constants_1.META_INJECT, [{
+        Reflect.defineMetadata(constants_1.META_INJECT, [
+            {
                 index,
                 tag
-            }], target);
+            }
+        ], target);
     }
 };
