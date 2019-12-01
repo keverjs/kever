@@ -4,6 +4,7 @@ import {
   Post,
   Put,
   Delete,
+  All,
   Controller
 } from '../src/index'
 import {UserInstance} from './constants'
@@ -15,12 +16,13 @@ export class UserController {
   constructor(user) {
     this._user = user;
   }
-  @Get('/', {
+  @Get('/getUser', {
     before: [before1, before2, before3],
     after: [after1, after2, after3]
   })
   async getUser(ctx: any, next: Function): Promise<any> {
-    console.log('middle')
+    // console.log(ctx)
+    // console.log('middle')
     const result = this._user.getUser(1);
     ctx.body = {
       code: 200,
@@ -28,6 +30,25 @@ export class UserController {
     };
     await next()
   }
+}
+
+
+@Inject(UserInstance)
+@Controller()
+export class TestController {
+  private _user
+  constructor(user) {
+    this._user = user
+  }
+  @Get('/getTestUser')
+  async getUser(ctx: any, next: Function): Promise<any> {
+    const result = this._user.getUser(2);
+    ctx.body = {
+      code: 200,
+      data: result
+    };
+  }
+
 }
 
 async function before1(ctx, next) {

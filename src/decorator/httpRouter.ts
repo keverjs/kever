@@ -7,9 +7,10 @@ export const Get = createHTTPMethodDecorator('get')
 export const Post = createHTTPMethodDecorator('post')
 export const Put = createHTTPMethodDecorator('put')
 export const Delete = createHTTPMethodDecorator('delete')
+export const All = createHTTPMethodDecorator('get', 'post', 'put', 'delete')
 
 
-function createHTTPMethodDecorator(method: string) {
+function createHTTPMethodDecorator(...methods: Array<string>) {
   return (path: string, aopPlugins: RouteAop = {}) => (
     target: any,
     propertyKey: string,
@@ -30,7 +31,7 @@ function createHTTPMethodDecorator(method: string) {
       }
     }
     Reflect.defineMetadata(META_ROUTER,{
-      method,
+      methods,
       path,
       beforePlugins,
       afterPlugins

@@ -5,6 +5,7 @@ import {
   META_CONTROLLER,
   META_ROUTER
 } from '../../constants'
+import {resolvePath} from '../../utils'
 
 function KoaRuntime(controllers: Set<any>, options:RuntimeOptions) {
   const app = new Koa()
@@ -16,17 +17,23 @@ function KoaRuntime(controllers: Set<any>, options:RuntimeOptions) {
     }
   }
   for(let controller of controllers) {
-    console.log(controller)
     const rootPath = Reflect.getMetadata(META_CONTROLLER,controller.constructor)
+    if(!rootPath) {
+      throw new Error('this class is not controller')
+    }
     Object.getOwnPropertyNames(Object.getPrototypeOf(controller))
       .filter(name => name !== 'constructor')
       .forEach(name => {
         const metaRoute = Reflect.getMetadata(META_ROUTER,controller[name])
         if(metaRoute){
-          const {method, path, beforePlugins, afterPlugins} = metaRoute
-          router[method](`${rootPath}${path}`,...beforePlugins, async (ctx, next) => {
-            await controller[name](ctx, next)
-          }, ...afterPlugins)
+          const {methods, path, beforePlugins, afterPlugins} = metaRoute
+          const routePath = resolvePath(rootPath, path)
+          for(let method of methods) {
+            router[method](routePath,...beforePlugins, async (ctx, next) => {
+              // TODO
+              await controller[name](ctx, next)
+            }, ...afterPlugins)
+          }
         }
       })
   }

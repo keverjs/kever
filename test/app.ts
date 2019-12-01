@@ -2,7 +2,7 @@ import './loader'
 import {createApplication} from '../src/index'
 
 async function test(ctx, next: Function): Promise<any> {
-  console.log('golbal')
+  console.log(ctx)
   await next()
   return;
 }
