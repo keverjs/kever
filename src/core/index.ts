@@ -16,13 +16,15 @@ export const createApplication = (options: RuntimeOptions = {}) => {
     const { path, constructor } = controllerMeta
     const injects = Reflect.getMetadata(META_INJECT, constructor)
     const injectParams = []
-    for (let inject of injects) {
-      const { index, tag } = inject
-      const injectable: new () => {} = instancePoll.get(tag)
-      if (injectable) {
-        injectParams[index] = new injectable()
-      } else {
-        throw new Error(`not ${tag} model is injectable`)
+    if (injects) {
+      for (let inject of injects) {
+        const { index, tag } = inject
+        const injectable: new () => {} = instancePoll.get(tag)
+        if (injectable) {
+          injectParams[index] = new injectable()
+        } else {
+          throw new Error(`not ${tag} model is injectable`)
+        }
       }
     }
     const controller = new constructor(...injectParams)
