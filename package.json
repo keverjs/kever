@@ -4,7 +4,8 @@
   "description": "node ioc",
   "main": "./src/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test:start": "node ./dist-test/test/app.js"
   },
   "repository": {
     "type": "git",

@@ -9,6 +9,7 @@ exports.Get = httpRouter_1.Get;
 exports.Post = httpRouter_1.Post;
 exports.Put = httpRouter_1.Put;
 exports.Delete = httpRouter_1.Delete;
+exports.All = httpRouter_1.All;
 const core_1 = require("./core");
 exports.createApplication = core_1.createApplication;
 exports.Controller = core_1.Controller;

@@ -5,7 +5,8 @@ exports.Get = createHTTPMethodDecorator('get');
 exports.Post = createHTTPMethodDecorator('post');
 exports.Put = createHTTPMethodDecorator('put');
 exports.Delete = createHTTPMethodDecorator('delete');
-function createHTTPMethodDecorator(method) {
+exports.All = createHTTPMethodDecorator('get', 'post', 'put', 'delete');
+function createHTTPMethodDecorator(...methods) {
     return (path, aopPlugins = {}) => (target, propertyKey, descripator) => {
         let beforePlugins = new Set();
         let afterPlugins = new Set();
@@ -22,7 +23,7 @@ function createHTTPMethodDecorator(method) {
             }
         }
         Reflect.defineMetadata(constants_1.META_ROUTER, {
-            method,
+            methods,
             path,
             beforePlugins,
             afterPlugins
