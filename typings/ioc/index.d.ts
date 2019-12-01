@@ -1,13 +1,10 @@
-import { InstanceMeta } from '../interface';
 declare class InstancePoll {
-    private providePoll;
-    private injectPoll;
-    add(type: Symbol, instanceMeta: InstanceMeta): void;
-    has(type: Symbol, key: any): boolean;
-    get(type: Symbol, key: any): any;
-    getAll(type: Symbol): Map<any, any>;
+    private injectablePoll;
+    add(key: symbol | string, instance: any): void;
+    has(key: symbol | string): boolean;
+    get(key: symbol | string): any;
 }
 export declare const instancePoll: InstancePoll;
-export declare const Provide: (tag: any) => (target: any) => void;
-export declare const Inject: (tag: any) => (target: any) => void;
+export declare const Injectable: (tag: any) => (target: any) => void;
+export declare const Inject: (tag: any) => (target: any, propertyKey: string, index: number) => void;
 export {};

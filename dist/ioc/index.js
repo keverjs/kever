@@ -3,56 +3,45 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("../constants");
 class InstancePoll {
     constructor() {
-        this.providePoll = new Map();
-        this.injectPoll = new Map();
+        this.injectablePoll = new Map();
     }
-    add(type, instanceMeta) {
-        if (type === constants_1.META_PROVIDE) {
-            this.providePoll.set(instanceMeta.key, instanceMeta.value);
-        }
-        if (type === constants_1.META_INJECT) {
-            this.injectPoll.set(instanceMeta.value, instanceMeta.key);
-        }
+    add(key, instance) {
+        this.injectablePoll.set(key, instance);
     }
-    has(type, key) {
-        if (type === constants_1.META_PROVIDE) {
-            if (this.providePoll.has(key)) {
-                return true;
-            }
-            return false;
+    has(key) {
+        if (this.injectablePoll.has(key)) {
+            return true;
         }
-        else {
-            if (this.injectPoll.has(key)) {
-                return true;
-            }
-            return false;
-        }
+        return false;
     }
-    get(type, key) {
-        if (type === constants_1.META_PROVIDE) {
-            return this.providePoll.get(key);
-        }
-        else {
-            return this.injectPoll.get(key);
-        }
-    }
-    getAll(type) {
-        if (type === constants_1.META_PROVIDE) {
-            return this.providePoll;
-        }
-        else {
-            return this.injectPoll;
-        }
+    get(key) {
+        return this.injectablePoll.get(key);
     }
 }
 exports.instancePoll = new InstancePoll();
-exports.Provide = createIocDecorator(constants_1.META_PROVIDE);
-exports.Inject = createIocDecorator(constants_1.META_INJECT);
-function createIocDecorator(type) {
-    return tag => target => {
-        exports.instancePoll.add(type, {
-            key: tag,
-            value: target
-        });
-    };
-}
+exports.Injectable = tag => target => {
+    exports.instancePoll.add(tag, target);
+};
+exports.Inject = tag => (target, propertyKey, index) => {
+    let paramsTypes = Reflect.getMetadata('design:paramtypes', target);
+    if (paramsTypes.length) {
+        for (let param of paramsTypes) {
+            if (param === target) {
+                throw new Error('not dependencies self');
+            }
+        }
+    }
+    const injects = Reflect.getMetadata(constants_1.META_INJECT, target);
+    if (injects) {
+        Reflect.defineMetadata(constants_1.META_INJECT, injects.concat([{
+                index,
+                tag
+            }]), target);
+    }
+    else {
+        Reflect.defineMetadata(constants_1.META_INJECT, [{
+                index,
+                tag
+            }], target);
+    }
+};

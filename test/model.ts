@@ -1,8 +1,8 @@
-import {Provide} from '../src/index'
+import {Injectable} from '../src/index'
 import {UserInstance} from './constants'
 
 
-@Provide(UserInstance)
+@Injectable(UserInstance)
 export class User {
   private data: Array<string> = ['wang','chong','zhou','hui','min']
   getUser(id: number): string {

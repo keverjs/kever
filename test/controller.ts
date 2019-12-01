@@ -9,11 +9,11 @@ import {
 } from '../src/index'
 import {UserInstance} from './constants'
 
-@Inject(UserInstance)
+
 @Controller()
 export class UserController {
   private _user;
-  constructor(user) {
+  constructor(@Inject(UserInstance) user) {
     this._user = user;
   }
   @Get('/getUser', {
@@ -33,11 +33,11 @@ export class UserController {
 }
 
 
-@Inject(UserInstance)
+
 @Controller()
 export class TestController {
   private _user
-  constructor(user) {
+  constructor(@Inject(UserInstance) user) {
     this._user = user
   }
   @Get('/getTestUser')

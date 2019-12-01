@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const ioc_1 = require("./ioc");
 exports.Inject = ioc_1.Inject;
-exports.Provide = ioc_1.Provide;
+exports.Injectable = ioc_1.Injectable;
 const httpRouter_1 = require("./decorator/httpRouter");
 exports.Get = httpRouter_1.Get;
 exports.Post = httpRouter_1.Post;

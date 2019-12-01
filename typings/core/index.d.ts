@@ -1,3 +1,4 @@
 import { RuntimeOptions } from '../interface';
-export declare const createApplication: (options?: RuntimeOptions) => any;
+import * as Koa from 'koa';
+export declare const createApplication: (options?: RuntimeOptions) => Koa<Koa.DefaultState, Koa.DefaultContext>;
 export declare const Controller: (path?: string) => <T extends new (...args: any[]) => {}>(constructor: T) => T;

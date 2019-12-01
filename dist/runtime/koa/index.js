@@ -13,8 +13,8 @@ function KoaRuntime(controllers, options) {
             app.use(plugin);
         }
     }
-    for (let controller of controllers) {
-        const rootPath = Reflect.getMetadata(constants_1.META_CONTROLLER, controller.constructor);
+    for (let controllerMeta of controllers) {
+        const { path: rootPath, controller } = controllerMeta;
         if (!rootPath) {
             throw new Error('this class is not controller');
         }

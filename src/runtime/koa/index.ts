@@ -1,7 +1,7 @@
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import { RuntimeOptions } from '../../interface'
-import { META_CONTROLLER, META_ROUTER } from '../../constants'
+import { META_ROUTER } from '../../constants'
 import { resolvePath } from '../../utils'
 
 function KoaRuntime(controllers: Set<any>, options: RuntimeOptions) {
@@ -13,11 +13,8 @@ function KoaRuntime(controllers: Set<any>, options: RuntimeOptions) {
       app.use(plugin)
     }
   }
-  for (let controller of controllers) {
-    const rootPath = Reflect.getMetadata(
-      META_CONTROLLER,
-      controller.constructor
-    )
+  for (let controllerMeta of controllers) {
+    const { path: rootPath, controller } = controllerMeta
     if (!rootPath) {
       throw new Error('this class is not controller')
     }
