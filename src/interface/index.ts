@@ -1,13 +1,15 @@
+import { Middleware } from 'koa'
+
 export interface RuntimeOptions {
-  plugins?: Array<Function>
+  plugins?: Array<Middleware>
 }
 
 export interface InstanceMeta {
   key: symbol
-  value: (new () => {})
+  value: new () => {}
 }
 
 export interface RouteAop {
-  before?: Array<Function>;
-  after?: Array<Function>
+  before?: Array<Middleware>
+  after?: Array<Middleware>
 }

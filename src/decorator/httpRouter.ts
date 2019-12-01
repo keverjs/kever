@@ -1,7 +1,6 @@
-import {
-  META_ROUTER,
-} from '../constants'
+import { META_ROUTER } from '../constants'
 import { RouteAop } from '../interface'
+import { Middleware } from 'koa'
 // create http request method decorator
 export const Get = createHTTPMethodDecorator('get')
 export const Post = createHTTPMethodDecorator('post')
@@ -9,33 +8,35 @@ export const Put = createHTTPMethodDecorator('put')
 export const Delete = createHTTPMethodDecorator('delete')
 export const All = createHTTPMethodDecorator('get', 'post', 'put', 'delete')
 
-
 function createHTTPMethodDecorator(...methods: Array<string>) {
   return (path: string, aopPlugins: RouteAop = {}) => (
     target: any,
     propertyKey: string,
     descripator: PropertyDescriptor
   ) => {
-    let beforePlugins: Set<Function> = new Set();
-    let afterPlugins: Set<Function> = new Set();
+    let beforePlugins: Set<Middleware> = new Set()
+    let afterPlugins: Set<Middleware> = new Set()
     const before = aopPlugins.before
     const after = aopPlugins.after
-    if(before) {
-      for(let plugin of before) {
+    if (before) {
+      for (let plugin of before) {
         beforePlugins.add(plugin)
       }
     }
-    if(after) {
-      for(let plugin of after) {
+    if (after) {
+      for (let plugin of after) {
         afterPlugins.add(plugin)
       }
     }
-    Reflect.defineMetadata(META_ROUTER,{
-      methods,
-      path,
-      beforePlugins,
-      afterPlugins
-    },descripator.value)
+    Reflect.defineMetadata(
+      META_ROUTER,
+      {
+        methods,
+        path,
+        beforePlugins,
+        afterPlugins
+      },
+      descripator.value
+    )
   }
 }
-
