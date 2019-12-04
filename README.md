@@ -44,17 +44,26 @@ export class Test {
 
 ```ts
 //controllers/TestController.ts
-import { Controller, Inject, Get, Post, Put, All, Delete } from 'sunnier'
+import {
+  Controller,
+  Inject,
+  Get,
+  Post,
+  Put,
+  All,
+  Delete,
+  BaseController
+} from 'sunnier'
 import { TEST_CONTROLLER } from './constants'
 
-export class TestController {
+export class TestController extends BaseController {
   @Inject(TEST_CONTROLLER)
   private _test
   constructor() {}
   @Get('/getTest')
-  async getTest(ctx, next) {
+  async getTest() {
     const result = this._test.getTest(1)
-    ctx.body = {
+    this.ctx.body = {
       code: 200,
       noerr: '',
       data: {
@@ -63,26 +72,26 @@ export class TestController {
     }
   }
   @Post('/postTest')
-  async postTest(ctx, next) {
-    ctx.body = {
+  async postTest() {
+    this.ctx.body = {
       method: 'post'
     }
   }
   @Put('/putTest')
-  async putTest(ctx, next) {
-    ctx.body = {
+  async putTest() {
+    this.ctx.body = {
       method: 'put'
     }
   }
   @Delete('deleteTest')
-  async deleteTest(ctx, next) {
-    ctx.body = {
+  async deleteTest() {
+    this.ctx.body = {
       method: 'delete'
     }
   }
   @All('allTest')
-  async allTest(ctx, next) {
-    ctx.body = {
+  async allTest() {
+    this.ctx.body = {
       method: 'all'
     }
   }
@@ -134,7 +143,7 @@ app.listen(8080, () => {
 **7、AOP Route**
 
 ```ts
-import { Controller, Inject, Get } from 'sunnier'
+import { Controller, Inject, Get, BaseController } from 'sunnier'
 import { TEST_CONTROLLER } from './constants'
 
 async function before(ctx, next) {
@@ -146,7 +155,7 @@ async function after(ctx, next) {
   await next()
 }
 
-export class TestController {
+export class TestController extends BaseController {
   @Inject(TEST_CONTROLLER)
   private _test
   constructor() {}
@@ -154,15 +163,16 @@ export class TestController {
     before: [before],
     after: [after]
   })
-  async getTest(ctx, next) {
+  async getTest() {
     const result = this._test.getTest(1)
-    ctx.body = {
+    this.ctx.body = {
       code: 200,
       noerr: '',
       data: {
         result
       }
     }
+    await this.next()
   }
 }
 ```
