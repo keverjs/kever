@@ -1,8 +1,8 @@
 # sunnier
 
-A  lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime.
+A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime.
 
- **Support:**
+**Support:**
 
 - Typescript ✅
 - IOC ✅
@@ -11,13 +11,11 @@ A  lightweight inversion of control container for Node.js apps powered by TypeSc
 - AOP Route Plugins✅
 - Global Plugins ✅
 
-
 # Quick Start
 
 ## Install
 
 > npm install sunnier reflect-metadata typescript --save
-
 
 **1、define constants**
 
@@ -30,13 +28,12 @@ export const TEST_CONTROLLER = Symbol.for(TEST_CONTROLLER)
 
 ```ts
 //models/Test.ts
-import {Injectable} from 'sunnier'
-import {TEST_CONTROLLER} from './constants'
-
+import { Injectable } from 'sunnier'
+import { TEST_CONTROLLER } from './constants'
 
 @Injectable(TEST_CONTROLLER)
 export class Test {
-  private data: Array<string> = ['zhuangsan','lisi','wanger','mazi']
+  private data: Array<string> = ['zhuangsan', 'lisi', 'wanger', 'mazi']
   getTest(id: number): string {
     return this.data[id]
   }
@@ -47,23 +44,13 @@ export class Test {
 
 ```ts
 //controllers/TestController.ts
-import {
-  Controller,
-  Inject,
-  Get,
-  Post,
-  Put,
-  All,
-  Delete
-} from 'sunnier'
-import {TEST_CONTROLLER} from './constants'
-
+import { Controller, Inject, Get, Post, Put, All, Delete } from 'sunnier'
+import { TEST_CONTROLLER } from './constants'
 
 export class TestController {
+  @Inject(TEST_CONTROLLER)
   private _test
-  constructor(@Inject(TEST_CONTROLLER) test){
-    this._test = test;
-  }
+  constructor() {}
   @Get('/getTest')
   async getTest(ctx, next) {
     const result = this._test.getTest(1)
@@ -101,8 +88,6 @@ export class TestController {
   }
 }
 ```
-
-
 
 **4、loader controller and model**
 
@@ -147,15 +132,12 @@ app.listen(8080, () => {
 ```
 
 **7、AOP Route**
-```ts
-import {
-  Controller,
-  Inject,
-  Get,
-} from 'sunnier'
-import {TEST_CONTROLLER} from './constants'
 
-async function before(ctx, next){
+```ts
+import { Controller, Inject, Get } from 'sunnier'
+import { TEST_CONTROLLER } from './constants'
+
+async function before(ctx, next) {
   console.log('before')
   await next()
 }
@@ -165,10 +147,9 @@ async function after(ctx, next) {
 }
 
 export class TestController {
+  @Inject(TEST_CONTROLLER)
   private _test
-  constructor(@Inject(TEST_CONTROLLER) test){
-    this._test = test;
-  }
+  constructor() {}
   @Get('/getTest', {
     before: [before],
     after: [after]
