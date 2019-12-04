@@ -4,6 +4,11 @@ import { RuntimeOptionsInterface, RouteMetaInterface } from '../../interface'
 import { META_ROUTER } from '../../constants'
 import { resolvePath } from '../../utils'
 
+/**
+ *
+ * @param controllers
+ * @param options
+ */
 function KoaRuntime(controllers: Set<any>, options: RuntimeOptionsInterface) {
   const app: Koa = new Koa()
   const router: Router = new Router()
@@ -34,7 +39,9 @@ function KoaRuntime(controllers: Set<any>, options: RuntimeOptionsInterface) {
               ...beforePlugins,
               async (ctx: Koa.Context, next: Koa.Next) => {
                 // TODO
-                await controller[name](ctx, next)
+                controller['ctx'] = ctx
+                controller['next'] = next
+                await controller[name]()
               },
               ...afterPlugins
             )

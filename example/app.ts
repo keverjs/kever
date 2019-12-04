@@ -1,18 +1,15 @@
 import './loader'
-import {createApplication} from '../src/index'
+import { createApplication } from '../src/index'
 
 async function test(ctx, next: Function): Promise<any> {
-  console.log(ctx)
   await next()
-  return;
+  return
 }
-
 
 const app = createApplication({
   plugins: [test]
 })
 
-
 app.listen(8080, () => {
-  console.log("server is running ")
+  console.log('server is running ')
 })

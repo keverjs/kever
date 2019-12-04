@@ -1,6 +1,9 @@
 import { META_INJECT } from '../constants'
 import { InjectInterface } from '../interface'
 
+/**
+ *
+ */
 class InstancePoll {
   private injectablePoll: Map<symbol | string, any> = new Map()
   add(key: symbol | string, instance: any) {
@@ -19,10 +22,18 @@ class InstancePoll {
 
 export const instancePoll: InstancePoll = new InstancePoll()
 
+/**
+ *
+ * @param tag
+ */
 export const Injectable = (tag: symbol | string) => target => {
   instancePoll.add(tag, target)
 }
 
+/**
+ *
+ * @param tag
+ */
 export const Inject = (tag: symbol | string) => (
   target: any,
   propertyKey: string

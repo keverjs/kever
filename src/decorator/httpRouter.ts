@@ -2,12 +2,31 @@ import { META_ROUTER } from '../constants'
 import { RouteAopInterface } from '../interface'
 import { Middleware } from 'koa'
 // create http request method decorator
+/**
+ *
+ */
 export const Get = createHTTPMethodDecorator('get')
+/**
+ *
+ */
 export const Post = createHTTPMethodDecorator('post')
+/**
+ *
+ */
 export const Put = createHTTPMethodDecorator('put')
+/**
+ *
+ */
 export const Delete = createHTTPMethodDecorator('delete')
+/**
+ *
+ */
 export const All = createHTTPMethodDecorator('get', 'post', 'put', 'delete')
 
+/**
+ *
+ * @param methods
+ */
 function createHTTPMethodDecorator(...methods: Array<string>): Function {
   return (path: string, aopPlugins: RouteAopInterface = {}) => (
     target: any,

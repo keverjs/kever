@@ -1,30 +1,36 @@
-import { Inject, Get, Post, Put, Delete, All, Controller } from '../src/index'
+import {
+  Inject,
+  Get,
+  Post,
+  Put,
+  Delete,
+  All,
+  Controller,
+  BaseController
+} from '../src/index'
 import { UserInstance } from './constants'
 
 @Controller()
-export class UserController {
+export class UserController extends BaseController {
   @Inject(UserInstance)
   private _user
-  constructor() {}
   @Get('/getUser', {
     before: [before1, before2, before3],
     after: [after1, after2, after3]
   })
-  async getUser(ctx, next): Promise<any> {
+  async getUser(): Promise<any> {
     const result = this._user.getUser(1)
-    ctx.body = {
+    this.ctx.body = {
       code: 200,
       data: result
     }
+    await this.next()
   }
 }
 
 @Controller()
-export class TestController {
+export class TestController extends BaseController {
   private _user
-  constructor() {
-    // this._user = user
-  }
   @Get('/getTestUser')
   async getUser(ctx: any, next: Function): Promise<any> {
     // const result = this._user.getUser(2);

@@ -7,7 +7,16 @@ import {
 } from '../interface'
 import KoaRuntime from '../runtime/koa'
 import * as Koa from 'koa'
+
+/**
+ *
+ */
 const CONTROLLER_POLL = Object.create(null)
+
+/**
+ *
+ * @param options
+ */
 export const createApplication = (
   options: RuntimeOptionsInterface = {}
 ): Koa => {
@@ -20,6 +29,9 @@ export const createApplication = (
   for (let controllerMeta of controllerPoll) {
     const { path, constructor } = controllerMeta
     const controller: any = new constructor()
+    if (!('_isExtends' in controller)) {
+      throw new Error(`class ${constructor.name} not extends BaseController`)
+    }
     const injects: Array<InjectInterface> = Reflect.getMetadata(
       META_INJECT,
       controller
@@ -49,7 +61,10 @@ export const createApplication = (
   const app: Koa = KoaRuntime(controllers, options)
   return app
 }
-
+/**
+ *
+ * @param path
+ */
 export const Controller = (path: string = '/'): Function => {
   return function<T extends { new (...args: any[]): {} }>(constructor: T) {
     const controllerPoll: Array<ControllerInterface> = Reflect.getMetadata(
