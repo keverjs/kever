@@ -1,12 +1,12 @@
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
-import { RuntimeOptions } from '../../interface'
+import { RuntimeOptionsInterface, RouteMetaInterface } from '../../interface'
 import { META_ROUTER } from '../../constants'
 import { resolvePath } from '../../utils'
 
-function KoaRuntime(controllers: Set<any>, options: RuntimeOptions) {
-  const app = new Koa()
-  const router = new Router()
+function KoaRuntime(controllers: Set<any>, options: RuntimeOptionsInterface) {
+  const app: Koa = new Koa()
+  const router: Router = new Router()
   const plugins: Array<Koa.Middleware> = options.plugins || []
   if (plugins.length) {
     for (let plugin of plugins) {
@@ -21,10 +21,13 @@ function KoaRuntime(controllers: Set<any>, options: RuntimeOptions) {
     Object.getOwnPropertyNames(Object.getPrototypeOf(controller))
       .filter(name => name !== 'constructor')
       .forEach(name => {
-        const metaRoute = Reflect.getMetadata(META_ROUTER, controller[name])
+        const metaRoute: RouteMetaInterface = Reflect.getMetadata(
+          META_ROUTER,
+          controller[name]
+        )
         if (metaRoute) {
           const { methods, path, beforePlugins, afterPlugins } = metaRoute
-          const routePath = resolvePath(rootPath, path)
+          const routePath: string = resolvePath(rootPath, path)
           for (let method of methods) {
             router[method](
               routePath,

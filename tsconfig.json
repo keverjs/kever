@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-      "module": "commonjs",
-      "removeComments": true,
-      "preserveConstEnums": true,
-      "target": "es2018",
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-      "declaration": true,
-      "outDir": "./dist",
-      "declarationDir": "./typings"
+    "module": "commonjs",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "target": "es2018",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "declarationDir": "./typings",
+    "noEmitOnError": true
   },
-  "include": [
-      "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }

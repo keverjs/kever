@@ -1,45 +1,61 @@
 import { instancePoll } from '../ioc'
 import { META_INJECT, META_CONTROLLER } from '../constants'
-import { RuntimeOptions } from '../interface'
+import {
+  RuntimeOptionsInterface,
+  InjectInterface,
+  ControllerInterface
+} from '../interface'
 import KoaRuntime from '../runtime/koa'
 import * as Koa from 'koa'
-
 const CONTROLLER_POLL = Object.create(null)
-export const createApplication = (options: RuntimeOptions = {}) => {
+export const createApplication = (
+  options: RuntimeOptionsInterface = {}
+): Koa => {
   const controllers: Set<any> = new Set()
-  const controllerPoll: any = Reflect.getMetadata(
+  const controllerPoll: Array<ControllerInterface> = Reflect.getMetadata(
     META_CONTROLLER,
     CONTROLLER_POLL
   )
 
   for (let controllerMeta of controllerPoll) {
     const { path, constructor } = controllerMeta
-    const injects = Reflect.getMetadata(META_INJECT, constructor)
-    const injectParams = []
+    const controller: any = new constructor()
+    const injects: Array<InjectInterface> = Reflect.getMetadata(
+      META_INJECT,
+      controller
+    )
     if (injects) {
       for (let inject of injects) {
-        const { index, tag } = inject
+        const { propertyKey, tag } = inject
         const injectable: new () => {} = instancePoll.get(tag)
         if (injectable) {
-          injectParams[index] = new injectable()
+          Object.defineProperty(controller, propertyKey, {
+            value: new injectable(),
+            writable: false,
+            configurable: false,
+            enumerable: true
+          })
         } else {
-          throw new Error(`not ${tag} model is injectable`)
+          throw new Error(`not ${String(tag)} model is injectable`)
         }
       }
     }
-    const controller = new constructor(...injectParams)
+
     controllers.add({
       controller,
       path
     })
   }
-  const app = KoaRuntime(controllers, options)
+  const app: Koa = KoaRuntime(controllers, options)
   return app
 }
 
-export const Controller = (path: string = '/') => {
+export const Controller = (path: string = '/'): Function => {
   return function<T extends { new (...args: any[]): {} }>(constructor: T) {
-    const controllerPoll = Reflect.getMetadata(META_CONTROLLER, CONTROLLER_POLL)
+    const controllerPoll: Array<ControllerInterface> = Reflect.getMetadata(
+      META_CONTROLLER,
+      CONTROLLER_POLL
+    )
     if (controllerPoll) {
       Reflect.defineMetadata(
         META_CONTROLLER,

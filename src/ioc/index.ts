@@ -1,4 +1,5 @@
 import { META_INJECT } from '../constants'
+import { InjectInterface } from '../interface'
 
 class InstancePoll {
   private injectablePoll: Map<symbol | string, any> = new Map()
@@ -16,32 +17,26 @@ class InstancePoll {
   }
 }
 
-export const instancePoll = new InstancePoll()
+export const instancePoll: InstancePoll = new InstancePoll()
 
-export const Injectable = tag => target => {
+export const Injectable = (tag: symbol | string) => target => {
   instancePoll.add(tag, target)
 }
 
-export const Inject = tag => (
+export const Inject = (tag: symbol | string) => (
   target: any,
-  propertyKey: string,
-  index: number
+  propertyKey: string
 ) => {
-  let paramsTypes: Function[] = Reflect.getMetadata('design:paramtypes', target)
-  if (paramsTypes.length) {
-    for (let param of paramsTypes) {
-      if (param === target) {
-        throw new Error('not dependencies self')
-      }
-    }
-  }
-  const injects = Reflect.getMetadata(META_INJECT, target)
+  const injects: Array<InjectInterface> = Reflect.getMetadata(
+    META_INJECT,
+    target
+  )
   if (injects) {
     Reflect.defineMetadata(
       META_INJECT,
       injects.concat([
         {
-          index,
+          propertyKey,
           tag
         }
       ]),
@@ -52,7 +47,7 @@ export const Inject = tag => (
       META_INJECT,
       [
         {
-          index,
+          propertyKey,
           tag
         }
       ],
