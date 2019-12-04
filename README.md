@@ -10,6 +10,9 @@ A lightweight inversion of control container for Node.js apps powered by TypeScr
 - HTTP Decorator Router ✅
 - AOP Route Plugins✅
 - Global Plugins ✅
+- Params Decorator 🤩
+- Shield app.ts, add config mode 🤩
+- more Decorator 🤩
 
 # Quick Start
 
