@@ -56,8 +56,11 @@
     "{src, test, example}/**/*.ts": [
       "eslint --fix",
       "prettier --write",
-      "nm run changelog",
-      "git add"
+      "git add ."
+    ],
+    "**/*": [
+      "npm run changelog",
+      "git add ."
     ]
   }
 }
