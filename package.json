@@ -62,5 +62,10 @@
       "npm run changelog",
       "git add ."
     ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   }
 }
