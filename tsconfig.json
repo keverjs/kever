@@ -8,7 +8,7 @@
     "emitDecoratorMetadata": true,
     "declaration": true,
     "outDir": "./dist",
-    "declarationDir": "./typings",
+    "declarationDir": "./dist/types",
     "noEmitOnError": true
   },
   "include": ["src/**/*"]
