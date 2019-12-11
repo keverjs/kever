@@ -1,0 +1,11 @@
+src/
+test/
+example/
+node_modules/
+package-lock.json
+.eslintignore
+.eslintrc
+.prettierrc
+.travis.yml
+.gitignore
+.npmignore

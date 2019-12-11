@@ -2,8 +2,8 @@
   "name": "sunnier",
   "version": "0.2.0",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
-  "main": "./dist/index.js",
-  "types": ".dist/types/index.d.ts",
+  "main": "./lib/index.js",
+  "types": "./dts/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "echo text",
