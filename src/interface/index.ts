@@ -36,3 +36,11 @@ export interface ControllerInterface {
   path: string
   constructor: any
 }
+
+/**
+ *
+ */
+export interface ParamsMetaInterface {
+  index: number
+  tags: Array<string>
+}

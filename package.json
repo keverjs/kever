@@ -46,9 +46,10 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "body-parser": "^1.19.0",
     "glob": "^7.1.6",
     "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-cookie": "^1.0.0",
     "koa-router": "^7.4.0",
     "reflect-metadata": "^0.1.13"
   },

@@ -1,5 +1,7 @@
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
+import installMiddleware from './middleware'
+import parseParamsDecorator from './params'
 import { RuntimeOptionsInterface, RouteMetaInterface } from '../../interface'
 import { META_ROUTER } from '../../constants'
 import { resolvePath } from '../../utils'
@@ -13,11 +15,8 @@ function KoaRuntime(controllers: Set<any>, options: RuntimeOptionsInterface) {
   const app: Koa = new Koa()
   const router: Router = new Router()
   const plugins: Array<Koa.Middleware> = options.plugins || []
-  if (plugins.length) {
-    for (let plugin of plugins) {
-      app.use(plugin)
-    }
-  }
+  // 注册中间件
+  installMiddleware(app, plugins)
   for (let controllerMeta of controllers) {
     const { path: rootPath, controller } = controllerMeta
     if (!rootPath) {
@@ -38,10 +37,12 @@ function KoaRuntime(controllers: Set<any>, options: RuntimeOptionsInterface) {
               routePath,
               ...beforePlugins,
               async (ctx: Koa.Context, next: Koa.Next) => {
-                // TODO
+                // 将ctx和next绑定到controller实例上
                 controller['ctx'] = ctx
                 controller['next'] = next
-                await controller[name]()
+                // 解析参数装饰器
+                const routeParams = parseParamsDecorator(controller[name], ctx)
+                await controller[name](...routeParams)
               },
               ...afterPlugins
             )
