@@ -1,0 +1,12 @@
+export declare const META_ROUTER: unique symbol;
+export declare const META_CONTROLLER: unique symbol;
+export declare const META_INJECT: unique symbol;
+export declare const META_REQ: unique symbol;
+export declare const META_RES: unique symbol;
+export declare const META_HEADERS: unique symbol;
+export declare const META_PARAMS: unique symbol;
+export declare const META_BODY: unique symbol;
+export declare const META_COOKIE: unique symbol;
+export declare const META_PASSPORT: unique symbol;
+export declare const META_RPC_CLIENT: unique symbol;
+export declare const META_RPC_SERVER: unique symbol;
