@@ -4,6 +4,7 @@
 
 ### Bug Fixes
 
+* delete dts/ and lib/ ([5e31825](https://github.com/hubvue/kim/commit/5e31825))
 * injects empty ([0edb3f4](https://github.com/hubvue/kim/commit/0edb3f4))
 
 

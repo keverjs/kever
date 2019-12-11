@@ -62,6 +62,5 @@ typings/
 
 package-lock.json
 dist/
-example/
 dts/
 lib/
