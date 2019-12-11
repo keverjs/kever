@@ -2,18 +2,24 @@
   "name": "sunnier",
   "version": "0.2.0",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
-  "main": "./dist/index.js",
-  "types": ".dist/types/index.d.ts",
+  "main": "./lib/index.js",
+  "types": "./dts/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test:start": "node ./dist-test/test/app.js",
+    "test": "echo text",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hubvue/kim.git"
   },
-  "keywords": [],
+  "keywords": [
+    "nodejs",
+    "typescript",
+    "ioc",
+    "http server",
+    "koa"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -40,9 +46,10 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "body-parser": "^1.19.0",
     "glob": "^7.1.6",
     "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-cookie": "^1.0.0",
     "koa-router": "^7.4.0",
     "reflect-metadata": "^0.1.13"
   },

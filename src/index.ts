@@ -16,8 +16,12 @@ import { createApplication, Controller } from './core'
  */
 import BaseController from './core/controller'
 
+import { Headers, Params, Cookie, Req, Res } from './decorator/params'
+
 export {
   createApplication,
+  BaseController,
+  Controller,
   Inject,
   Injectable,
   Get,
@@ -25,6 +29,9 @@ export {
   Put,
   Delete,
   All,
-  Controller,
-  BaseController
+  Headers,
+  Params,
+  Cookie,
+  Req,
+  Res
 }
