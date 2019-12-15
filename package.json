@@ -8,11 +8,12 @@
   "scripts": {
     "build": "tsc",
     "test": "echo text",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
+    "format": "eslint --fix . --ext .js,.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hubvue/kim.git"
+    "url": "git+https://github.com/hubvue/sunnier.git"
   },
   "keywords": [
     "nodejs",
@@ -24,9 +25,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/hubvue/kim/issues"
+    "url": "https://github.com/hubvue/sunnier/issues"
   },
-  "homepage": "https://github.com/hubvue/kim#readme",
+  "homepage": "https://github.com/hubvue/sunnier#readme",
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
@@ -47,7 +48,6 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "glob": "^7.1.6",
     "koa": "^2.11.0",
     "koa-body": "^4.1.1",
     "koa-cookie": "^1.0.0",
@@ -62,12 +62,13 @@
   },
   "lint-staged": {
     "{src, test, example}/**/*.ts": [
-      "eslint --fix",
+      "npm run format",
       "prettier --write",
       "git add ."
     ],
-    "**/*": [
-      "npm run version",
+    "{lib}/**/*.js": [
+      "npm run format",
+      "prettier --write",
       "git add ."
     ]
   },
