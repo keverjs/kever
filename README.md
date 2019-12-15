@@ -179,3 +179,43 @@ export class TestController extends BaseController {
   }
 }
 ```
+
+#### Params Decorator
+
+**@Headers()**
+
+no params，get all.
+
+```ts
+async getTest(@Headers() headers) {
+  console.log(headers)
+  const result = this._test.getTest(1)
+  this.ctx.body = {
+    code: 200,
+    noerr: '',
+    data: {
+      result
+    }
+  }
+  await this.next()
+}
+```
+
+only one param, get this param value
+
+```ts
+async getTest(@Headers(['host']) host) {
+  console.log(host) //127.0.0.1
+  const result = this._test.getTest(1)
+  this.ctx.body = {
+    code: 200,
+    noerr: '',
+    data: {
+      result
+    }
+  }
+  await this.next()
+}
+```
+
+multiple params，get multiple params value, return a object.
