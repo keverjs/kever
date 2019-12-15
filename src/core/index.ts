@@ -25,38 +25,39 @@ export const createApplication = (
     META_CONTROLLER,
     CONTROLLER_POLL
   )
-
-  for (let controllerMeta of controllerPoll) {
-    const { path, constructor } = controllerMeta
-    const controller: any = new constructor()
-    if (!('_isExtends' in controller)) {
-      throw new Error(`class ${constructor.name} not extends BaseController`)
-    }
-    const injects: Array<InjectInterface> = Reflect.getMetadata(
-      META_INJECT,
-      controller
-    )
-    if (injects) {
-      for (let inject of injects) {
-        const { propertyKey, tag } = inject
-        const injectable: new () => {} = instancePoll.get(tag)
-        if (injectable) {
-          Object.defineProperty(controller, propertyKey, {
-            value: new injectable(),
-            writable: false,
-            configurable: false,
-            enumerable: true
-          })
-        } else {
-          throw new Error(`not ${String(tag)} model is injectable`)
+  if (controllerPoll) {
+    for (let controllerMeta of controllerPoll) {
+      const { path, constructor } = controllerMeta
+      const controller: any = new constructor()
+      if (!('_isExtends' in controller)) {
+        throw new Error(`class ${constructor.name} not extends BaseController`)
+      }
+      const injects: Array<InjectInterface> = Reflect.getMetadata(
+        META_INJECT,
+        controller
+      )
+      if (injects) {
+        for (let inject of injects) {
+          const { propertyKey, tag } = inject
+          const injectable: new () => {} = instancePoll.get(tag)
+          if (injectable) {
+            Object.defineProperty(controller, propertyKey, {
+              value: new injectable(),
+              writable: false,
+              configurable: false,
+              enumerable: true
+            })
+          } else {
+            throw new Error(`not ${String(tag)} model is injectable`)
+          }
         }
       }
-    }
 
-    controllers.add({
-      controller,
-      path
-    })
+      controllers.add({
+        controller,
+        path
+      })
+    }
   }
   const app: Koa = KoaRuntime(controllers, options)
   return app
