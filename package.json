@@ -4,7 +4,6 @@
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "main": "./lib/index.js",
   "types": "./dts/index.d.ts",
-  "bin": "./bin/sunnier.js",
   "scripts": {
     "build": "tsc",
     "test": "echo text",
