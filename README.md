@@ -11,7 +11,7 @@
 - AOP Route Plugins✅
 - Global Plugins ✅
 - Params Decorator ✅
-- Shield app.ts, add config mode 🤩
+- Shield app.ts, add config mode ✅
 - more Decorator 🤩
 
 # Quick Start
@@ -27,7 +27,7 @@
 export const TEST_CONTROLLER = Symbol.for(TEST_CONTROLLER)
 ```
 
-**2、create a injectable model**
+**2、create a injectable service**
 
 ```ts
 //models/Test.ts

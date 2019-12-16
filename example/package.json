@@ -1,0 +1,22 @@
+{
+  "name": "sunnier-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "npm run build && sunnier-cli"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sunnier": "^0.3.2",
+    "sunnier-cli": "0.0.4"
+  },
+  "devDependencies": {
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.3"
+  }
+}
