@@ -20,6 +20,28 @@
 
 > npm install sunnier sunnier-cli typescript --save
 
+#### step0
+
+write tsconfig.json
+
+```json
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "target": "es2018",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "outDir": "./lib",
+    "declarationDir": "./dts",
+    "noEmitOnError": true
+  },
+  "include": ["src/**/*"]
+}
+```
+
 #### step1
 
 define constants
@@ -171,7 +193,16 @@ module.exports = {
 
 startup server
 
-> sunnier-cli
+```json
+//package.json
+{
+  "scripts": {
+    "start": "tsc && sunnier"
+  }
+}
+```
+
+> npm run start
 
 open 127.0.0.1:9000/getUser?id=1 in browser
 
