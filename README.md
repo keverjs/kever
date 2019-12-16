@@ -18,61 +18,112 @@
 
 ## Install
 
-> npm install sunnier reflect-metadata typescript --save
+> npm install sunnier sunnier-cli typescript --save
 
-**1、define constants**
+#### step1
+
+define constants
 
 ```ts
 //constants/index.ts
-export const TEST_CONTROLLER = Symbol.for(TEST_CONTROLLER)
+export const USER = Symbol.for('USER')
 ```
 
-**2、create a injectable service**
+#### step2
+
+create a model
 
 ```ts
-//models/Test.ts
-import { Injectable } from 'sunnier'
-import { TEST_CONTROLLER } from './constants'
-
-@Injectable(TEST_CONTROLLER)
-export class Test {
-  private data: Array<string> = ['zhuangsan', 'lisi', 'wanger', 'mazi']
-  getTest(id: number): string {
-    return this.data[id]
+//models/User.ts
+export namespace Model {
+  export class UserModel {
+    id: Number
+    name: String
+    age: Number
+    sex: Number //0 男 1 女
   }
 }
 ```
 
-**3、create a controller inject Test model**
+### step3
+
+create a injectable service
 
 ```ts
-//controllers/TestController.ts
-import {
-  Controller,
-  Inject,
-  Get,
-  Post,
-  Put,
-  All,
-  Delete,
-  BaseController
-} from 'sunnier'
-import { TEST_CONTROLLER } from './constants'
+//service/User.ts
+import { Injectable } from 'sunnier'
+import { USER } from '../constants'
+import { Model } from '../models'
+import { UserInterface } from '../interface'
+@Injectable(USER)
+export default class User implements UserInterface {
+  private users: Array<Model.UserModel>
+  constructor() {
+    this.users = [
+      {
+        id: 0,
+        name: '张三',
+        age: 18,
+        sex: 0
+      },
+      {
+        id: 1,
+        name: '李四',
+        age: 19,
+        sex: 1
+      },
+      {
+        id: 2,
+        name: '王二',
+        age: 20,
+        sex: 1
+      },
+      {
+        id: 3,
+        name: '麻子',
+        age: 21,
+        sex: 0
+      }
+    ]
+  }
+  getUser(id: number): Model.UserModel {
+    return this.users.find(user => user.id === id)
+  }
+}
+```
 
-export class TestController extends BaseController {
-  @Inject(TEST_CONTROLLER)
-  private _test
-  constructor() {}
-  @Get('/getTest')
-  async getTest() {
-    const result = this._test.getTest(1)
-    this.ctx.body = {
-      code: 200,
-      noerr: '',
-      data: {
-        result
+#### step4
+
+create a controller and inject User service
+
+```ts
+//controllers/UserController.ts
+import { BaseController, Controller, Get, Inject, Params } from 'sunnier'
+import { USER } from '../constants'
+
+@Controller()
+export default class UserController extends BaseController {
+  @Inject(USER)
+  private user
+
+  @Get('/getUser')
+  public async getUser(@Params(['query']) query) {
+    const data = await this.user.getUser(Number(query.id))
+    let result
+    if (data) {
+      result = {
+        code: 200,
+        message: 'success',
+        data
+      }
+    } else {
+      result = {
+        code: 0,
+        message: `id为${query.id}的用户未找到`,
+        data: null
       }
     }
+    this.ctx.body = result
   }
   @Post('/postTest')
   async postTest() {
@@ -101,49 +152,64 @@ export class TestController extends BaseController {
 }
 ```
 
-**4、loader controller and model**
+#### step5
+
+write sunnier.config.js file
 
 ```ts
-// loader.ts
-import './models/Test'
-import './constrollers/TestController'
-```
-
-**5、create a application**
-
-```ts
-// app.ts
-import { createApplication } from 'sunnier'
-import './loader'
-
-const app = createApplication()
-
-app.listen(8080, () => {
-  console.log('server is running....')
-})
-```
-
-**6、golbal middleware**
-
-```ts
-import { createApplication } from 'sunnier'
-import './loader'
-
-async function test(ctx, next) {
-  console.log('123')
-  await next()
+module.exports = {
+  plugins: [],
+  port: 9000,
+  loadPath: {
+    controller: './dist/controllers',
+    service: './dist/service'
+  }
 }
-
-const app = createApplication({
-  plugins: [test]
-})
-
-app.listen(8080, () => {
-  console.log('server is running....')
-})
 ```
 
-**7、AOP Route**
+#### step6
+
+startup server
+
+> sunnier-cli
+
+open 127.0.0.1:9000/getUser?id=1 in browser
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "id": 1,
+    "name": "李四",
+    "age": 19,
+    "sex": 1
+  }
+}
+```
+
+#### step7
+
+golbal middleware
+
+```ts
+async function text(ctx, next) {
+  console.log('middleware')
+  next()
+}
+module.exports = {
+  plugins: [text],
+  port: 9000,
+  loadPath: {
+    controller: './dist/controllers',
+    service: './dist/service'
+  }
+}
+```
+
+#### step8
+
+aop based on route,
 
 ```ts
 import { Controller, Inject, Get, BaseController } from 'sunnier'
@@ -158,16 +224,16 @@ async function after(ctx, next) {
   await next()
 }
 
-export class TestController extends BaseController {
-  @Inject(TEST_CONTROLLER)
-  private _test
+export class UserController extends BaseController {
+  @Inject(USER)
+  private user
   constructor() {}
-  @Get('/getTest', {
+  @Get('/getUser', {
     before: [before],
     after: [after]
   })
-  async getTest() {
-    const result = this._test.getTest(1)
+  async getUser() {
+    const result = this.user.getUser(1)
     this.ctx.body = {
       code: 200,
       noerr: '',
@@ -180,33 +246,16 @@ export class TestController extends BaseController {
 }
 ```
 
-#### Params Decorator
+### Params Decorator
 
-**@Headers()**
+#### @Headers
 
-no params，get all.
-
-```ts
-async getTest(@Headers() headers) {
-  console.log(headers)
-  const result = this._test.getTest(1)
-  this.ctx.body = {
-    code: 200,
-    noerr: '',
-    data: {
-      result
-    }
-  }
-  await this.next()
-}
-```
-
-only one param, get this param value
+get request headers
 
 ```ts
-async getTest(@Headers(['host']) host) {
+async getUest(@Headers(['host']) host) {
   console.log(host) //127.0.0.1
-  const result = this._test.getTest(1)
+  const result = this.user.getUser(1)
   this.ctx.body = {
     code: 200,
     noerr: '',
@@ -218,4 +267,45 @@ async getTest(@Headers(['host']) host) {
 }
 ```
 
-multiple params，get multiple params value, return a object.
+#### @Req
+
+get http request
+
+```ts
+async getUser(@Req() req) {
+  console.log(req)
+}
+```
+
+#### @Res
+
+get http response
+
+```ts
+async getUser(@Res() res) {
+  console.log(res)
+}
+
+```
+
+#### @Cookie
+
+get cookie
+
+```ts
+async getUser(@Cookie() cookie) {
+  console.log(cookie)
+}
+```
+
+#### @Params
+
+get http request parameters, include：body、params、query.
+
+```ts
+async getUser(@Params() args) {
+  console.log(args.body)
+  console.log(args.params)
+  console.log(args.query)
+}
+```
