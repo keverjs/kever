@@ -1,6 +1,6 @@
 # sunnier
 
-[![](https://travis-ci.org/hubvue/sunnier.svg?branch=master)](https://travis-ci.org/hubvue/sunnier)
+[![](https://img.shields.io/travis/hubvue/sunnier/master)](https://travis-ci.org/hubvue/sunnier)
 ![](https://img.shields.io/npm/v/sunnier)
 ![](https://img.shields.io/github/languages/code-size/hubvue/sunnier)
 ![](https://img.shields.io/npm/l/sunnier)
