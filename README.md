@@ -1,7 +1,7 @@
 # sunnier
 
 [![](https://travis-ci.org/hubvue/sunnier.svg?branch=master)](https://travis-ci.org/hubvue/sunnier)
-![](https://img.shields.io/badge/npm-v0.3.3.svg)
+![](https://img.shields.io/npm/v/sunnier)
 
 ⚙A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime.
 
