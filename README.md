@@ -1,5 +1,11 @@
 # sunnier
 
+[![](https://img.shields.io/travis/hubvue/sunnier/master)](https://travis-ci.org/hubvue/sunnier)
+![](https://img.shields.io/npm/v/sunnier)
+![](https://img.shields.io/github/languages/code-size/hubvue/sunnier)
+![](https://img.shields.io/npm/l/sunnier)
+![](https://img.shields.io/npm/dm/sunnier)
+
 ⚙A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime.
 
 **Support:**
