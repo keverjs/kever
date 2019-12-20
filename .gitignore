@@ -64,3 +64,4 @@ package-lock.json
 dist/
 dts/
 lib/
+.vscode/
