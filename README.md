@@ -24,7 +24,7 @@
 
 ## Install
 
-> npm install sunnier sunnier-cli typescript --save
+> npm install sunnier typescript --save
 
 #### step0
 
@@ -53,7 +53,7 @@ write tsconfig.json
 define constants
 
 ```ts
-//constants/index.ts
+//  src/app/constants/index.ts
 export const USER = Symbol.for('USER')
 ```
 
@@ -62,7 +62,7 @@ export const USER = Symbol.for('USER')
 create a model
 
 ```ts
-//models/User.ts
+//  src/app/models/User.ts
 export namespace Model {
   export class UserModel {
     id: Number
@@ -78,7 +78,7 @@ export namespace Model {
 create a injectable service
 
 ```ts
-//service/User.ts
+//  src/src/service/User.ts
 import { Injectable } from 'sunnier'
 import { USER } from '../constants'
 import { Model } from '../models'
@@ -125,7 +125,7 @@ export default class User implements UserInterface {
 create a controller and inject User service
 
 ```ts
-//controllers/UserController.ts
+//  src/app/controllers/UserController.ts
 import { BaseController, Controller, Get, Inject, Params } from 'sunnier'
 import { USER } from '../constants'
 
@@ -182,16 +182,19 @@ export default class UserController extends BaseController {
 
 #### step5
 
-write sunnier.config.js file
+write config file
 
 ```ts
-module.exports = {
-  plugins: [],
-  port: 9000,
-  loadPath: {
-    controller: './dist/controllers',
-    service: './dist/service'
+// src/config/index.ts
+export default () => {
+  let options = {
+    port: 9000,
+    host: '127.0.0.1'
+    plugins: [],
+    loadPath: ['./src']
   }
+
+  return options
 }
 ```
 
@@ -203,7 +206,8 @@ startup server
 //package.json
 {
   "scripts": {
-    "start": "tsc && sunnier"
+    "start": "sunnier-bin --dir=./src --ts",
+    "prod": "sunnier-bin --dir=./dist"
   }
 }
 ```

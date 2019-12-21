@@ -9,3 +9,4 @@ package-lock.json
 .travis.yml
 .gitignore
 .npmignore
+.tsconfig.json
