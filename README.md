@@ -191,7 +191,6 @@ export default () => {
     port: 9000,
     host: '127.0.0.1'
     plugins: [],
-    loadPath: ['./src']
   }
 
   return options
