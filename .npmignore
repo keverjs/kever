@@ -10,3 +10,4 @@ package-lock.json
 .gitignore
 .npmignore
 .tsconfig.json
+.vscode/
