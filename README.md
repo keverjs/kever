@@ -78,7 +78,7 @@ export namespace Model {
 create a injectable service
 
 ```ts
-//  src/src/service/User.ts
+//  src/app/service/User.ts
 import { Injectable } from 'sunnier'
 import { USER } from '../constants'
 import { Model } from '../models'
