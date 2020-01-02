@@ -17,9 +17,8 @@ const CONTROLLER_POLL = Object.create(null)
  *
  * @param options
  */
-export const createApplication = (
-  options: RuntimeOptionsInterface = {}
-): Koa => {
+type CreateApplicationType = (options: RuntimeOptionsInterface) => Koa
+export const createApplication: CreateApplicationType = (options = {}) => {
   const controllers: Set<any> = new Set()
   const controllerPoll: Array<ControllerInterface> = Reflect.getMetadata(
     META_CONTROLLER,
@@ -28,7 +27,7 @@ export const createApplication = (
   if (controllerPoll) {
     for (let controllerMeta of controllerPoll) {
       const { path, constructor } = controllerMeta
-      const controller: any = new constructor()
+      const controller = new constructor()
       if (!('_isExtends' in controller)) {
         throw new Error(`class ${constructor.name} not extends BaseController`)
       }
@@ -59,7 +58,7 @@ export const createApplication = (
       })
     }
   }
-  const app: Koa = KoaRuntime(controllers, options)
+  const app = KoaRuntime(controllers, options)
   return app
 }
 /**

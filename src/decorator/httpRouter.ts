@@ -27,16 +27,22 @@ export const All = createHTTPMethodDecorator('get', 'post', 'put', 'delete')
  *
  * @param methods
  */
-function createHTTPMethodDecorator(...methods: Array<string>): Function {
-  return (path: string, aopPlugins: RouteAopInterface = {}) => (
+type HttpMethodReturnType = (
+  path: string,
+  aopPlugins: RouteAopInterface
+) => MethodDecorator
+function createHTTPMethodDecorator(
+  ...methods: Array<string>
+): HttpMethodReturnType {
+  return (path, aopPlugins = {}): MethodDecorator => (
     target: any,
     propertyKey: string,
     descripator: PropertyDescriptor
   ) => {
     let beforePlugins: Set<Middleware> = new Set()
     let afterPlugins: Set<Middleware> = new Set()
-    const before: Array<Middleware> = aopPlugins.before
-    const after: Array<Middleware> = aopPlugins.after
+    const before = aopPlugins.before
+    const after = aopPlugins.after
     if (before) {
       for (let plugin of before) {
         beforePlugins.add(plugin)
