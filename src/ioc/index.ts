@@ -1,7 +1,5 @@
 import { META_INJECT } from '../constants'
-import { InjectInterface } from '../interface'
-
-type Tag = symbol | string
+import { InjectMetaType, Tag } from '../types'
 
 /**
  *
@@ -25,10 +23,11 @@ class InstancePoll {
 export const instancePoll = new InstancePoll()
 
 /**
- *
+ * @description 标记类时可注入的
  * @param tag
  */
-export const Injectable = (tag: Tag) => target => {
+type InjectableType = (tag: Tag) => ClassDecorator
+export const Injectable: InjectableType = tag => target => {
   instancePoll.add(tag, target)
 }
 
@@ -36,8 +35,9 @@ export const Injectable = (tag: Tag) => target => {
  *
  * @param tag
  */
-export const Inject = (tag: Tag) => (target: any, propertyKey: string) => {
-  const injects: Array<InjectInterface> = Reflect.getMetadata(
+type InjectType = (tag: Tag) => PropertyDecorator
+export const Inject: InjectType = tag => (target, propertyKey) => {
+  const injects: Array<InjectMetaType> = Reflect.getMetadata(
     META_INJECT,
     target
   )

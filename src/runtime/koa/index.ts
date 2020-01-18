@@ -1,17 +1,17 @@
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
-import installMiddleware from './middleware'
+import { installMiddleware } from './middleware'
 import parseParamsDecorator from './params'
-import { RuntimeOptionsInterface, RouteMetaInterface } from '../../interface'
+import { RuntimeOptions, RouteMetaInterface } from '../../types'
 import { META_ROUTER } from '../../constants'
 import { resolvePath } from '../../utils'
 
 /**
- *
+ * @description 注册中间件调用koa启动服务
  * @param controllers
  * @param options
  */
-function KoaRuntime(controllers: Set<any>, options: RuntimeOptionsInterface) {
+function KoaRuntime(controllers: Set<any>, options: RuntimeOptions) {
   const app: Koa = new Koa()
   const router: Router = new Router()
   const plugins: Array<Koa.Middleware> = options.plugins || []

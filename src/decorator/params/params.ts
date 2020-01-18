@@ -1,10 +1,16 @@
 import { Context } from 'koa'
 import { META_PARAMS } from '../../constants'
-import { ParamsMetaInterface } from '../../interface'
-export const Params = (tags: Array<string> = []) => (
-  target: any,
-  propertyKey: string,
-  paramIndex: number
+import { ParamsMetaInterface } from '../../types'
+
+/**
+ * @description 请求参数装饰器
+ * @param tags
+ */
+type ParamsType = (tags: Array<string>) => ParameterDecorator
+export const Params: ParamsType = (tags = []) => (
+  target,
+  propertyKey,
+  paramIndex
 ) => {
   Reflect.defineMetadata(
     META_PARAMS,
@@ -16,10 +22,16 @@ export const Params = (tags: Array<string> = []) => (
   )
 }
 
-export const getParamsHeandler = (
+/**
+ * @description 请求参数装饰器服务函数
+ * @param ctx
+ * @param paramMeta
+ */
+type ParamsHeandlerType = (
   ctx: Context,
   paramMeta: ParamsMetaInterface
-): Array<any> => {
+) => Array<any>
+export const getParamsHeandler: ParamsHeandlerType = (ctx, paramMeta) => {
   const { index, tags } = paramMeta
   const allParams = {
     body: ctx.request.body,

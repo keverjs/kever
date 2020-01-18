@@ -1,5 +1,5 @@
 /**
- * @description 各可反射的常量标识
+ * @description 各个可反射的常量标识
  */
 export const META_ROUTER = Symbol.for('dectorator#meta_router')
 

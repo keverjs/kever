@@ -5,8 +5,7 @@
   "main": "./lib/index.js",
   "types": "./dts/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "test": "echo text",
+    "build": "node ./scripts/build.js",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md",
     "format": "eslint --fix . --ext .js,.ts"
   },
