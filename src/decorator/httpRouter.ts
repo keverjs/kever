@@ -29,7 +29,7 @@ export const All = createHTTPMethodDecorator('get', 'post', 'put', 'delete')
  */
 type HttpMethodReturnType = (
   path: string,
-  aopPlugins: RouteAopInterface
+  aopPlugins?: RouteAopInterface
 ) => MethodDecorator
 function createHTTPMethodDecorator(
   ...methods: Array<string>
