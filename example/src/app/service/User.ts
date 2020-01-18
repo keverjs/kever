@@ -1,4 +1,4 @@
-import { Injectable } from 'sunnier'
+import { Injectable } from 'kever'
 import { USER } from '../constants'
 import { Model } from '../models'
 import { UserInterface } from '../interface'

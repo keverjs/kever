@@ -1,5 +1,5 @@
 {
-  "name": "sunnier",
+  "name": "kever",
   "version": "0.3.5",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "main": "./lib/index.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hubvue/sunnier.git"
+    "url": "git+https://github.com/hubvue/kever.git"
   },
   "keywords": [
     "nodejs",
@@ -24,9 +24,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/hubvue/sunnier/issues"
+    "url": "https://github.com/hubvue/kever/issues"
   },
-  "homepage": "https://github.com/hubvue/sunnier#readme",
+  "homepage": "https://github.com/hubvue/kever#readme",
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
@@ -52,7 +52,7 @@
     "koa-cookie": "^1.0.0",
     "koa-router": "^7.4.0",
     "reflect-metadata": "^0.1.13",
-    "sunnier-bin": "^0.0.6"
+    "kever-bin": "^0.0.6"
   },
   "husky": {
     "hooks": {

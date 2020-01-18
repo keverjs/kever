@@ -1,4 +1,4 @@
-import { BaseController, Controller, Inject, Get, Params } from 'sunnier'
+import { BaseController, Controller, Inject, Get, Params } from 'kever'
 import { COURSE } from '../constants'
 
 @Controller()

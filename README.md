@@ -1,10 +1,10 @@
-# sunnier
+# kever
 
-[![](https://img.shields.io/travis/hubvue/sunnier/master)](https://travis-ci.org/hubvue/sunnier)
-![](https://img.shields.io/npm/v/sunnier)
-![](https://img.shields.io/github/languages/code-size/hubvue/sunnier)
-![](https://img.shields.io/npm/l/sunnier)
-![](https://img.shields.io/npm/dm/sunnier)
+[![](https://img.shields.io/travis/hubvue/kever/master)](https://travis-ci.org/hubvue/kever)
+![](https://img.shields.io/npm/v/kever)
+![](https://img.shields.io/github/languages/code-size/hubvue/kever)
+![](https://img.shields.io/npm/l/kever)
+![](https://img.shields.io/npm/dm/kever)
 
 ⚙A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime.
 
@@ -24,7 +24,7 @@
 
 ## Install
 
-> npm install sunnier typescript --save
+> npm install kever typescript --save
 
 #### step0
 
@@ -79,7 +79,7 @@ create a injectable service
 
 ```ts
 //  src/app/service/User.ts
-import { Injectable } from 'sunnier'
+import { Injectable } from 'kever'
 import { USER } from '../constants'
 import { Model } from '../models'
 import { UserInterface } from '../interface'
@@ -126,7 +126,7 @@ create a controller and inject User service
 
 ```ts
 //  src/app/controllers/UserController.ts
-import { BaseController, Controller, Get, Inject, Params } from 'sunnier'
+import { BaseController, Controller, Get, Inject, Params } from 'kever'
 import { USER } from '../constants'
 
 @Controller()
@@ -205,8 +205,8 @@ startup server
 //package.json
 {
   "scripts": {
-    "start": "sunnier-bin --dir=./src --ts",
-    "prod": "sunnier-bin --dir=./dist"
+    "start": "kever-bin --dir=./src --ts",
+    "prod": "kever-bin --dir=./dist"
   }
 }
 ```
@@ -252,7 +252,7 @@ module.exports = {
 aop based on route,
 
 ```ts
-import { Controller, Inject, Get, BaseController } from 'sunnier'
+import { Controller, Inject, Get, BaseController } from 'kever'
 import { TEST_CONTROLLER } from './constants'
 
 async function before(ctx, next) {
