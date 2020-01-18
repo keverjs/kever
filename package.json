@@ -52,7 +52,7 @@
     "koa-cookie": "^1.0.0",
     "koa-router": "^7.4.0",
     "reflect-metadata": "^0.1.13",
-    "kever-bin": "^0.0.6"
+    "kever-bin": "^0.0.1"
   },
   "husky": {
     "hooks": {
