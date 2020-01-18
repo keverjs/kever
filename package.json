@@ -1,6 +1,6 @@
 {
   "name": "kever",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "main": "./lib/index.js",
   "types": "./dts/index.d.ts",
