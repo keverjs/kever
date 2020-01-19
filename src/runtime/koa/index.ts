@@ -1,11 +1,11 @@
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
-import { installMiddleware } from './middleware'
+import { installMiddleware, middlePoll } from './middleware/index'
 import parseParamsDecorator from './params'
 import { RuntimeOptions, RouteMetaInterface } from '../../types'
 import { META_ROUTER } from '../../constants'
 import { resolvePath } from '../../utils'
-
+const Logger = console
 /**
  * @description 注册中间件调用koa启动服务
  * @param controllers
@@ -14,9 +14,8 @@ import { resolvePath } from '../../utils'
 function KoaRuntime(controllers: Set<any>, options: RuntimeOptions) {
   const app: Koa = new Koa()
   const router: Router = new Router()
-  const plugins: Array<Koa.Middleware> = options.plugins || []
-  // 注册中间件
-  installMiddleware(app, plugins)
+  // 注册全局中间件
+  installMiddleware(app, middlePoll.golbalMiddle)
   for (let controllerMeta of controllers) {
     const { path: rootPath, controller } = controllerMeta
     if (!rootPath) {
@@ -30,12 +29,31 @@ function KoaRuntime(controllers: Set<any>, options: RuntimeOptions) {
           controller[name]
         )
         if (metaRoute) {
-          const { methods, path, beforePlugins, afterPlugins } = metaRoute
+          const {
+            methods,
+            path,
+            beforeMiddlesType,
+            afterMiddlesType
+          } = metaRoute
+          const beforeMiddles = beforeMiddlesType.map(middleType => {
+            if (middlePoll.routeMiddle.has(middleType)) {
+              return middlePoll.routeMiddle.get(middleType)
+            } else {
+              Logger.error(`[kever|err]: ${String(middleType)} unregistered！`)
+            }
+          })
+          const afterMiddles = afterMiddlesType.map(middleType => {
+            if (middlePoll.routeMiddle.has(middleType)) {
+              return middlePoll.routeMiddle.get(middleType)
+            } else {
+              Logger.error(`[kever|err]: ${String(middleType)} unregistered！`)
+            }
+          })
           const routePath: string = resolvePath(rootPath, path)
           for (let method of methods) {
             router[method](
               routePath,
-              ...beforePlugins,
+              ...beforeMiddles,
               async (ctx: Koa.Context, next: Koa.Next) => {
                 // 将ctx和next绑定到controller实例上
                 controller['ctx'] = ctx
@@ -44,7 +62,7 @@ function KoaRuntime(controllers: Set<any>, options: RuntimeOptions) {
                 const routeParams = parseParamsDecorator(controller[name], ctx)
                 await controller[name](...routeParams)
               },
-              ...afterPlugins
+              ...afterMiddles
             )
           }
         }
