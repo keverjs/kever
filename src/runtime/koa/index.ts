@@ -15,7 +15,11 @@ function KoaRuntime(controllers: Set<any>, options: RuntimeOptions) {
   const app: Koa = new Koa()
   const router: Router = new Router()
   // 注册全局中间件
-  installMiddleware(app, middlePoll.golbalMiddle)
+  let globalMiddles: Set<Koa.Middleware> = new Set()
+  for (let globalMiddle of middlePoll.globalMiddle.values()) {
+    globalMiddles.add(globalMiddle)
+  }
+  installMiddleware(app, globalMiddles)
   for (let controllerMeta of controllers) {
     const { path: rootPath, controller } = controllerMeta
     if (!rootPath) {

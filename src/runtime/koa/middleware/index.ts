@@ -2,7 +2,7 @@ import * as Koa from 'koa'
 import * as koaBody from 'koa-body'
 import koaCookie from 'koa-cookie'
 import { Tag } from '../../../types/index'
-
+const Logger = console
 export const installMiddleware = (app: Koa, middles: Set<Koa.Middleware>) => {
   app.use(koaBody())
   app.use(koaCookie())
@@ -20,11 +20,11 @@ export interface BaseMiddle {
 
 interface MiddlePoll<T> {
   routeMiddle: Map<Tag, T>
-  golbalMiddle: Set<T>
+  globalMiddle: Map<Tag, T>
 }
 export const middlePoll: MiddlePoll<Koa.Middleware> = {
   routeMiddle: new Map(),
-  golbalMiddle: new Set()
+  globalMiddle: new Map()
 }
 
 type registerMiddleType = (
@@ -33,12 +33,20 @@ type registerMiddleType = (
 
 export const registerMiddle: registerMiddleType = (tag: Tag) => target => {
   const instance: BaseMiddle = new target() as BaseMiddle
-  middlePoll.routeMiddle.set(tag, instance.ready)
+  if (middlePoll.routeMiddle.has(tag)) {
+    Logger.error(`[kever|err]: ${String(tag)} middleware Registered`)
+  } else {
+    middlePoll.routeMiddle.set(tag, instance.ready)
+  }
 }
 
 export const registerGlobalMiddle: registerMiddleType = (
   tag: Tag
 ) => target => {
   const instance: BaseMiddle = new target() as BaseMiddle
-  middlePoll.golbalMiddle.add(instance.ready)
+  if (middlePoll.globalMiddle.has(tag)) {
+    Logger.error(`[kever|err]: ${String(tag)} middleware Registered`)
+  } else {
+    middlePoll.globalMiddle.set(tag, instance.ready)
+  }
 }
