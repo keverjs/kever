@@ -10,4 +10,4 @@ export * from './core/controller'
 
 export * from './decorator/params'
 
-export * from './runtime/koa/middleware'
+export * from './runtime/koa/middleware/index'

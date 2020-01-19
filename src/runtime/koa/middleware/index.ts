@@ -15,7 +15,7 @@ export const installMiddleware = (app: Koa, middles: Set<Koa.Middleware>) => {
  * @description 基础的中间件接口，所有的中间件都要继承这个东西
  */
 export interface BaseMiddle {
-  ready(): void
+  ready(ctx: Koa.Context, next: Koa.Next): Promise<void>
 }
 
 interface MiddlePoll<T> {
@@ -29,7 +29,7 @@ export const middlePoll: MiddlePoll<Koa.Middleware> = {
 
 type registerMiddleType = (
   tag: Tag
-) => <T extends { new (...args: any[]): {}; ready(): void }>(target: T) => void
+) => <T extends { new (...args: any[]): {} }>(target: T) => void
 
 export const registerMiddle: registerMiddleType = (tag: Tag) => target => {
   const instance: BaseMiddle = new target() as BaseMiddle
