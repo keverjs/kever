@@ -14,6 +14,5 @@ package-lock.json
 .gitignore
 .npmignore
 .tsconfig.json
-.tsconfig.json
 .api-extractor.json
 .tsdoc-metadata.json
