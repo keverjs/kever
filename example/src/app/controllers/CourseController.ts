@@ -6,8 +6,12 @@ export default class CourseController extends BaseController {
   @Inject(COURSE)
   private _course
 
-  @Get('/getCourse')
+  @Get('/getCourse', {
+    before: ['beforeMiddleware'],
+    after: ['afterMiddleware']
+  })
   public async getCourse(@Params(['query']) query) {
+    console.log('这里是正常执行的代码')
     const data = await this._course.getCourse(Number(query.id))
     let result
     if (data) {
@@ -24,5 +28,6 @@ export default class CourseController extends BaseController {
       }
     }
     this.ctx.body = result
+    await this.next()
   }
 }
