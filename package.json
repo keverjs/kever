@@ -3,9 +3,9 @@
   "version": "0.4.3",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "main": "./lib/index.js",
-  "types": "./dts/index.d.ts",
+  "types": "./kever.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "node ./scripts/build.js",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md",
     "format": "eslint --fix . --ext .js,.ts"
   },
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
+    "@microsoft/api-extractor": "^7.7.5",
     "@types/koa": "^2.11.0",
     "@types/node": "^12.12.14",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
@@ -46,6 +47,7 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
+    "execa": "^4.0.0",
     "kever-bin": "0.0.3",
     "koa": "^2.11.0",
     "koa-body": "^4.1.1",

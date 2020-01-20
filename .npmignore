@@ -1,8 +1,12 @@
 src/
+dts/
 test/
+docs/
+scripts/
 example/
 node_modules/
 package-lock.json
+.vscode/
 .eslintignore
 .eslintrc
 .prettierrc
@@ -10,4 +14,6 @@ package-lock.json
 .gitignore
 .npmignore
 .tsconfig.json
-.vscode/
+.tsconfig.json
+.api-extractor.json
+.tsdoc-metadata.json
