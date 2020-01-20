@@ -1,6 +1,6 @@
 {
   "name": "kever",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "main": "./lib/index.js",
   "types": "./kever.d.ts",
@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "execa": "^4.0.0",
-    "kever-bin": "0.0.3",
+    "kever-bin": "^0.0.5",
     "koa": "^2.11.0",
     "koa-body": "^4.1.1",
     "koa-cookie": "^1.0.0",
