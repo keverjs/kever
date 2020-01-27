@@ -1,4 +1,9 @@
-import { Controller, registerMiddle, registerGlobalMiddle, BaseMiddle } from 'kever'
+import {
+  Controller,
+  registerMiddle,
+  registerGlobalMiddle,
+  BaseMiddle
+} from 'kever'
 
 @registerMiddle('afterMiddleware')
 export default class TestMiddleware implements BaseMiddle {

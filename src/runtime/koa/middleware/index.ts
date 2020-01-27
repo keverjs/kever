@@ -36,7 +36,7 @@ export const registerMiddle: registerMiddleType = (tag: Tag) => target => {
   if (middlePoll.routeMiddle.has(tag)) {
     Logger.error(`[kever|err]: ${String(tag)} middleware Registered`)
   } else {
-    middlePoll.routeMiddle.set(tag, instance.ready)
+    middlePoll.routeMiddle.set(tag, instance.ready.bind(instance))
   }
 }
 
@@ -47,6 +47,6 @@ export const registerGlobalMiddle: registerMiddleType = (
   if (middlePoll.globalMiddle.has(tag)) {
     Logger.error(`[kever|err]: ${String(tag)} middleware Registered`)
   } else {
-    middlePoll.globalMiddle.set(tag, instance.ready)
+    middlePoll.globalMiddle.set(tag, instance.ready.bind(instance))
   }
 }
