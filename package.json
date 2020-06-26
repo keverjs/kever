@@ -2,12 +2,8 @@
   "name": "kever",
   "version": "0.4.9",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
-  "main": "./lib/index.js",
-  "types": "./kever.d.ts",
   "scripts": {
-    "build": "node ./scripts/build.js",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md",
-    "format": "eslint --fix . --ext .js,.ts"
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md"
   },
   "repository": {
     "type": "git",
@@ -20,58 +16,30 @@
     "http server",
     "koa"
   ],
-  "author": "",
+  "author": "kim",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/hubvue/kever/issues"
   },
   "homepage": "https://github.com/hubvue/kever#readme",
   "devDependencies": {
-    "execa": "^4.0.0",
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
-    "@microsoft/api-extractor": "^7.7.5",
-    "@types/node": "^12.12.14",
-    "@typescript-eslint/eslint-plugin": "^2.9.0",
-    "@typescript-eslint/parser": "^2.9.0",
     "conventional-changelog-cli": "^2.0.28",
-    "eslint": "^6.7.2",
-    "eslint-config-prettier": "^6.7.0",
-    "eslint-plugin-prettier": "^3.1.1",
     "husky": "^3.1.0",
-    "lint-staged": "^9.5.0",
-    "mocha": "^6.2.2",
-    "prettier": "^1.19.1",
-    "supertest": "^4.0.2",
-    "ts-node": "^8.5.4",
-    "typescript": "^3.7.2"
+    "lint-staged": "^9.5.0"
   },
   "dependencies": {
-    "@types/koa": "^2.11.0",
-    "kever-bin": "^0.1.2",
-    "koa": "^2.11.0",
-    "koa-body": "^4.1.1",
-    "koa-cookie": "^1.0.0",
-    "koa-router": "^7.4.0",
+    "@kever/core": "^0.1.7",
+    "@kever/ioc": "^0.1.2",
+    "@kever/logger": "^0.1.2",
+    "@kever/router": "^0.1.1",
     "reflect-metadata": "^0.1.13"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
-  },
-  "lint-staged": {
-    "{src, test, example}/**/*.ts": [
-      "npm run format",
-      "prettier --write",
-      "git add ."
-    ],
-    "{lib}/**/*.js": [
-      "npm run format",
-      "prettier --write",
-      "git add ."
-    ]
   },
   "commitlint": {
     "extends": [

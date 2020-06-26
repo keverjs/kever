@@ -61,12 +61,4 @@ typings/
 .next
 
 package-lock.json
-dist/
-docs/
-dts/
-lib/
-.vscode/
-kever.d.ts
-kever-beta.d.ts
-kever-public.d.ts
-tsdoc-metadata.json
+
