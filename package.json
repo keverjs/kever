@@ -1,6 +1,6 @@
 {
   "name": "kever",
-  "version": "0.4.9",
+  "version": "0.5.0",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "scripts": {
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md"
