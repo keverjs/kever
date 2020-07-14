@@ -3,7 +3,7 @@
   "version": "0.6.1",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "scripts": {
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md"
   },
   "repository": {
     "type": "git",
