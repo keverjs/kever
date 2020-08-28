@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "outDir": "./lib",
+    "target": "ESNext",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "declaration": true,
+    "declarationDir": "./dts",
+    "noEmitOnError": true,
+    "paths": {
+      "@kever/*": ["packages/*/src"]
+    },
+    "strict": true,
+    "typeRoots": ["node_modules/@types"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
+  "include": ["packages/*/src"],
+  "exclude": ["packages/*/lib"]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "@kever/logger",
+  "version": "0.7.0",
+  "description": "kever logger",
+  "author": {
+    "name": "kim",
+    "email": "1191340528@qq.com"
+  },
+  "publicConfig": {
+    "access": "puiblic"
+  },
+  "main": "lib/index.js",
+  "types": "logger.d.ts",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:keverjs/kever.git",
+    "directory": "packages/logger"
+  },
+  "bugs": {
+    "url": "https://github.com/keverjs/kever/issues"
+  },
+  "homepage": "https://github.com/keverjs/kever#readme",
+  "keywords": [
+    "nodejs",
+    "typescript",
+    "kever",
+    "logger"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.0.0"
+  }
+}

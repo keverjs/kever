@@ -1,0 +1,38 @@
+{
+  "name": "@kever/router",
+  "version": "0.7.0",
+  "description": "kever router",
+  "author": {
+    "name": "kim",
+    "email": "1191340528@qq.com"
+  },
+  "publicConfig": {
+    "access": "puiblic"
+  },
+  "main": "lib/index.js",
+  "types": "router.d.ts",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:keverjs/kever.git",
+    "directory": "packages/router"
+  },
+  "bugs": {
+    "url": "https://github.com/keverjs/kever/issues"
+  },
+  "homepage": "https://github.com/keverjs/kever#readme",
+  "keywords": [
+    "nodejs",
+    "http",
+    "server",
+    "decorator",
+    "router"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "@types/koa": "^2.11.3",
+    "koa": "^2.13.0",
+    "koa-router": "^9.0.1",
+    "@kever/logger": "^0.1.1"
+  }
+}

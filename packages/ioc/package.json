@@ -1,0 +1,35 @@
+{
+  "name": "@kever/ioc",
+  "version": "0.7.0",
+  "description": "kever ioc",
+  "author": {
+    "name": "kim",
+    "email": "1191340528@qq.com"
+  },
+  "publicConfig": {
+    "access": "puiblic"
+  },
+  "main": "lib/index.js",
+  "types": "ioc.d.ts",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:keverjs/kever.git",
+    "directory": "packages/ioc"
+  },
+  "bugs": {
+    "url": "https://github.com/keverjs/kever/issues"
+  },
+  "homepage": "https://github.com/keverjs/kever#readme",
+  "keywords": [
+    "ioc",
+    "node",
+    "dependencies",
+    "di"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "@types/koa": "^2.11.3",
+    "@kever/logger": "^0.1.1"
+  }
+}

@@ -4,6 +4,7 @@ test/
 docs/
 scripts/
 example/
+log/
 node_modules/
 package-lock.json
 .vscode/
@@ -13,6 +14,6 @@ package-lock.json
 .travis.yml
 .gitignore
 .npmignore
-.tsconfig.json
-.api-extractor.json
-.tsdoc-metadata.json
+tsconfig.json
+api-extractor.json
+tsdoc-metadata.json
