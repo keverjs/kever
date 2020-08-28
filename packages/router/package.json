@@ -30,9 +30,10 @@
   ],
   "license": "ISC",
   "dependencies": {
+    "@kever/logger": "^0.1.1",
     "@types/koa": "^2.11.3",
+    "@types/koa-router": "^7.4.1",
     "koa": "^2.13.0",
-    "koa-router": "^9.0.1",
-    "@kever/logger": "^0.1.1"
+    "koa-router": "^9.0.1"
   }
 }
