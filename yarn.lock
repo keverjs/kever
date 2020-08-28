@@ -1239,6 +1239,13 @@
   dependencies:
     "@types/koa" "*"
 
+"@types/koa-cookie@^1.0.0":
+  version "1.0.0"
+  resolved "http://artifactory.intra.xiaojukeji.com:80/artifactory/api/npm/npm/@types/koa-cookie/download/@types/koa-cookie-1.0.0.tgz#facd85b3f1b4cd1f72c73a70314757d459672ea0"
+  integrity sha1-+s2Fs/G0zR9yxzpwMUdX1FlnLqA=
+  dependencies:
+    "@types/koa" "*"
+
 "@types/koa@*", "@types/koa@^2.11.3":
   version "2.11.4"
   resolved "https://registry.npm.taobao.org/@types/koa/download/@types/koa-2.11.4.tgz#8af02a069a9f8e08fa47b8da28d982e652f69cfb"

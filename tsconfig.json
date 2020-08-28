@@ -14,10 +14,17 @@
     "paths": {
       "@kever/*": ["packages/*/src"]
     },
-    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
     "typeRoots": ["node_modules/@types"],
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "esModuleInterop": true
   },
   "include": ["packages/*/src"],
   "exclude": ["packages/*/lib"]
