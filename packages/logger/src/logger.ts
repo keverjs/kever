@@ -1,4 +1,4 @@
-import chalk from 'chalk'
+import chalk, { Chalk } from 'chalk'
 import { logHandler } from './writeFile'
 import { _processDate } from './utils'
 
@@ -64,7 +64,11 @@ class Logger {
   warn(message: string) {
     this._emit(message, 'yellow', 'warn')
   }
-  private _emit(message: string, color: string, type: string) {
+  private _emit(
+    message: string,
+    color: 'blue' | 'red' | 'yellow',
+    type: 'log' | 'error' | 'warn'
+  ) {
     const formatMessage = this._formatLog(message, type)
     const content: string = chalk[color](formatMessage)
     if (LEVAL_TYPE[this.levalFile].includes(type)) {

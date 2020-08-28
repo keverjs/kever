@@ -2,13 +2,13 @@ import { _processDate } from './utils'
 import * as fs from 'fs'
 const { stat, mkdir, appendFile, writeFile } = fs.promises
 
-interface logInfoType {
+interface LogInfoType {
   type: string
   content: string
   logDir: string
   isDependentOutput: boolean
 }
-const logInfoMap = new Map<string, Set<logInfoType>>()
+const logInfoMap = new Map<string, Set<LogInfoType>>()
 /**
  * @description 检查log目录是否存在，不存在则创建
  * @param logDir
@@ -51,8 +51,8 @@ const _witerFileHandler = async (
   }
 }
 
-const writeFileHandler = async (type: string, logInfoSet: Set<logInfoType>) => {
-  let logDir: string
+const writeFileHandler = async (type: string, logInfoSet: Set<LogInfoType>) => {
+  let logDir: string | undefined
   let logContent: string = ''
   const date = new Date()
   const year = date.getFullYear()
@@ -74,12 +74,15 @@ const writeFileHandler = async (type: string, logInfoSet: Set<logInfoType>) => {
 
 const writeFileAction = async (logDir: string) => {
   await _checkFolderExistence(logDir)
-  const isAll = logInfoMap.has('all')
-  if (isAll) {
-    writeFileHandler('', logInfoMap.get('all'))
+  const allLogInfo = logInfoMap.get('all')
+  if (allLogInfo) {
+    writeFileHandler('', allLogInfo)
   } else {
     for (let key of logInfoMap.keys()) {
-      writeFileHandler(`/${key}`, logInfoMap.get(key))
+      const singleLogInfo = logInfoMap.get(key)
+      if (singleLogInfo) {
+        writeFileHandler(`/${key}`, singleLogInfo)
+      }
     }
   }
 }
@@ -100,11 +103,12 @@ export const logHandler = (() => {
   ) => {
     clearTimeout(timer)
     const mapKey = isDependentOutput ? type : 'all'
-    let logInfoSet: Set<logInfoType>
-    if (logInfoMap.has(mapKey)) {
-      logInfoSet = logInfoMap.get(mapKey)
+    let logInfoSet: Set<LogInfoType>
+    const logInfo = logInfoMap.get(mapKey)
+    if (logInfo) {
+      logInfoSet = logInfo
     } else {
-      logInfoSet = new Set<logInfoType>()
+      logInfoSet = new Set<LogInfoType>()
       logInfoMap.set(mapKey, logInfoSet)
     }
     logInfoSet.add({
