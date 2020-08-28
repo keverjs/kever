@@ -7,6 +7,9 @@
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "scripts": {
     "bootstrap": "lerna bootstrap",
+    "build": "node ./scripts/build.js",
+    "format": "eslint --fix . --ext .js,.ts",
+    "test": "mocha --require ts-node/register ./packages/**/test/*.spec.ts",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md",
     "preinstall": "node ./scripts/checkYarn.js",
     "postinstall": "yarn bootstrap"
