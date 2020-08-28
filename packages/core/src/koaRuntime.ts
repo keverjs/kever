@@ -16,7 +16,7 @@ export const koaRuntime: KoaRuntimeType = (controllers) => {
   ]
   const app = new Koa()
   // install plugins
-  installPlugins(app, plugins)
+  installPlugins(app, plugins as Koa.Middleware[])
 
   return app
 }

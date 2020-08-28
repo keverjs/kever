@@ -12,7 +12,8 @@
     "test": "mocha --require ts-node/register ./packages/**/test/*.spec.ts",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md",
     "preinstall": "node ./scripts/checkYarn.js",
-    "postinstall": "yarn bootstrap"
+    "postinstall": "yarn bootstrap",
+    "build:test": "tsc"
   },
   "repository": {
     "type": "git",

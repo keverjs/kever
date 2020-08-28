@@ -27,5 +27,5 @@
     "esModuleInterop": true
   },
   "include": ["packages/*/src"],
-  "exclude": ["packages/*/lib"]
+  "exclude": ["packages/*/lib", "packages/*/test"]
 }
