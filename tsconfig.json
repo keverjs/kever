@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "rootDir": ".",
     "target": "ESNext",
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
     "removeComments": true,
     "preserveConstEnums": true,
