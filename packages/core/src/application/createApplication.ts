@@ -30,35 +30,35 @@ export const createApplication: CreateApplicationType = async (
   options = {},
   callback
 ) => {
-  const processOptions = _handleOptions(options)
-
-  // loadModules
-  logger.info('load file...')
-  await loadModules(
-    processOptions.plugins,
-    processOptions.env,
-    processOptions.tsconfig
-  )
-  logger.info('load file done')
-
-  const constrollers = new Set<ControllerMetaType>()
-
-  for (let [path, constructor] of controllerPoll.entries()) {
-    const controller = new (constructor as NewConstructorType)()
-    constrollers.add({ path, controller })
-  }
-
-  const app = koaRuntime(constrollers)
-  app.on('error', (error) => {
-    logger.error(error)
-  })
-  app.listen(processOptions.port, processOptions.hostname, () => {
-    logger.info(
-      `server listening http://${processOptions.hostname}:${processOptions.port}`
+  try {
+    const processOptions = _handleOptions(options)
+    // loadModules
+    logger.info('✅...load file...')
+    await loadModules(
+      processOptions.plugins,
+      processOptions.env,
+      processOptions.tsconfig
     )
-    logger.info('server is running...')
-    callback && callback(app)
-  })
+    logger.info('✅...load file done...')
+    const constrollers = new Set<ControllerMetaType>()
+    for (let [path, constructor] of controllerPoll.entries()) {
+      const controller = new (constructor as NewConstructorType)()
+      constrollers.add({ path, controller })
+    }
+    const app = koaRuntime(constrollers)
+    app.on('error', (error) => {
+      logger.error(error)
+    })
+    app.listen(processOptions.port, processOptions.hostname, () => {
+      logger.info(
+        `server listening http://${processOptions.hostname}:${processOptions.port}`
+      )
+      logger.info('server is running...')
+      callback && callback(app)
+    })
+  } catch (err) {
+    logger.error(err)
+  }
 }
 
 function _handleOptions(options: OptionsType): Required<OptionsType> {

@@ -4,29 +4,30 @@ import { join } from 'path'
 import { logger } from '@kever/logger'
 const readDirPromise = promisify(fs.readdir)
 
-export const getFilesPath = async (
-  loadFileDir: string
-): Promise<Set<string>> => {
+export const getFilesPath = async (loadFileDir: string) => {
   let filesPath: Set<string> = new Set()
-
-  async function findFile(path: string) {
-    if (!fs.existsSync(path)) {
-      logger.error(`${path}is not a file or directory`)
-      return
-    }
-    let files = await readDirPromise(path)
-    for (let file of files) {
-      const fpath = join(path, file)
-      const stats = fs.statSync(fpath)
-      if (stats.isDirectory()) {
-        await findFile(fpath)
+  try {
+    async function findFile(path: string) {
+      if (!fs.existsSync(path)) {
+        logger.error(`${path}is not a file or directory`)
+        return
       }
-      if (stats.isFile()) {
-        filesPath.add(fpath)
+      let files = await readDirPromise(path)
+      for (let file of files) {
+        const fpath = join(path, file)
+        const stats = fs.statSync(fpath)
+        if (stats.isDirectory()) {
+          await findFile(fpath)
+        }
+        if (stats.isFile()) {
+          filesPath.add(fpath)
+        }
       }
     }
+    await findFile(loadFileDir)
+  } catch (err) {
+    logger.error(err)
   }
-  await findFile(loadFileDir)
   return filesPath
 }
 

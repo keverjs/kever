@@ -3,8 +3,8 @@ import koaBody from 'koa-body'
 import koaCookie from 'koa-cookie'
 import { parseRouter, ControllerMetaType } from '@kever/router'
 import { getGlobalPlugin } from '@kever/ioc'
-type KoaRuntimeType = (controllers: Set<ControllerMetaType>) => Koa
-export const koaRuntime: KoaRuntimeType = (controllers) => {
+
+export const koaRuntime = (controllers: Set<ControllerMetaType>) => {
   const router = parseRouter([...controllers])
   const globalPlugins = getGlobalPlugin()
   const plugins = [

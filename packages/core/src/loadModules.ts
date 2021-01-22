@@ -2,6 +2,7 @@ import { getFilesPath, loadFile } from './utils'
 import { logger } from '@kever/logger'
 import * as fs from 'fs'
 const { readFile } = fs.promises
+
 export const loadModules = async (
   plugins: string[],
   env: string,

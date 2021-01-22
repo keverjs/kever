@@ -29,7 +29,6 @@ export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
       const { path, methods: routeMethods } = routerMeta
       const routePath = resolvePath(rootPath, path)
       for (const routeMethod of routeMethods) {
-        type A = keyof Router
         router[routeMethod](routePath, async (ctx: Context, next: Next) => {
           // todo
           try {
