@@ -137,22 +137,41 @@ const extractDts = (packageName) => {
   return result
 }
 
+const mvDts = async (packageName) => {
+  const sourcePath = resolve(
+    __dirname,
+    `../packages/${packageName}/dist/${packageName}.d.ts`
+  )
+  const targetPath = resolve(
+    __dirname,
+    `../packages/${packageName}/${packageName}.d.ts`
+  )
+  const dtsState = await fs.stat(sourcePath)
+  if (dtsState.isFile) {
+    await fs.rename(sourcePath, targetPath)
+  }
+}
+
 const buildEntry = async (packageConfig) => {
   try {
     const packageBundle = await rollup.rollup(packageConfig.config)
     await packageBundle.write(packageConfig.config.output)
     const extractResult = extractDts(packageConfig.packageName)
-    await cleanPackagesDtsDir(packageConfig.packageName)
+    await Promise.all([
+      cleanPackagesDtsDir(packageConfig.packageName),
+      mvDts(packageConfig.packageName),
+    ])
     if (!extractResult.succeeded) {
       console.log(
-        chalk.red(`@kever/${packageConfig.packageName} d.ts extract fial!`)
+        chalk.red(`@kever/${packageConfig.packageName} d.ts extract fail!`)
       )
     }
     console.log(
       chalk.green(`@kever/${packageConfig.packageName} build successful! `)
     )
   } catch (err) {
-    console.log(chalk.red(`@kever/${packageConfig.packageName} build fial!`))
+    console.log(chalk.red(`@kever/${packageConfig.packageName} build fail!`))
+    console.log(err)
   }
 }
 

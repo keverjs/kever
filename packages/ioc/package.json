@@ -10,7 +10,7 @@
     "access": "puiblic"
   },
   "main": "dist/index.js",
-  "types": "dist/ioc.d.ts",
+  "types": "ioc.d.ts",
   "scripts": {},
   "repository": {
     "type": "git",

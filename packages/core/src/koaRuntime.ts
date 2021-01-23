@@ -6,9 +6,7 @@ import { getGlobalPlugin } from '@kever/ioc'
 
 export const koaRuntime = (controllers: Set<ControllerMetaType>) => {
   const router = parseRouter([...controllers])
-
   const globalPlugins = getGlobalPlugin()
-
   const plugins = [
     koaBody(),
     koaCookie(),
@@ -16,9 +14,7 @@ export const koaRuntime = (controllers: Set<ControllerMetaType>) => {
     router.routes(),
     router.allowedMethods(),
   ]
-
   const app = new Koa()
-
   // install plugins
   installPlugins(app, plugins as Koa.Middleware[])
 

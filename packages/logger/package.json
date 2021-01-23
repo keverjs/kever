@@ -10,7 +10,7 @@
     "access": "puiblic"
   },
   "main": "dist/index.js",
-  "types": "dist/logger.d.ts",
+  "types": "logger.d.ts",
   "scripts": {},
   "repository": {
     "type": "git",

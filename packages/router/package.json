@@ -10,7 +10,7 @@
     "access": "puiblic"
   },
   "main": "dist/index.js",
-  "types": "dist/router.d.ts",
+  "types": "router.d.ts",
   "scripts": {},
   "repository": {
     "type": "git",
