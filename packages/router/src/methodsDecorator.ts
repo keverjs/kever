@@ -1,9 +1,8 @@
 type Methods = 'get' | 'post' | 'put' | 'delete' | 'head' | 'options' | 'patch'
-export interface RouterMetadataType {
+export interface RouterMetadata {
   methods: Methods[]
   path: string
 }
-type HttpDecoratorType = (path: string) => MethodDecorator
 
 export const META_ROUTER = Symbol.for('router#meta_router')
 
@@ -53,9 +52,13 @@ export const All = createHTTPMethodDecorator([
  * @description 路由装饰器生成器
  * @param methods
  */
-function createHTTPMethodDecorator(methods: Methods[]): HttpDecoratorType {
-  return (path): MethodDecorator => (target, propertyKey, descripator) => {
-    const routerMetadata: RouterMetadataType = {
+function createHTTPMethodDecorator(methods: Methods[]) {
+  return (path: string): MethodDecorator => (
+    target,
+    propertyKey,
+    descripator
+  ) => {
+    const routerMetadata: RouterMetadata = {
       methods,
       path,
     }

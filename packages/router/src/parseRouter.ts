@@ -2,7 +2,7 @@ import Router from 'koa-router'
 import { Next, Context } from 'koa'
 import { logger } from '@kever/logger'
 import { getInstanceMethods, resolvePath } from './util'
-import { META_ROUTER, RouterMetadataType } from './methodsDecorator'
+import { META_ROUTER, RouterMetadata } from './methodsDecorator'
 
 export interface ControllerMetaType {
   path: string
@@ -19,7 +19,7 @@ export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
       (methodName) => methodName !== 'constructor'
     )
     for (const methodName of controllerMethods) {
-      const routerMeta: RouterMetadataType = Reflect.getMetadata(
+      const routerMeta: RouterMetadata = Reflect.getMetadata(
         META_ROUTER,
         controller[methodName as keyof object]
       )
