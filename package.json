@@ -12,7 +12,8 @@
     "test": "mocha --require ts-node/register ./packages/**/test/*.spec.ts",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md",
     "preinstall": "node ./scripts/checkYarn.js",
-    "postinstall": "yarn bootstrap"
+    "postinstall": "yarn bootstrap",
+    "release": "lerna publish"
   },
   "repository": "git+https://github.com/hubvue/kever.git",
   "keywords": [
