@@ -227,29 +227,6 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
-"@kever/ioc@^0.1.3":
-  version "0.1.14"
-  resolved "https://registry.npm.taobao.org/@kever/ioc/download/@kever/ioc-0.1.14.tgz#788afc8e573b3050a792f3f5942410258eb5f709"
-  integrity sha1-eIr8jlc7MFCnkvP1lCQQJY619wk=
-  dependencies:
-    "@types/koa" "^2.11.3"
-
-"@kever/logger@^0.1.1", "@kever/logger@^0.1.2":
-  version "0.1.2"
-  resolved "http://artifactory.intra.xiaojukeji.com:80/artifactory/api/npm/npm/@kever/logger/download/@kever/logger-0.1.2.tgz#da111d6164a6415df3069cd8f1f5d2b6cd779064"
-  integrity sha1-2hEdYWSmQV3zBpzY8fXSts13kGQ=
-  dependencies:
-    chalk "^4.0.0"
-
-"@kever/router@^0.1.0":
-  version "0.1.2"
-  resolved "https://registry.npm.taobao.org/@kever/router/download/@kever/router-0.1.2.tgz#5a934f69dfdc6dc048c93a418eeb4194ba964595"
-  integrity sha1-WpNPad/cbcBIyTpBjutBlLqWRZU=
-  dependencies:
-    "@types/koa" "^2.11.3"
-    koa "^2.13.0"
-    koa-router "^9.0.1"
-
 "@lerna/add@3.21.0":
   version "3.21.0"
   resolved "http://artifactory.intra.xiaojukeji.com:80/artifactory/api/npm/npm/@lerna/add/download/@lerna/add-3.21.0.tgz#27007bde71cc7b0a2969ab3c2f0ae41578b4577b"
@@ -6210,10 +6187,10 @@ rimraf@^2.5.2, rimraf@^2.5.4, rimraf@^2.6.2, rimraf@^2.6.3:
   dependencies:
     glob "^7.1.3"
 
-rollup-plugin-typescript2@^0.27.2:
-  version "0.27.2"
-  resolved "http://artifactory.intra.xiaojukeji.com:80/artifactory/api/npm/npm/rollup-plugin-typescript2/download/rollup-plugin-typescript2-0.27.2.tgz#871a7f5d2a774f9cef50d25da868eec72acc2ed8"
-  integrity sha1-hxp/XSp3T5zvUNJdqGjuxyrMLtg=
+rollup-plugin-typescript2@^0.29.0:
+  version "0.29.0"
+  resolved "https://registry.npmjs.org/rollup-plugin-typescript2/-/rollup-plugin-typescript2-0.29.0.tgz#b7ad83f5241dbc5bdf1e98d9c3fca005ffe39e1a"
+  integrity sha512-YytahBSZCIjn/elFugEGQR5qTsVhxhUwGZIsA9TmrSsC88qroGo65O5HZP/TTArH2dm0vUmYWhKchhwi2wL9bw==
   dependencies:
     "@rollup/pluginutils" "^3.1.0"
     find-cache-dir "^3.3.1"
@@ -6221,10 +6198,10 @@ rollup-plugin-typescript2@^0.27.2:
     resolve "1.17.0"
     tslib "2.0.1"
 
-rollup@^2.26.11:
-  version "2.26.11"
-  resolved "http://artifactory.intra.xiaojukeji.com:80/artifactory/api/npm/npm/rollup/download/rollup-2.26.11.tgz#4fc31de9c7b83d50916fc8395f8c3d24730cdaae"
-  integrity sha1-T8Md6ce4PVCRb8g5X4w9JHMM2q4=
+rollup@^2.38.0:
+  version "2.38.0"
+  resolved "https://registry.npmjs.org/rollup/-/rollup-2.38.0.tgz#57942d5a10826cb12ed1f19c261f774efa502d2d"
+  integrity sha512-ay9zDiNitZK/LNE/EM2+v5CZ7drkB2xyDljvb1fQJCGnq43ZWRkhxN145oV8GmoW1YNi4sA/1Jdkr2LfawJoXw==
   optionalDependencies:
     fsevents "~2.1.2"
 
