@@ -9,8 +9,8 @@
   "publicConfig": {
     "access": "puiblic"
   },
-  "main": "lib/index.js",
-  "types": "router.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/router.d.ts",
   "scripts": {},
   "repository": {
     "type": "git",

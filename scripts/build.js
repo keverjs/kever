@@ -69,8 +69,19 @@ const cleanPackagesOldDist = async (packagesName) => {
         recursive: true,
       })
     } catch (err) {
-      console.log(chalk.red(`remove ${packageName} dist dir error!`))
+      console.log(chalk.red(`remove @kever/${packageName} dist dir error!`))
     }
+  }
+}
+
+const cleanPackagesDtsDir = async (packageName) => {
+  const dtsPath = resolve(__dirname, `../packages/${packageName}/dist/src`)
+  try {
+    fs.rmdir(dtsPath, {
+      recursive: true,
+    })
+  } catch (err) {
+    console.log(chalk.red(`remove ${packageName} dist/dts dir error!`))
   }
 }
 
@@ -131,12 +142,17 @@ const buildEntry = async (packageConfig) => {
     const packageBundle = await rollup.rollup(packageConfig.config)
     await packageBundle.write(packageConfig.config.output)
     const extractResult = extractDts(packageConfig.packageName)
+    await cleanPackagesDtsDir(packageConfig.packageName)
     if (!extractResult.succeeded) {
-      chalk.red(`${packageConfig.packageName} d.ts extract fial!`)
+      console.log(
+        chalk.red(`@kever/${packageConfig.packageName} d.ts extract fial!`)
+      )
     }
+    console.log(
+      chalk.green(`@kever/${packageConfig.packageName} build successful! `)
+    )
   } catch (err) {
-    console.log('err', err)
-    chalk.red(`${packageConfig.packageName} build fial!`)
+    console.log(chalk.red(`@kever/${packageConfig.packageName} build fial!`))
   }
 }
 

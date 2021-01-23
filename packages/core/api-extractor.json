@@ -1,7 +1,4 @@
 {
   "extends": "../../api-extractor.json",
-  "mainEntryPointFilePath": "./dist/src/index.d.ts",
-  "dtsRollup": {
-    "publicTrimmedFilePath": "./<unscopedPackageName>.d.ts"
-  }
+  "mainEntryPointFilePath": "./dist/src/index.d.ts"
 }

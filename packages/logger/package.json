@@ -9,8 +9,8 @@
   "publicConfig": {
     "access": "puiblic"
   },
-  "main": "lib/index.js",
-  "types": "logger.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/logger.d.ts",
   "scripts": {},
   "repository": {
     "type": "git",

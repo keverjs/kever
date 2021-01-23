@@ -9,8 +9,8 @@
   "publicConfig": {
     "access": "puiblic"
   },
-  "main": "lib/index.js",
-  "types": "ioc.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/ioc.d.ts",
   "scripts": {},
   "repository": {
     "type": "git",
