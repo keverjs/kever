@@ -2,10 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "rootDir": ".",
-    "outDir": "./lib",
-    "declarationDir": "./dts"
+    "rootDir": "."    
   },
-  "include": ["./src"],
-  "exclude": ["./lib", "./test"]
+  "include": ["src"],
+  "exclude": ["dist", "test"]
 }

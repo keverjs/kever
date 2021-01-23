@@ -5,12 +5,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
 
   "apiReport": {
-    "enabled": true,
-    "reportFolder": "<projectFolder>/temp/"
+    "enabled": false,
   },
 
   "docModel": {
-    "enabled": true
+    "enabled": false
   },
 
   "dtsRollup": {
@@ -24,13 +23,13 @@
   "messages": {
     "compilerMessageReporting": {
       "default": {
-        "logLevel": "warning"
+        "logLevel": "none"
       }
     },
 
     "extractorMessageReporting": {
       "default": {
-        "logLevel": "warning"
+        "logLevel": "none"
       },
 
       "ae-missing-release-tag": {
@@ -40,7 +39,7 @@
 
     "tsdocMessageReporting": {
       "default": {
-        "logLevel": "warning"
+        "logLevel": "none"
       },
 
       "tsdoc-undefined-tag": {

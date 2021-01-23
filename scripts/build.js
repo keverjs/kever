@@ -36,10 +36,10 @@ const getAnswersFromInquirer = async (packagesName) => {
   if (!packages.length) {
     console.log(
       chalk.yellow(`
-      It seems that you did't make a choice.
-
-      Please try it again.
-    `)
+        It seems that you did't make a choice.
+  
+        Please try it again.
+      `)
     )
     return
   }
@@ -96,11 +96,11 @@ const generateBuildConfigs = (packagesName) => {
         plugins: [
           typescript({
             verbosity: -1,
-            tsconfig: resolve(__dirname, '../tsconfig.json'),
+            tsconfig: resolve(
+              __dirname,
+              `../packages/${packageName}/tsconfig.json`
+            ),
             tsconfigOverride: {
-              compilerOptions: {
-                rootDir: resolve(__dirname, `../packages/${packagesName}`),
-              },
               include: [`package/${packageName}/src`],
             },
           }),
@@ -109,15 +109,43 @@ const generateBuildConfigs = (packagesName) => {
     }
   })
 }
-const buildEntry = async (packageConfig) => {
-  const packageBundle = await rollup.rollup(packageConfig.config)
-  await packageBundle.write(packageConfig.config.output)
+
+const extractDts = (packageName) => {
+  const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
+  const extractorConfigPath = resolve(
+    __dirname,
+    `../packages/${packageName}/api-extractor.json`
+  )
+  const extractorConfig = ExtractorConfig.loadFileAndPrepare(
+    extractorConfigPath
+  )
+  const result = Extractor.invoke(extractorConfig, {
+    localBuild: true,
+    showVerboseMessages: true,
+  })
+  return result
 }
+
+const buildEntry = async (packageConfig) => {
+  try {
+    const packageBundle = await rollup.rollup(packageConfig.config)
+    await packageBundle.write(packageConfig.config.output)
+    const extractResult = extractDts(packageConfig.packageName)
+    if (!extractResult.succeeded) {
+      chalk.red(`${packageConfig.packageName} d.ts extract fial!`)
+    }
+  } catch (err) {
+    console.log('err', err)
+    chalk.red(`${packageConfig.packageName} build fial!`)
+  }
+}
+
 const build = async (packagesConfig) => {
   for (let packageConfig of packagesConfig) {
     await buildEntry(packageConfig)
   }
 }
+
 const buildBootstrap = async () => {
   const packagesName = await getPackagesName()
   packagesName.unshift('all')
@@ -127,7 +155,7 @@ const buildBootstrap = async () => {
   }
   cleanPackagesOldDist(answers)
   const packagesConfig = generateBuildConfigs(answers)
-  build(packagesConfig)
+  await build(packagesConfig)
 }
 
 buildBootstrap().catch((err) => {
