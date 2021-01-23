@@ -5,6 +5,7 @@ type Listener<T> = (instance: T) => void
 export class InstancePool<K, T> {
   private pool = new Map<K, T>()
   private listenerPool = new Map<K, Set<Listener<T>>>()
+
   public bind(key: K, instance: T): boolean {
     if (this.pool.has(key)) {
       return false
@@ -22,6 +23,7 @@ export class InstancePool<K, T> {
     }
     return true
   }
+
   public use(key: K): boolean | T {
     const instance = this.pool.get(key)
     if (instance) {
@@ -29,9 +31,11 @@ export class InstancePool<K, T> {
     }
     return false
   }
+
   public getPoll(): Map<K, T> {
     return this.pool
   }
+
   public on(key: K, listener: Listener<T>) {
     let listeners: Set<Listener<T>>
     const pool = this.listenerPool.get(key)
@@ -43,6 +47,7 @@ export class InstancePool<K, T> {
     listeners.add(listener)
     this.listenerPool.set(key, listeners)
   }
+
   public off(key: K, listener: Listener<T>): boolean {
     const listeners = this.listenerPool.get(key)
     if (listeners) {
@@ -51,6 +56,7 @@ export class InstancePool<K, T> {
     }
     return false
   }
+
   public trigger(key: K) {
     const instance = this.pool.get(key)
     const listeners = this.listenerPool.get(key)

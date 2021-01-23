@@ -1,24 +1,31 @@
+import { Context, Next } from 'koa'
 import { InstancePool, Tag } from '../instancePool'
 
 export const enum PluginType {
   global,
-  route,
+  router,
   property,
 }
 
 export interface BasePlugin {
-  ready(...args: any[]): unknown
-  ready(...args: any[]): Promise<unknown>
+  ready(param?: unknown): unknown | Promise<unknown>
+  ready(
+    raw?: AsyncGeneratorFunction | Function,
+    ctx?: Context,
+    next?: Next,
+    param?: unknown
+  ): unknown | Promise<unknown>
+  ready(ctx?: Context, next?: Next): unknown | Promise<unknown>
 }
 
-export const enum AopRoute {
+export const enum Aop {
   before,
   after,
 }
 
-export interface RoutePluginInfoType {
-  [AopRoute.after]: Set<BasePlugin>
-  [AopRoute.before]: Set<BasePlugin>
+export interface RouterInfo {
+  [Aop.after]: Set<BasePlugin>
+  [Aop.before]: Set<BasePlugin>
   raw: AsyncGeneratorFunction | Function
 }
 

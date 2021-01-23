@@ -1,4 +1,4 @@
-export { PluginType, BasePlugin, AopRoute } from './util'
+export { PluginType, BasePlugin, Aop } from './util'
 export { pluginPatch } from './patch'
-export { registerPlugin } from './registerPlugin'
+export { RegisterPlugin } from './registerPlugin'
 export * from './usePlugin'

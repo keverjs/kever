@@ -1,30 +1,23 @@
 import { Tag, InstancePool } from '../instancePool'
-import {
-  pluginPool,
-  PluginType,
-  BasePlugin,
-  AopRoute,
-  RoutePluginInfoType,
-} from './util'
-import { logger } from '@kever/logger'
+import { pluginPool, PluginType, BasePlugin, Aop, RouterInfo } from './util'
 
-type PropertyPluginType = (
-  tag: Tag,
-  payload?: {
-    params?: any
-  }
-) => PropertyDecorator | void
-export const usePropertyPlugin: PropertyPluginType = (tag, { params } = {}) => {
-  const ret = pluginPool.use(tag)
-  if (typeof ret === 'boolean') {
+import { logger } from '@kever/logger'
+import { Context, Next } from 'koa'
+
+export const PropertyPlugin = <T>(tag: Tag, param?: T): PropertyDecorator => {
+  const plugin = pluginPool.use(tag)
+
+  if (typeof plugin === 'boolean') {
     logger.error(`${tag.toString()} type property plugin no exists`)
-    return
+    return () => {}
   }
-  if (ret.type !== PluginType.property) {
+
+  if (plugin.type !== PluginType.property) {
     logger.error(`${tag.toString()} type property plugin no exists`)
-    return
+    return () => {}
   }
-  const result = ret.instance && ret.instance.ready(params)
+
+  const result = plugin.instance && plugin.instance.ready(param)
   return async (target, propertyKey) => {
     Object.defineProperty(target, propertyKey, {
       value: result,
@@ -35,66 +28,72 @@ export const usePropertyPlugin: PropertyPluginType = (tag, { params } = {}) => {
   }
 }
 
-type RoutePluginType = <T>(
+const routerPool = new InstancePool<string, RouterInfo>()
+
+export const RouterPlugin = <T>(
   tag: Tag,
-  type: AopRoute,
-  payload?: {
-    params?: any
-  }
-) => MethodDecorator | void
-const routePool = new InstancePool<string, RoutePluginInfoType>()
-export const useRoutePlugin: RoutePluginType = (tag, type, { params } = {}) => {
-  const pluginRet = pluginPool.use(tag)
-  if (typeof pluginRet === 'boolean') {
+  type: Aop,
+  param?: T
+): MethodDecorator => {
+  const plugin = pluginPool.use(tag)
+
+  if (typeof plugin === 'boolean') {
     logger.error(`${tag.toString()} type property plugin no exists`)
-    return
+    return () => {}
   }
-  if (pluginRet.type !== PluginType.route) {
+
+  if (plugin.type !== PluginType.router) {
     logger.error(`${tag.toString()} type property plugin no exists`)
-    return
+    return () => {}
   }
+
   return (target, propertyKey, description) => {
     const pluginKey = `${tag.toString()}-${propertyKey.toString()}-${
       target.constructor.name
     }`
-    const routeRet = routePool.use(pluginKey)
-    if (typeof routeRet !== 'boolean') {
-      const aopPlugin = routeRet[type]
-      aopPlugin.add(pluginRet.instance)
+    const router = routerPool.use(pluginKey)
+
+    if (typeof router !== 'boolean') {
+      const routerPlugins = router[type]
+      routerPlugins.add(plugin.instance)
     } else {
       const oldRouteHandle = ((description.value as unknown) as Function).bind(
         target
       )
-      const routePluginInfo: RoutePluginInfoType = {
-        [AopRoute.before]: new Set<BasePlugin>(),
-        [AopRoute.after]: new Set<BasePlugin>(),
+      const routerTmp = {
+        [Aop.before]: new Set<BasePlugin>(),
+        [Aop.after]: new Set<BasePlugin>(),
         raw: oldRouteHandle,
       }
-      const aopPlugin = routePluginInfo[type]
-      aopPlugin.add(pluginRet.instance)
-      routePool.bind(pluginKey, routePluginInfo)
+      const routerPlugins = routerTmp[type]
+      routerPlugins.add(plugin.instance)
+
+      routerPool.bind(pluginKey, routerTmp)
     }
+
     ;((description.value as unknown) as Function) = async (
-      ...contextArgs: any[]
+      ctx?: Context,
+      next?: Next
     ) => {
-      const ret = routePool.use(pluginKey)
-      if (typeof ret === 'boolean') {
+      const router = routerPool.use(pluginKey)
+      if (typeof router === 'boolean') {
         return
       }
-      const raw = ret.raw
-      const beforePlugins = ret[AopRoute.before]
-      const afterPlugins = ret[AopRoute.after]
+      const oldRouterHandler = router.raw
+      const beforePlugins = router[Aop.before]
+      const afterPlugins = router[Aop.after]
       for (let plugin of beforePlugins) {
-        await (plugin && plugin.ready(raw, ...contextArgs, params))
+        await (plugin && plugin.ready(oldRouterHandler, ctx, next, param))
       }
-      await (raw && raw(...contextArgs))
+      await (oldRouterHandler && oldRouterHandler(ctx, next))
       for (let plugin of afterPlugins) {
-        await (plugin && plugin.ready(raw, ...contextArgs, params))
+        await (plugin && plugin.ready(oldRouterHandler, ctx, next, param))
       }
     }
     return description
   }
 }
+
 export const getGlobalPlugin = () => {
   const ret = pluginPool.getPoll()
   let globalPlugins: Function[] = []

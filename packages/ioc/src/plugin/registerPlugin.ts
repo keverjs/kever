@@ -3,9 +3,9 @@ import { pluginPool, PluginType } from './util'
 import { pluginPatchPool } from './patch'
 import { logger } from '@kever/logger'
 
-type RegisterPluginType = (tag: Tag, type: PluginType) => ClassDecorator
-
-export const registerPlugin: RegisterPluginType = (tag, type) => (target) => {
+export const RegisterPlugin = (tag: Tag, type: PluginType): ClassDecorator => (
+  target
+) => {
   const constructor = (target as unknown) as InstanceType
   //patch 传参
   const pluginOptions = pluginPatchPool.use(tag)
@@ -16,6 +16,5 @@ export const registerPlugin: RegisterPluginType = (tag, type) => (target) => {
   })
   if (!ret) {
     logger.error(`${tag.toString()} type plugin already exists`)
-    return
   }
 }

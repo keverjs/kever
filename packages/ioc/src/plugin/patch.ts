@@ -1,12 +1,16 @@
-import { Tag, InstancePool, InstanceType } from '../instancePool'
+import { Tag, InstancePool } from '../instancePool'
 
-export const pluginPatchPool = new InstancePool<Tag, any>()
-export const pluginPatch = (tag: Tag, payload: any | Function) => {
-  let options
+type Payload = (() => unknown) | string | number | symbol | any[] | object
+type PayloadExcludeFn = Exclude<Payload, () => unknown>
+
+export const pluginPatchPool = new InstancePool<Tag, PayloadExcludeFn>()
+
+export const pluginPatch = (tag: Tag, payload: Payload) => {
+  let option: PayloadExcludeFn
   if (typeof payload === 'function') {
-    options = payload()
+    option = payload()
   } else {
-    options = payload
+    option = payload
   }
-  pluginPatchPool.bind(tag, options)
+  pluginPatchPool.bind(tag, option)
 }
