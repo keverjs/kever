@@ -21,7 +21,7 @@ export const Injectable = (tag: Tag): ClassDecorator => (target) => {
  * @description 注入类
  * @param tag
  */
-export const Inject = <T>(tag: Tag, param: T): PropertyDecorator => (
+export const Inject = <T>(tag: Tag, param?: T): PropertyDecorator => (
   target,
   propertyKey
 ) => {

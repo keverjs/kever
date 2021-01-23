@@ -8,14 +8,7 @@ export const enum PluginType {
 }
 
 export interface BasePlugin {
-  ready(param?: unknown): unknown | Promise<unknown>
-  ready(
-    raw?: AsyncGeneratorFunction | Function,
-    ctx?: Context,
-    next?: Next,
-    param?: unknown
-  ): unknown | Promise<unknown>
-  ready(ctx?: Context, next?: Next): unknown | Promise<unknown>
+  ready(...args: any[]): any | Promise<any>
 }
 
 export const enum Aop {

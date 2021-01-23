@@ -1,4 +1,5 @@
 src/
+packages/*/src
 dts/
 test/
 docs/
