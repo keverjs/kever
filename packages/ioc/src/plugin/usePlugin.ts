@@ -18,7 +18,7 @@ export const PropertyPlugin = <T>(tag: Tag, param?: T): PropertyDecorator => {
   }
 
   const result = plugin.instance && plugin.instance.ready(param)
-  return async (target, propertyKey) => {
+  return (target, propertyKey) => {
     Object.defineProperty(target, propertyKey, {
       value: result,
       writable: false,
