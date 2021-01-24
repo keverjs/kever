@@ -10,7 +10,7 @@ const instancePool = new InstancePool<Tag, InstanceType>()
 export const Injectable = (tag: Tag): ClassDecorator => (target) => {
   const ret = instancePool.bind(tag, (target as unknown) as InstanceType)
   if (!ret) {
-    logger.error(` ${tag.toString} model existence`)
+    logger.error(` ${tag.toString()} model existence`)
     return
   }
   logger.info(`${target.name} is already registered for injection`)
@@ -38,13 +38,19 @@ export const Inject = <T>(tag: Tag, param?: T): PropertyDecorator => (
     instancePool.on(tag, (injectable) => {
       instancePoolEventHandler(target, propertyKey, injectable, param)
       logger.info(
-        `Inject ${injectable.name} into the ${propertyKey.toString} property of ${target.constructor.name}`
+        `Inject ${
+          injectable.name
+        } into the ${propertyKey.toString()} property of ${
+          target.constructor.name
+        }`
       )
     })
   } else {
     instancePoolEventHandler(target, propertyKey, instance, param)
     logger.info(
-      `Inject ${instance.name} into the ${propertyKey.toString} property of ${target.constructor.name}`
+      `Inject ${instance.name} into the ${propertyKey.toString()} property of ${
+        target.constructor.name
+      }`
     )
   }
 }
