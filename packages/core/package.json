@@ -40,5 +40,6 @@
     "koa": "^2.13.0",
     "koa-body": "^4.2.0",
     "koa-cookie": "^1.0.0"
-  }
+  },
+  "gitHead": "26027ee86b3d5c230cf3ca02941dbb2a204a8b07"
 }

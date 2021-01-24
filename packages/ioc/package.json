@@ -31,5 +31,6 @@
   "dependencies": {
     "@kever/logger": "^0.7.2",
     "@types/koa": "^2.11.3"
-  }
+  },
+  "gitHead": "26027ee86b3d5c230cf3ca02941dbb2a204a8b07"
 }
