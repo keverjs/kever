@@ -30,5 +30,6 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.0.0"
-  }
+  },
+  "gitHead": "b33bdf9db7bd5328ca5107b113eb6f8abfacb280"
 }

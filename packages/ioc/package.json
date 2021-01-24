@@ -32,5 +32,5 @@
     "@kever/logger": "^0.7.7",
     "@types/koa": "^2.11.3"
   },
-  "gitHead": "d013cc9c6d03cc18141d4264cdc87a0935b490ac"
+  "gitHead": "b33bdf9db7bd5328ca5107b113eb6f8abfacb280"
 }
