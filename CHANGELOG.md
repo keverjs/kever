@@ -1,3 +1,7 @@
+# [1.0.0](https://github.com/hubvue/kever/compare/v0.7.7...v1.0.0) (2021-01-25)
+
+
+
 <a name="0.4.5"></a>
 ## 0.4.5 (2020-01-20)
 
