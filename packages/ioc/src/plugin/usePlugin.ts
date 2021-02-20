@@ -1,31 +1,48 @@
 import { Tag, InstancePool } from '../instancePool'
-import { pluginPool, PluginType, BasePlugin, Aop, RouterInfo } from './util'
+import {
+  pluginPool,
+  PluginType,
+  BasePlugin,
+  Aop,
+  RouterInfo,
+  PluginMetaType,
+  PropertyPluginMetaType,
+} from './util'
 
 import { logger } from '@kever/logger'
 import { Context, Next } from 'koa'
 
-export const PropertyPlugin = <T>(tag: Tag, param?: T): PropertyDecorator => {
+export const PropertyPlugin = (tag: Tag): PropertyDecorator => (
+  target,
+  propertyKey
+) => {
   const plugin = pluginPool.use(tag)
-
   if (typeof plugin === 'boolean') {
-    logger.error(`${tag.toString()} type property plugin no exists`)
-    return () => {}
+    pluginPool.on(tag, (plugin) => {
+      propertyPluginPoolEventHandler(tag, target, propertyKey, plugin)
+    })
+  } else {
+    propertyPluginPoolEventHandler(tag, target, propertyKey, plugin)
   }
+}
 
+const propertyPluginPoolEventHandler = (
+  tag: Tag,
+  target: Object,
+  propertyKey: Tag,
+  plugin: PluginMetaType | PropertyPluginMetaType
+) => {
   if (plugin.type !== PluginType.property) {
     logger.error(`${tag.toString()} type property plugin no exists`)
     return () => {}
   }
-
-  const result = plugin.instance && plugin.instance.ready(param)
-  return (target, propertyKey) => {
-    Object.defineProperty(target, propertyKey, {
-      value: result,
-      writable: false,
-      configurable: false,
-      enumerable: true,
-    })
-  }
+  const result = plugin.instance
+  Object.defineProperty(target, propertyKey, {
+    value: result,
+    writable: false,
+    configurable: false,
+    enumerable: true,
+  })
 }
 
 const routerPool = new InstancePool<string, RouterInfo>()
@@ -48,6 +65,14 @@ export const RouterPlugin = <T>(
   }
 
   return (target, propertyKey, description) => {
+    // check instance is Controller
+    const _isExtends = (target as any)._isExtends
+
+    if (!_isExtends) {
+      logger.error(`${target.constructor.name} module is not a controller`)
+      return
+    }
+
     const pluginKey = `${tag.toString()}-${propertyKey.toString()}-${
       target.constructor.name
     }`
@@ -98,8 +123,7 @@ export const getGlobalPlugin = () => {
   const ret = pluginPool.getPoll()
   let globalPlugins: Function[] = []
   for (const pluginMeta of ret.values()) {
-    const pluginType = pluginMeta.type
-    if (pluginType === PluginType.global) {
+    if (pluginMeta.type === PluginType.global) {
       const readyFn: Function =
         pluginMeta.instance &&
         pluginMeta.instance.ready.bind(pluginMeta.instance)

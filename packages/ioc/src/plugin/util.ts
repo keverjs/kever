@@ -23,9 +23,21 @@ export interface RouterInfo {
 }
 
 export interface PluginMetaType {
-  type: PluginType
+  type: PluginType.global | PluginType.router
   instance: BasePlugin
   options?: any
 }
 
-export const pluginPool = new InstancePool<Tag, PluginMetaType>()
+export interface PropertyPluginMetaType {
+  type: PluginType.property
+  instance: unknown
+  options?: any
+}
+
+export const pluginPool = new InstancePool<
+  Tag,
+  PluginMetaType | PropertyPluginMetaType
+>()
+
+export const isPromise = <T>(object: T) =>
+  Object.prototype.toString.call(object).slice(8, -1) === 'Promise'

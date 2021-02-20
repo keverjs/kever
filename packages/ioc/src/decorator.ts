@@ -37,21 +37,9 @@ export const Inject = <T>(tag: Tag, param?: T): PropertyDecorator => (
   if (typeof instance === 'boolean') {
     instancePool.on(tag, (injectable) => {
       instancePoolEventHandler(target, propertyKey, injectable, param)
-      logger.info(
-        `Inject ${
-          injectable.name
-        } into the ${propertyKey.toString()} property of ${
-          target.constructor.name
-        }`
-      )
     })
   } else {
     instancePoolEventHandler(target, propertyKey, instance, param)
-    logger.info(
-      `Inject ${instance.name} into the ${propertyKey.toString()} property of ${
-        target.constructor.name
-      }`
-    )
   }
 }
 
@@ -74,4 +62,9 @@ function instancePoolEventHandler(
     configurable: false,
     enumerable: true,
   })
+  logger.info(
+    `Inject ${injectable.name} into the ${propertyKey.toString()} property of ${
+      target.constructor.name
+    }`
+  )
 }

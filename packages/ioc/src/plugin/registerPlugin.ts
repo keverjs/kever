@@ -1,5 +1,5 @@
 import { Tag, InstanceType } from '../instancePool'
-import { pluginPool, PluginType } from './util'
+import { isPromise, pluginPool, PluginType } from './util'
 import { pluginPatchPool } from './patch'
 import { logger } from '@kever/logger'
 
@@ -10,11 +10,25 @@ export const RegisterPlugin = (tag: Tag, type: PluginType): ClassDecorator => (
   //patch 传参
   const pluginOptions = pluginPatchPool.use(tag)
   const pluginInstance = new constructor(pluginOptions)
-  const ret = pluginPool.bind(tag, {
-    type,
-    instance: pluginInstance,
-  })
-  if (!ret) {
-    logger.error(`${tag.toString()} type plugin already exists`)
+  if (type === PluginType.property) {
+    const readyResult = pluginInstance.ready() as Promise<any> | any
+    if (isPromise(readyResult)) {
+      readyResult.then((instance: unknown) => {
+        pluginPool.bind(tag, {
+          type,
+          instance: instance,
+        })
+      })
+    } else {
+      pluginPool.bind(tag, {
+        type,
+        instance: pluginInstance,
+      })
+    }
+  } else {
+    pluginPool.bind(tag, {
+      type,
+      instance: pluginInstance,
+    })
   }
 }
