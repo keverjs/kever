@@ -1,7 +1,6 @@
 import { Tag, InstanceType } from '../instancePool'
 import { isPromise, pluginPool, PluginType } from './util'
 import { pluginPatchPool } from './patch'
-import { logger } from '@kever/logger'
 
 export const RegisterPlugin = (tag: Tag, type: PluginType): ClassDecorator => (
   target
