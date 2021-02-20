@@ -21,7 +21,7 @@ export const RegisterPlugin = (tag: Tag, type: PluginType): ClassDecorator => (
     } else {
       pluginPool.bind(tag, {
         type,
-        instance: pluginInstance,
+        instance: readyResult,
       })
     }
   } else {
