@@ -1,15 +1,15 @@
-import Koa from 'koa'
-import koaBody from 'koa-body'
-import koaCookie from 'koa-cookie'
+import Koa, { Middleware } from 'koa'
 import { parseRouter, ControllerMetaType } from '@kever/router'
 import { getGlobalPlugin } from '@kever/ioc'
 
-export const koaRuntime = (controllers: Set<ControllerMetaType>) => {
+export const koaRuntime = (
+  controllers: Set<ControllerMetaType>,
+  koaPlugin: Middleware[]
+) => {
   const router = parseRouter([...controllers])
   const globalPlugins = getGlobalPlugin()
   const plugins = [
-    koaBody(),
-    koaCookie(),
+    ...koaPlugin,
     ...globalPlugins,
     router.routes(),
     router.allowedMethods(),

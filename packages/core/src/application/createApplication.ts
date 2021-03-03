@@ -1,4 +1,5 @@
 import * as Koa from 'koa'
+import { Middleware } from 'koa'
 import { controllerPoll } from './controllerDecorator'
 import { koaRuntime } from '../koaRuntime'
 import { ControllerMetaType } from '@kever/router'
@@ -8,7 +9,7 @@ import { loadModules } from '../loadModules'
 interface AppOption {
   hostname?: string
   port?: number
-  plugins?: string[]
+  plugins?: string | Middleware[]
   env?: string
   tsconfig?: string
 }
@@ -27,14 +28,19 @@ type Callback = (app: Koa) => void
 export const createApp = async (options: AppOption, callback?: Callback) => {
   try {
     const processOptions = _handleOptions(options)
-
+    let koaPlugin: Middleware[] = []
+    let keverPlguin: string[] = []
+    for (let i = 0; i < processOptions.plugins.length; i++) {
+      const plugin = processOptions.plugins[i]
+      if (typeof plugin === 'string') {
+        keverPlguin.push(plugin)
+      } else {
+        koaPlugin.push(plugin)
+      }
+    }
     // loadModules
     logger.info('✅...load file...')
-    await loadModules(
-      processOptions.plugins,
-      processOptions.env,
-      processOptions.tsconfig
-    )
+    await loadModules(keverPlguin, processOptions.env, processOptions.tsconfig)
     logger.info('✅...load file done...')
 
     const constrollers = new Set<ControllerMetaType>()
@@ -44,7 +50,7 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
       constrollers.add({ path, controller })
     }
 
-    const app = koaRuntime(constrollers)
+    const app = koaRuntime(constrollers, koaPlugin)
 
     app.on('error', (error) => {
       logger.error(error)
