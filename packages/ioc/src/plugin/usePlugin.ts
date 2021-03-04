@@ -108,11 +108,19 @@ export const RouterPlugin = <T>(
       const beforePlugins = router[Aop.before]
       const afterPlugins = router[Aop.after]
       for (let plugin of beforePlugins) {
-        await (plugin && plugin.ready(oldRouterHandler, ctx, next, param))
+        const beforePluginResult = await (plugin &&
+          plugin.ready(oldRouterHandler, ctx, next, param))
+        if (!beforePluginResult) {
+          return
+        }
       }
       await (oldRouterHandler && oldRouterHandler(ctx, next))
       for (let plugin of afterPlugins) {
-        await (plugin && plugin.ready(oldRouterHandler, ctx, next, param))
+        const afterPluginResult = await (plugin &&
+          plugin.ready(oldRouterHandler, ctx, next, param))
+        if (!afterPluginResult) {
+          return
+        }
       }
     }
     return description
