@@ -9,7 +9,7 @@ import { loadModules } from '../loadModules'
 interface AppOption {
   hostname?: string
   port?: number
-  plugins?: string | Middleware[]
+  plugins?: (string | Middleware)[]
   env?: string
   tsconfig?: string
 }
