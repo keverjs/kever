@@ -1,6 +1,6 @@
 {
   "name": "@kever/ioc",
-  "version": "0.7.14",
+  "version": "0.8.0",
   "description": "kever ioc",
   "author": {
     "name": "kim",
@@ -29,7 +29,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "@kever/logger": "^0.7.10",
+    "@kever/logger": "^0.8.0",
     "@types/koa": "^2.11.3"
   },
   "gitHead": "2c4f9d851e0261c232b071e0b81c861025bb5a2a"
