@@ -1,10 +1,10 @@
 import * as Koa from 'koa'
 import { Middleware } from 'koa'
-import { controllerPoll } from './controllerDecorator'
-import { koaRuntime } from '../koaRuntime'
+import { controllerPoll } from './controller'
+import { koaRuntime } from './koaRuntime'
 import { ControllerMetaType } from '@kever/router'
 import { logger } from '@kever/logger'
-import { loadModules } from '../loadModules'
+import { loadModules } from './loadModules'
 
 interface AppOption {
   hostname?: string

@@ -9,7 +9,6 @@ export const getFilesPath = async (loadFileDir: string) => {
   try {
     async function findFile(path: string) {
       if (!fs.existsSync(path)) {
-        logger.error(`${path}is not a file or directory`)
         return
       }
       let files = await readDirPromise(path)

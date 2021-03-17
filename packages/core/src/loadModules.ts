@@ -22,19 +22,34 @@ export const loadModules = async (
       const outDir = tsconfig.compilerOptions.outDir
       moduleRootPath = `${baseDir}/${outDir}/app`
     }
+    // controller
     const controllerModuleRootPath = `${moduleRootPath}/controllers`
+    // service
     const serviceModuleRootPath = `${moduleRootPath}/services`
+    // model
+    const modelModuleRootPath = `${moduleRootPath}/models`
+    // plugin
     const pluginModuleRootPath = `${moduleRootPath}/plugins`
-    const [controllersPath, servicesPath, pluginsPath] = await Promise.all([
+    const [
+      controllersPath,
+      servicesPath,
+      pluginsPath,
+      modelsPath,
+    ] = await Promise.all([
       getFilesPath(controllerModuleRootPath),
       getFilesPath(serviceModuleRootPath),
       getFilesPath(pluginModuleRootPath),
+      getFilesPath(modelModuleRootPath),
     ])
+
     const allPluginPath = plugins.concat([...pluginsPath])
     const loadAllPluginPath = allPluginPath.map((path) => loadFile(path))
-    const loadModulePath = [...controllersPath, ...servicesPath].map((path) =>
-      loadFile(path)
-    )
+    const loadModulePath = [
+      ...modelsPath,
+      ...controllersPath,
+      ...servicesPath,
+    ].map((path) => loadFile(path))
+
     await Promise.all(loadAllPluginPath)
     await Promise.all(loadModulePath)
   } catch (err) {

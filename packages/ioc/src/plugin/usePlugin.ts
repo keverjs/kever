@@ -12,7 +12,7 @@ import {
 import { logger } from '@kever/logger'
 import { Context, Next } from 'koa'
 
-export const PropertyPlugin = (tag: Tag): PropertyDecorator => (
+const propertyPlugin = (tag: Tag): PropertyDecorator => (
   target,
   propertyKey
 ) => {
@@ -47,11 +47,7 @@ const propertyPluginPoolEventHandler = (
 
 const routerPool = new InstancePool<string, RouterInfo>()
 
-export const RouterPlugin = <T>(
-  tag: Tag,
-  type: Aop,
-  param?: T
-): MethodDecorator => {
+const routerPlugin = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => {
   const plugin = pluginPool.use(tag)
 
   if (typeof plugin === 'boolean') {
@@ -139,4 +135,33 @@ export const getGlobalPlugin = () => {
     }
   }
   return globalPlugins
+}
+
+interface RouterPluginParams<T> {
+  tag: Tag
+  aop: Aop
+  params?: T
+}
+
+type PluginParam<T extends PluginType, U> = T extends PluginType.router
+  ? RouterPluginParams<U>
+  : Tag
+
+type PluginReturn<T extends PluginType> = T extends PluginType.router
+  ? MethodDecorator
+  : PropertyDecorator
+
+export function UsePlugin<T, P extends PluginType>(
+  type: P,
+  param: PluginParam<P, T>
+): PluginReturn<P> {
+  if (type === PluginType.property) {
+    return propertyPlugin(param as Tag) as PluginReturn<P>
+  }
+  const routerParam = param as RouterPluginParams<T>
+  return routerPlugin<T>(
+    routerParam.tag,
+    routerParam.aop,
+    routerParam.params
+  ) as PluginReturn<P>
 }

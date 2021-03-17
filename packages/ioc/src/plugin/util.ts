@@ -1,4 +1,3 @@
-import { Context, Next } from 'koa'
 import { InstancePool, Tag } from '../instancePool'
 
 export const enum PluginType {

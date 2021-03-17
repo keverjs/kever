@@ -2,7 +2,7 @@ import { Tag, InstanceType } from '../instancePool'
 import { isPromise, pluginPool, PluginType } from './util'
 import { pluginPatchPool } from './patch'
 
-export const RegisterPlugin = (tag: Tag, type: PluginType): ClassDecorator => (
+export const Plugin = (tag: Tag, type: PluginType): ClassDecorator => (
   target
 ) => {
   const constructor = (target as unknown) as InstanceType
