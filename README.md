@@ -6,7 +6,7 @@
 ![](https://img.shields.io/npm/l/kever)
 ![](https://img.shields.io/npm/dm/kever)
 
-⚙A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime.
+⚙A lightweight inversion of control nodejs framework based on TypeScript.
 
 **Support:**
 
