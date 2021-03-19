@@ -14,7 +14,7 @@
 - IOC ✅
 - HTTP Server ✅
 - HTTP Decorator Router ✅
-- Plugin(Global、Router、Property) ✅
+- Plugin（Global、Router、Property）✅
 
 # Quick Start
 
