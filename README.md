@@ -1,8 +1,8 @@
 # kever
 
 [![](https://img.shields.io/travis/keverjs/kever/master)](https://travis-ci.org/keverjs/kever)
-![](https://img.shields.io/npm/v/kever)
-![](https://img.shields.io/github/languages/code-size/@kever/core)
+![](https://img.shields.io/npm/v/@kever/core)
+![](https://img.shields.io/github/languages/code-size/keverjs/kever)
 ![](https://img.shields.io/npm/l/kever)
 ![](https://img.shields.io/npm/dm/kever)
 
