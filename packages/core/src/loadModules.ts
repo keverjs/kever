@@ -23,13 +23,13 @@ export const loadModules = async (
       moduleRootPath = `${baseDir}/${outDir}/app`
     }
     // controller
-    const controllerModuleRootPath = `${moduleRootPath}/controllers`
+    const controllerModuleRootPath = `${moduleRootPath}/controller`
     // service
-    const serviceModuleRootPath = `${moduleRootPath}/services`
+    const serviceModuleRootPath = `${moduleRootPath}/service`
     // model
-    const modelModuleRootPath = `${moduleRootPath}/models`
+    const modelModuleRootPath = `${moduleRootPath}/model`
     // plugin
-    const pluginModuleRootPath = `${moduleRootPath}/plugins`
+    const pluginModuleRootPath = `${moduleRootPath}/plugin`
     const [
       controllersPath,
       servicesPath,
