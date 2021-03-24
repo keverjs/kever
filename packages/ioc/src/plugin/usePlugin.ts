@@ -61,14 +61,6 @@ const routerPlugin = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => {
   }
 
   return (target, propertyKey, description) => {
-    // check instance is Controller
-    const _isExtends = (target as any)._isExtends
-
-    if (!_isExtends) {
-      logger.error(`${target.constructor.name} module is not a controller`)
-      return
-    }
-
     const pluginKey = `${tag.toString()}-${propertyKey.toString()}-${
       target.constructor.name
     }`

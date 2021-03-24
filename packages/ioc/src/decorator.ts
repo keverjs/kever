@@ -25,14 +25,6 @@ export const Inject = <T>(tag: Tag, param?: T): PropertyDecorator => (
   target,
   propertyKey
 ) => {
-  // check instance is Controller
-  const _isExtends = (target as any)._isExtends
-
-  if (!_isExtends) {
-    logger.error(`${target.constructor.name} module is not a controller`)
-    return
-  }
-
   const instance = instancePool.use(tag)
   if (typeof instance === 'boolean') {
     instancePool.on(tag, (injectable) => {
