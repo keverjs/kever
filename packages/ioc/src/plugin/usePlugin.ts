@@ -67,20 +67,29 @@ const routerPlugin = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => {
     const router = routerPool.use(pluginKey)
 
     if (typeof router !== 'boolean') {
-      const routerPlugins = router[type]
-      routerPlugins.add(plugin.instance)
+      if (type === Aop.Before || type === Aop.After) {
+        router[type].add(plugin.instance)
+      }
+      if (type === Aop.Duplex) {
+        router[Aop.Before].add(plugin.instance)
+        router[Aop.After].add(plugin.instance)
+      }
     } else {
       const oldRouteHandle = ((description.value as unknown) as Function).bind(
         target
       )
       const routerTmp = {
-        [Aop.before]: new Set<BasePlugin>(),
-        [Aop.after]: new Set<BasePlugin>(),
+        [Aop.Before]: new Set<BasePlugin>(),
+        [Aop.After]: new Set<BasePlugin>(),
         raw: oldRouteHandle,
       }
-      const routerPlugins = routerTmp[type]
-      routerPlugins.add(plugin.instance)
-
+      if (type === Aop.Before || type === Aop.After) {
+        routerTmp[type].add(plugin.instance)
+      }
+      if (type === Aop.Duplex) {
+        routerTmp[Aop.Before].add(plugin.instance)
+        routerTmp[Aop.After].add(plugin.instance)
+      }
       routerPool.bind(pluginKey, routerTmp)
     }
 
@@ -93,8 +102,8 @@ const routerPlugin = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => {
         return
       }
       const oldRouterHandler = router.raw
-      const beforePlugins = router[Aop.before]
-      const afterPlugins = router[Aop.after]
+      const beforePlugins = router[Aop.Before]
+      const afterPlugins = router[Aop.After]
       for (let plugin of beforePlugins) {
         const beforePluginResult = await (plugin &&
           plugin.ready(oldRouterHandler, ctx, next, param))

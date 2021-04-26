@@ -11,13 +11,14 @@ export interface BasePlugin {
 }
 
 export const enum Aop {
-  before,
-  after,
+  Before,
+  After,
+  Duplex,
 }
 
 export interface RouterInfo {
-  [Aop.after]: Set<BasePlugin>
-  [Aop.before]: Set<BasePlugin>
+  [Aop.After]: Set<BasePlugin>
+  [Aop.Before]: Set<BasePlugin>
   raw: AsyncGeneratorFunction | Function
 }
 
