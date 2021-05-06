@@ -44,13 +44,13 @@ export const loadModules = async (
 
     const allPluginPath = plugins.concat([...pluginsPath])
     const loadAllPluginPath = allPluginPath.map((path) => loadFile(path))
-    const loadModulePath = [
-      ...modelsPath,
-      ...controllersPath,
-      ...servicesPath,
-    ].map((path) => loadFile(path))
+    const loadModelPath = Array.from(modelsPath).map((path) => loadFile(path))
+    const loadModulePath = [...controllersPath, ...servicesPath].map((path) =>
+      loadFile(path)
+    )
 
     await Promise.all(loadAllPluginPath)
+    await Promise.all(loadModelPath)
     await Promise.all(loadModulePath)
   } catch (err) {
     logger.error(err)
