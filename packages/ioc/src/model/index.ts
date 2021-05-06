@@ -16,6 +16,7 @@ type GSAccessor<T extends object> = Getter<T> & Setter<T>
 interface ModelInstanceMethods<T extends object> {
   init<V extends T>(value: Partial<V> | string): void
   toJson(): string
+  unproxy(): T
 }
 
 type ModelInstance<T extends object> = GSAccessor<T> & ModelInstanceMethods<T>
@@ -38,7 +39,7 @@ Model.use = <T extends object>(tag: Tag): ModelInstance<T> => {
   const proxy = new Proxy(instance, {
     get(target, property: string, receiver) {
       let prefix: string, key: string
-      if (property === 'init' || property === 'toJson') {
+      if (property === 'init' || property === 'toJson' || property === 'unproxy') {
         prefix = property
       } else {
         prefix = property.slice(0, 3)
@@ -56,6 +57,9 @@ Model.use = <T extends object>(tag: Tag): ModelInstance<T> => {
         }
         if (prefix === 'toJson') {
           return JSON.stringify(target)
+        }
+        if (prefix === 'unproxy') {
+          return target
         }
         if (prefix === 'init') {
           let object = value as Record<string, unknown>
