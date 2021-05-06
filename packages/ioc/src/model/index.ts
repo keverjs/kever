@@ -14,7 +14,7 @@ type Setter<T extends object> = {
 type GSAccessor<T extends object> = Getter<T> & Setter<T>
 
 interface ModelInstanceMethods<T extends object> {
-  init<V extends Partial<T>>(value: V | string): void
+  init<V extends T>(value: Partial<V> | string): void
   toJson(): string
 }
 
