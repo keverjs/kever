@@ -16,7 +16,7 @@ type GSAccessor<T extends object> = Getter<T> & Setter<T>
 interface ModelInstanceMethods<T extends object> {
   init<V extends T>(value: Partial<V> | string): void
   toJson(): string
-  unproxy(): T
+  unproxy(): T & {__proxy__: ModelInstance<T>}
 }
 
 type ModelInstance<T extends object> = GSAccessor<T> & ModelInstanceMethods<T>
@@ -73,5 +73,6 @@ Model.use = <T extends object>(tag: Tag): ModelInstance<T> => {
       }
     },
   })
+  instance.__proxy__ = proxy
   return proxy
 }
