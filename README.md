@@ -7,6 +7,4 @@
 ![](https://img.shields.io/npm/dm/@kever/core)
 
 A lightweight inversion of control nodejs framework based on TypeScript.
-<div align=center>
-  ![logo](./public/logo.png)
-</div>
+<img src="./public/logo.png" align=right />
