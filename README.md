@@ -8,7 +8,7 @@
 
 A lightweight inversion of control nodejs framework based on TypeScript.
 
-<div style="align: center">
+<div align=center>
   <img src="./public/logo.png"/>
 </div>
 
