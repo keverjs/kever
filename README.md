@@ -6,6 +6,6 @@
 ![](https://img.shields.io/npm/l/keverjs)
 ![](https://img.shields.io/npm/dm/@kever/core)
 
-⚙A lightweight inversion of control nodejs framework based on TypeScript.
+A lightweight inversion of control nodejs framework based on TypeScript.
 
 ![logo](./public/logo.png)
