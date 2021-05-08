@@ -1,4 +1,4 @@
-import { Tag, InstancePool } from '../instancePool'
+import { Tag, InstancePool, InstanceType } from '../instancePool'
 import {
   pluginPool,
   PluginType,
@@ -7,10 +7,12 @@ import {
   RouterInfo,
   PluginMetaType,
   PropertyPluginMetaType,
+  isPromise,
 } from './util'
 
 import { logger } from '@kever/logger'
 import { Context, Next } from 'koa'
+import { pluginPatchPool } from './patch'
 
 const propertyPlugin = (tag: Tag): PropertyDecorator => (
   target,
@@ -32,7 +34,7 @@ const propertyPluginPoolEventHandler = (
   propertyKey: Tag,
   plugin: PluginMetaType | PropertyPluginMetaType
 ) => {
-  if (plugin.type !== PluginType.property) {
+  if (plugin.type !== PluginType.Property) {
     logger.error(`${tag.toString()} type property plugin no exists`)
     return () => {}
   }
@@ -55,7 +57,7 @@ const routerPlugin = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => {
     return () => {}
   }
 
-  if (plugin.type !== PluginType.router) {
+  if (plugin.type !== PluginType.Router) {
     logger.error(`${tag.toString()} type property plugin no exists`)
     return () => {}
   }
@@ -128,7 +130,7 @@ export const getGlobalPlugin = () => {
   const ret = pluginPool.getPoll()
   let globalPlugins: Function[] = []
   for (const pluginMeta of ret.values()) {
-    if (pluginMeta.type === PluginType.global) {
+    if (pluginMeta.type === PluginType.Global) {
       const readyFn: Function =
         pluginMeta.instance &&
         pluginMeta.instance.ready.bind(pluginMeta.instance)
@@ -138,25 +140,55 @@ export const getGlobalPlugin = () => {
   return globalPlugins
 }
 
+export const Plugin = (tag: Tag, type: PluginType): ClassDecorator => (
+  target
+) => {
+  const constructor = (target as unknown) as InstanceType
+  //patch 传参
+  const pluginOptions = pluginPatchPool.use(tag)
+  const pluginInstance = new constructor(pluginOptions)
+  if (type === PluginType.Property) {
+    const readyResult = pluginInstance.ready() as Promise<any> | any
+    if (isPromise(readyResult)) {
+      readyResult.then((instance: unknown) => {
+        pluginPool.bind(tag, {
+          type,
+          instance: instance,
+        })
+      })
+    } else {
+      pluginPool.bind(tag, {
+        type,
+        instance: readyResult,
+      })
+    }
+  } else {
+    pluginPool.bind(tag, {
+      type,
+      instance: pluginInstance,
+    })
+  }
+}
+
 interface RouterPluginParams<T> {
   tag: Tag
   aop: Aop
   params?: T
 }
 
-type PluginParam<T extends PluginType, U> = T extends PluginType.router
+type PluginParam<T extends PluginType, U> = T extends PluginType.Router
   ? RouterPluginParams<U>
   : Tag
 
-type PluginReturn<T extends PluginType> = T extends PluginType.router
+type PluginReturn<T extends PluginType> = T extends PluginType.Router
   ? MethodDecorator
   : PropertyDecorator
 
-export function UsePlugin<T, P extends PluginType>(
+Plugin.use = <T, P extends PluginType>(
   type: P,
   param: PluginParam<P, T>
-): PluginReturn<P> {
-  if (type === PluginType.property) {
+): PluginReturn<P> => {
+  if (type === PluginType.Property) {
     return propertyPlugin(param as Tag) as PluginReturn<P>
   }
   const routerParam = param as RouterPluginParams<T>

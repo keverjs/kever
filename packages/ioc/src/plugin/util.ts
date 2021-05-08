@@ -1,9 +1,9 @@
 import { InstancePool, Tag } from '../instancePool'
 
 export const enum PluginType {
-  global,
-  router,
-  property,
+  Global,
+  Router,
+  Property,
 }
 
 export interface BasePlugin {
@@ -23,13 +23,13 @@ export interface RouterInfo {
 }
 
 export interface PluginMetaType {
-  type: PluginType.global | PluginType.router
+  type: PluginType.Global | PluginType.Router
   instance: BasePlugin
   options?: any
 }
 
 export interface PropertyPluginMetaType {
-  type: PluginType.property
+  type: PluginType.Property
   instance: unknown
   options?: any
 }
