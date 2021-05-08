@@ -7,20 +7,4 @@
 ![](https://img.shields.io/npm/dm/@kever/core)
 
 ⚙A lightweight inversion of control nodejs framework based on TypeScript.
-
-**Support:**
-
-- Typescript ✅
-- IOC ✅
-- HTTP Server ✅
-- HTTP Decorator Router ✅
-- Plugin（Global、Router、Property）✅
-
-# Quick Start
-
-## Install
-
-> npm install @kever/core @kever/ioc @kever/router @kever/logger reflect-metadata --save
-
-> npm install typescript ts-node-dev --save-dev
-
+![logo](./public/logo.png)
