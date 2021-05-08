@@ -8,5 +8,5 @@
 
 A lightweight inversion of control nodejs framework based on TypeScript.
 <div align=center>
-  [logo](./public/logo.png)
+  ![logo](./public/logo.png)
 </div>
