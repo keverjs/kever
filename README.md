@@ -9,4 +9,4 @@
 A lightweight inversion of control nodejs framework based on TypeScript.
 
 
-<img src="./public/logo.png" align=center />
+<img src="./public/logo.png" div align=center />
