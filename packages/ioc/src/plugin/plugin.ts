@@ -144,7 +144,7 @@ export const Plugin = (tag: Tag, type: PluginType): ClassDecorator => (
   target
 ) => {
   const constructor = (target as unknown) as InstanceType
-  //patch 传参
+  //patch
   const pluginOptions = pluginPatchPool.use(tag)
   const pluginInstance = new constructor(pluginOptions)
   if (type === PluginType.Property) {
