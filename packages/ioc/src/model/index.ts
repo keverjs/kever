@@ -1,5 +1,6 @@
 import { logger } from '@kever/logger'
 import { InstancePool, InstanceType, Tag } from '../instancePool'
+import { PREFIX_HANDLERS } from './handlers'
 
 type Getter<T extends object> = {
   // eslint-disable-next-line prettier/prettier
@@ -38,39 +39,16 @@ Model.use = <T extends object>(tag: Tag): ModelInstance<T> => {
   const instance = new (modelConstructor as InstanceType)()
   const proxy = new Proxy(instance, {
     get(target, property: string, receiver) {
-      let prefix: string, key: string
-      if (property === 'init' || property === 'toJSON' || property === 'unproxy') {
-        prefix = property
+      let prefix: keyof typeof PREFIX_HANDLERS, key: string
+      if (Object.keys(PREFIX_HANDLERS).includes(property)) {
+        prefix = property as keyof typeof PREFIX_HANDLERS
       } else {
-        prefix = property.slice(0, 3)
+        prefix = property.slice(0, 3) as keyof typeof PREFIX_HANDLERS
         key = property
           .slice(3)
           .replace(/([A-Z])/, (match) => match.toLowerCase())
       } 
-
-      return (value: unknown) => {
-        if (prefix === 'get') {
-          return Reflect.get(target, key, receiver)
-        }
-        if (prefix === 'set') {
-          Reflect.set(target, key, value, receiver)
-        }
-        if (prefix === 'toJson') {
-          return JSON.stringify(target)
-        }
-        if (prefix === 'unproxy') {
-          return target
-        }
-        if (prefix === 'init') {
-          let object = value as Record<string, unknown>
-          if (typeof value === 'string') {
-            object = JSON.parse(value)
-          }
-          Object.keys(object).forEach(key => {
-            Reflect.set(target, key, object[key], receiver)
-          })
-        }
-      }
+      return (value: unknown) => PREFIX_HANDLERS[prefix](target, key, value, receiver)
     },
   })
   instance.__proxy__ = proxy
