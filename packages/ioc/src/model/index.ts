@@ -43,12 +43,23 @@ Model.use = <T extends object>(tag: Tag): ModelInstance<T> => {
       if (Object.keys(PREFIX_HANDLERS).includes(property)) {
         prefix = property as keyof typeof PREFIX_HANDLERS
       } else {
-        prefix = property.slice(0, 3) as keyof typeof PREFIX_HANDLERS
-        key = property
+        const prefixTmp = property.slice(0, 3) as keyof typeof PREFIX_HANDLERS
+        if (prefixTmp === 'set' || prefixTmp === 'get') {
+          prefix = prefixTmp
+          key = property
           .slice(3)
           .replace(/([A-Z])/, (match) => match.toLowerCase())
-      } 
-      return (value: unknown) => PREFIX_HANDLERS[prefix](target, key, value, receiver)
+        }
+      }
+
+      return (value: unknown) => {
+        if (target[prefix] && typeof target[prefix] === 'function') {
+          return target[prefix](value)
+        }
+        if (PREFIX_HANDLERS[prefix] && typeof PREFIX_HANDLERS[prefix] === 'function') {
+          return PREFIX_HANDLERS[prefix](target, key, value, receiver)
+        }
+      }
     },
   })
   instance.__proxy__ = proxy
