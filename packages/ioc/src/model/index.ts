@@ -16,7 +16,7 @@ type GSAccessor<T extends object> = Getter<T> & Setter<T>
 
 interface ModelInstanceMethods<T extends object> {
   init<V extends T>(value: Partial<V> | JSON): void
-  toJSON(): JSON
+  toJson(): JSON
   unproxy(): T & {__proxy__: ModelInstance<T>}
 }
 

@@ -44,7 +44,7 @@ const initHandler = (
 export const PREFIX_HANDLERS = {
   get: getHandler,
   set: setHandler,
-  toJSON: toJSONHandler,
+  toJson: toJSONHandler,
   unproxy: unproxyHandler,
   init: initHandler,
 }
