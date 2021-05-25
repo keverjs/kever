@@ -17,7 +17,7 @@ const toJSONHandler = (
   key: string,
   value: unknown,
   receiver: object
-) => JSON.stringify(target)
+) => JSON.stringify(target) // toJSON -> toJson: fix: Maximum call stack size exceeded
 
 const unproxyHandler = (
   target: object,
