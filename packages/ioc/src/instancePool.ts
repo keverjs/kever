@@ -32,7 +32,7 @@ export class InstancePool<K, T> {
     return false
   }
 
-  public getPoll(): Map<K, T> {
+  public getPool(): Map<K, T> {
     return this.pool
   }
 

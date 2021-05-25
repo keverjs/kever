@@ -5,6 +5,7 @@ import { koaRuntime } from './koaRuntime'
 import { ControllerMetaType } from '@kever/router'
 import { logger } from '@kever/logger'
 import { loadModules } from './loadModules'
+import { initEvent } from './handler'
 
 interface AppOption {
   hostname?: string
@@ -52,9 +53,7 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
 
     const app = koaRuntime(constrollers, koaPlugin)
 
-    app.on('error', (error) => {
-      logger.error(error)
-    })
+    initEvent(app)
 
     app.listen(processOptions.port, processOptions.hostname, () => {
       logger.info(

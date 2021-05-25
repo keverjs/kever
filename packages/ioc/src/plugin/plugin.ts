@@ -38,7 +38,7 @@ const propertyPluginPoolEventHandler = (
     logger.error(`${tag.toString()} type property plugin no exists`)
     return () => {}
   }
-  const result = plugin.instance
+  const result = plugin.payload
   Object.defineProperty(target, propertyKey, {
     value: result,
     writable: false,
@@ -127,9 +127,9 @@ const routerPlugin = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => {
 }
 
 export const getGlobalPlugin = () => {
-  const ret = pluginPool.getPoll()
+  const pool = pluginPool.getPool()
   let globalPlugins: Function[] = []
-  for (const pluginMeta of ret.values()) {
+  for (const pluginMeta of pool.values()) {
     if (pluginMeta.type === PluginType.Global) {
       const readyFn: Function =
         pluginMeta.instance &&
@@ -138,6 +138,15 @@ export const getGlobalPlugin = () => {
     }
   }
   return globalPlugins
+}
+
+export const getAllPlugin = () => {
+  const pool = pluginPool.getPool()
+  let instancePool = new Set<BasePlugin>()
+  for (const pluginMeta of pool.values()) {
+    instancePool.add(pluginMeta.instance)
+  }
+  return instancePool
 }
 
 export const Plugin = (tag: Tag, type: PluginType): ClassDecorator => (
@@ -150,16 +159,18 @@ export const Plugin = (tag: Tag, type: PluginType): ClassDecorator => (
   if (type === PluginType.Property) {
     const readyResult = pluginInstance.ready() as Promise<any> | any
     if (isPromise(readyResult)) {
-      readyResult.then((instance: unknown) => {
+      readyResult.then((payload: unknown) => {
         pluginPool.bind(tag, {
           type,
-          instance: instance,
+          instance: pluginInstance,
+          payload,
         })
       })
     } else {
       pluginPool.bind(tag, {
         type,
-        instance: readyResult,
+        instance: pluginInstance,
+        payload: readyResult,
       })
     }
   } else {

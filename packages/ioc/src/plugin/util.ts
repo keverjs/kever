@@ -8,6 +8,7 @@ export const enum PluginType {
 
 export interface BasePlugin {
   ready(...args: any[]): any | Promise<any>
+  destory?: () => void
 }
 
 export const enum Aop {
@@ -30,7 +31,8 @@ export interface PluginMetaType {
 
 export interface PropertyPluginMetaType {
   type: PluginType.Property
-  instance: unknown
+  instance: BasePlugin
+  payload: unknown
   options?: any
 }
 
