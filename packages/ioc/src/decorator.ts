@@ -1,5 +1,6 @@
 import { logger } from '@kever/logger'
 import { InstancePool, Tag, InstanceType } from './instancePool'
+import { iocPool } from './'
 
 const instancePool = new InstancePool<Tag, InstanceType>()
 
@@ -48,6 +49,11 @@ function instancePoolEventHandler(
     parameter = [params]
   }
   const instanceModel = new injectable(...parameter)
+  iocPool.add({
+    target,
+    propertyKey,
+    payload: instanceModel,
+  })
   Object.defineProperty(target, propertyKey, {
     value: instanceModel,
     writable: false,

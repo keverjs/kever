@@ -13,7 +13,7 @@ import {
 import { logger } from '@kever/logger'
 import { Context, Next } from 'koa'
 import { pluginPatchPool } from './patch'
-import { iocPlugins } from './index'
+import { iocPool } from '../'
 
 const propertyPlugin = (tag: Tag): PropertyDecorator => (
   target,
@@ -39,11 +39,10 @@ const propertyPluginPoolEventHandler = (
     logger.error(`${tag.toString()} type property plugin no exists`)
     return () => {}
   }
-  iocPlugins.add({
-    type: PluginType.Property,
+  iocPool.add({
     target,
     propertyKey,
-    plugin: plugin.payload,
+    payload: plugin.payload,
   })
 }
 
@@ -118,11 +117,10 @@ const routerPlugin = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => {
         }
       }
     }
-    iocPlugins.add({
-      type: PluginType.Router,
+    iocPool.add({
       target,
       propertyKey,
-      plugin: payload,
+      payload,
     })
     return description
   }

@@ -1,33 +1,17 @@
-import { iocPlugins, IocPlugin } from '@kever/ioc'
-
-type Tag = string | symbol
-
-const processPluginsToKV = () => {
-  return [...iocPlugins].reduce((target, plugin) => {
-    const targetPlugins = target.get(plugin.target)
-    if (targetPlugins) {
-      targetPlugins.set(plugin.propertyKey, plugin)
-    } else {
-      const plugins = new Map<Tag, IocPlugin>()
-      plugins.set(plugin.propertyKey, plugin)
-      target.set(plugin.target, plugins)
-    }
-    return target
-  }, new Map<Object, Map<Tag, IocPlugin>>())
-}
-
-const pluginKV = processPluginsToKV()
+import { iocPool } from '@kever/ioc'
 
 export const controllersToproxy = (controller: Object) => {
-  const plugins = pluginKV.get(Object.getPrototypeOf(controller))
-  if (!plugins) {
+  const iocs = [...iocPool].filter(
+    (ioc) => ioc.target === Object.getPrototypeOf(controller)
+  )
+  if (!Array.isArray(iocs) || !iocs.length) {
     return controller
   }
   return new Proxy(controller, {
     get(target, propertyKey, receiver) {
-      const plugin = plugins.get(propertyKey)
-      if (plugin) {
-        return plugin.plugin
+      const ioc = iocs.find((ioc) => ioc.propertyKey === propertyKey)
+      if (ioc) {
+        return ioc.payload
       }
       return Reflect.get(target, propertyKey, receiver)
     },
