@@ -6,6 +6,7 @@ import { ControllerMetaType } from '@kever/router'
 import { logger } from '@kever/logger'
 import { loadModules } from './loadModules'
 import { initEvent } from './handler'
+import { controllersToproxy } from './proxy'
 
 interface AppOption {
   hostname?: string
@@ -47,8 +48,9 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
     const constrollers = new Set<ControllerMetaType>()
 
     for (let [path, constructor] of controllerPoll.entries()) {
-      const controller = new (constructor as Instance)()
-      constrollers.add({ path, controller })
+      const controller: object = new (constructor as Instance)()
+      const proxy = controllersToproxy(controller)
+      constrollers.add({ path, controller: proxy })
     }
 
     const app = koaRuntime(constrollers, koaPlugin)

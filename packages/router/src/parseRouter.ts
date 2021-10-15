@@ -6,7 +6,7 @@ import { META_ROUTER, RouterMetadata } from './methodsDecorator'
 
 export interface ControllerMetaType {
   path: string
-  controller: object
+  controller: Object
 }
 export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
   const router = new Router()
@@ -30,7 +30,6 @@ export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
       const routePath = resolvePath(rootPath, path)
       for (const routeMethod of routeMethods) {
         router[routeMethod](routePath, async (ctx: Context, next: Next) => {
-          // todo
           try {
             await (controller as any)[methodName](ctx, next)
           } catch (err) {

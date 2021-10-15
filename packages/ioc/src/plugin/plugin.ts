@@ -13,6 +13,7 @@ import {
 import { logger } from '@kever/logger'
 import { Context, Next } from 'koa'
 import { pluginPatchPool } from './patch'
+import { iocPlugins } from './index'
 
 const propertyPlugin = (tag: Tag): PropertyDecorator => (
   target,
@@ -38,12 +39,11 @@ const propertyPluginPoolEventHandler = (
     logger.error(`${tag.toString()} type property plugin no exists`)
     return () => {}
   }
-  const result = plugin.payload
-  Object.defineProperty(target, propertyKey, {
-    value: result,
-    writable: false,
-    configurable: false,
-    enumerable: true,
+  iocPlugins.add({
+    type: PluginType.Property,
+    target,
+    propertyKey,
+    plugin: plugin.payload,
   })
 }
 
@@ -94,11 +94,7 @@ const routerPlugin = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => {
       }
       routerPool.bind(pluginKey, routerTmp)
     }
-
-    ;((description.value as unknown) as Function) = async (
-      ctx?: Context,
-      next?: Next
-    ) => {
+    const payload = async (ctx?: Context, next?: Next) => {
       const router = routerPool.use(pluginKey)
       if (typeof router === 'boolean') {
         return
@@ -122,6 +118,12 @@ const routerPlugin = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => {
         }
       }
     }
+    iocPlugins.add({
+      type: PluginType.Router,
+      target,
+      propertyKey,
+      plugin: payload,
+    })
     return description
   }
 }

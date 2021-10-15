@@ -1,4 +1,3 @@
-import Koa from 'koa'
 import { logger } from '@kever/logger'
 
 export const META_CONTROLLER = Symbol.for('core#meta_controller')
