@@ -1,2 +1,2 @@
-# kever-core
+# @kever/core
 
