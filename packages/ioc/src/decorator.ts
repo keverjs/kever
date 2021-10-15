@@ -1,6 +1,6 @@
 import { logger } from '@kever/logger'
 import { InstancePool, Tag, InstanceType } from './instancePool'
-import { iocPool } from './'
+import { iocPool, toProxyInstance } from './proxy'
 
 const instancePool = new InstancePool<Tag, InstanceType>()
 
@@ -52,13 +52,7 @@ function instancePoolEventHandler(
   iocPool.add({
     target,
     propertyKey,
-    payload: instanceModel,
-  })
-  Object.defineProperty(target, propertyKey, {
-    value: instanceModel,
-    writable: false,
-    configurable: false,
-    enumerable: true,
+    payload: toProxyInstance(instanceModel),
   })
   logger.info(
     `Inject ${injectable.name} into the ${propertyKey.toString()} property of ${

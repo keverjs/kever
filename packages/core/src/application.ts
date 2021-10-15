@@ -1,12 +1,12 @@
 import * as Koa from 'koa'
 import { Middleware } from 'koa'
-import { controllerPoll } from './controller'
-import { koaRuntime } from './koaRuntime'
 import { ControllerMetaType } from '@kever/router'
 import { logger } from '@kever/logger'
+import { toProxyInstance } from '@kever/ioc'
+import { controllerPoll } from './controller'
+import { koaRuntime } from './koaRuntime'
 import { loadModules } from './loadModules'
 import { initEvent } from './handler'
-import { controllersToproxy } from './proxy'
 
 interface AppOption {
   hostname?: string
@@ -49,7 +49,7 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
 
     for (let [path, constructor] of controllerPoll.entries()) {
       const controller: object = new (constructor as Instance)()
-      const proxy = controllersToproxy(controller)
+      const proxy = toProxyInstance(controller)
       constrollers.add({ path, controller: proxy })
     }
 

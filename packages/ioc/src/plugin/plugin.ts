@@ -13,7 +13,7 @@ import {
 import { logger } from '@kever/logger'
 import { Context, Next } from 'koa'
 import { pluginPatchPool } from './patch'
-import { iocPool } from '../'
+import { iocPool, toProxyInstance } from '../proxy'
 
 const propertyPlugin = (tag: Tag): PropertyDecorator => (
   target,
@@ -156,13 +156,14 @@ export const Plugin = (tag: Tag, type: PluginType): ClassDecorator => (
 
   const pluginOptions = pluginPatchPool.use(tag)
   const pluginInstance = new constructor(pluginOptions)
+  const proxyPlugin = toProxyInstance(pluginInstance) as BasePlugin
   if (type === PluginType.Property) {
-    const readyResult = pluginInstance.ready() as Promise<any> | any
+    const readyResult = proxyPlugin.ready() as Promise<any> | any
     if (isPromise(readyResult)) {
       readyResult.then((payload: unknown) => {
         pluginPool.bind(tag, {
           type,
-          instance: pluginInstance,
+          instance: proxyPlugin,
           payload,
         })
       })

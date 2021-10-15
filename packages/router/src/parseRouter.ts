@@ -21,7 +21,7 @@ export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
     for (const methodName of controllerMethods) {
       const routerMeta: RouterMetadata = Reflect.getMetadata(
         META_ROUTER,
-        controller[methodName as keyof object]
+        controller[`_${methodName}` as keyof object] // 通过`_key`获取原始函数
       )
       if (!routerMeta) {
         break
