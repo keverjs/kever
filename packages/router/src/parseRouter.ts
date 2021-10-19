@@ -1,12 +1,13 @@
 import Router from 'koa-router'
 import { Next, Context } from 'koa'
 import { logger } from '@kever/logger'
+import { Aop, routerPool } from '@kever/ioc'
 import { getInstanceMethods, resolvePath } from './util'
 import { META_ROUTER, RouterMetadata } from './methodsDecorator'
 
 export interface ControllerMetaType {
   path: string
-  controller: object
+  controller: Object
 }
 export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
   const router = new Router()
@@ -28,15 +29,23 @@ export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
       }
       const { path, methods: routeMethods } = routerMeta
       const routePath = resolvePath(rootPath, path)
+
+      const routerPoolKey = `${
+        controller.constructor.name
+      }-${methodName.toString()}`
+      const routerAopPool = routerPool.use(routerPoolKey)
+      const beforeMiddleware =
+        typeof routerAopPool !== 'boolean' ? [...routerAopPool[Aop.Before]] : []
+      const afterMiddleware =
+        typeof routerAopPool !== 'boolean' ? [...routerAopPool[Aop.After]] : []
+
       for (const routeMethod of routeMethods) {
-        router[routeMethod](routePath, async (ctx: Context, next: Next) => {
-          // todo
-          try {
-            await (controller as any)[methodName](ctx, next)
-          } catch (err) {
-            logger.error(err)
-          }
-        })
+        router[routeMethod](
+          routePath,
+          ...beforeMiddleware,
+          (controller as any)[methodName],
+          ...afterMiddleware
+        )
       }
     }
   }

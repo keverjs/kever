@@ -1,5 +1,5 @@
 import * as Koa from 'koa'
-import { getAllPlugin } from '@kever/ioc'
+import { destoryAllPlugin } from '@kever/ioc'
 import { logger } from '@kever/logger'
 
 export const initEvent = (app: Koa) => {
@@ -7,10 +7,6 @@ export const initEvent = (app: Koa) => {
     logger.error(error)
   })
 
-  app.on('close', () => {
-    const instances = getAllPlugin()
-    for (const instance of instances.values()) {
-      instance.destory && instance.destory()
-    }
-  })
+  app.on('close', destoryAllPlugin)
+  app.on('exit', destoryAllPlugin)
 }

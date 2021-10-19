@@ -1,3 +1,3 @@
-export { PluginType, BasePlugin, Aop } from './util'
+export { PluginType, BasePlugin, Aop, routerPool } from './util'
 export { pluginPatch } from './patch'
-export { getGlobalPlugin, getAllPlugin, Plugin } from './plugin'
+export { getGlobalPlugin, destoryAllPlugin, Plugin } from './plugin'
