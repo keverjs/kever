@@ -8,12 +8,13 @@ import {
   PropertyPluginMeta,
   routerPool,
   RouterPluginMeta,
+  Middleware,
 } from './util'
 
 import { logger } from '@kever/logger'
 import { pluginPatchPool } from './patch'
-import { Middleware } from 'koa'
 import { propertyPool } from 'src/proxy'
+import { toProxyInstance } from 'src'
 
 const propertyPlugin = (tag: Tag): PropertyDecorator => (
   target,
@@ -163,26 +164,29 @@ export const Plugin = (tag: Tag, type: PluginType): ClassDecorator => (
 
   const pluginOptions = pluginPatchPool.use(tag)
   const pluginInstance = new constructor(pluginOptions)
+  const proxyPluginInstance = toProxyInstance(pluginInstance) as BasePlugin<
+    PluginType.Property | PluginType.Global | PluginType.Router
+  >
   if (type !== PluginType.Property) {
     pluginPool.bind(tag, {
       type,
-      instance: pluginInstance,
+      instance: proxyPluginInstance,
     })
     return target
   }
-  const readyResult = pluginInstance.ready() as Promise<any> | any
+  const readyResult = proxyPluginInstance.ready() as Promise<any> | any
   if (isPromise(readyResult)) {
     readyResult.then((payload: unknown) => {
       pluginPool.bind(tag, {
         type,
-        instance: pluginInstance,
+        instance: proxyPluginInstance,
         payload,
       })
     })
   } else {
     pluginPool.bind(tag, {
       type,
-      instance: pluginInstance,
+      instance: proxyPluginInstance,
       payload: readyResult,
     })
   }

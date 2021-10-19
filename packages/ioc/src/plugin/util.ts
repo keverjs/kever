@@ -1,11 +1,13 @@
 import { InstancePool, Tag } from '../instancePool'
-import { Middleware, Context, Next } from 'koa'
+import { Context, Next } from 'koa'
 
 export const enum PluginType {
   Global,
   Router,
   Property,
 }
+
+export type Middleware = (context: Context, next: Next) => void
 
 type BasePluginReadyParams<T> = T extends PluginType.Property
   ? []

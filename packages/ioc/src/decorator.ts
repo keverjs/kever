@@ -1,6 +1,6 @@
 import { logger } from '@kever/logger'
 import { InstancePool, Tag, InstanceType } from './instancePool'
-import { propertyPool } from './proxy'
+import { propertyPool, toProxyInstance } from './proxy'
 
 const instancePool = new InstancePool<Tag, InstanceType>()
 
@@ -49,6 +49,7 @@ function instancePoolEventHandler(
     parameter = [params]
   }
   const instanceModel = new injectable(...parameter)
+  const proxyInstanceModel = toProxyInstance(instanceModel)
 
   const poolKey = target.constructor.name
   let pool = propertyPool.use(poolKey)
@@ -58,7 +59,7 @@ function instancePoolEventHandler(
     propertyPool.bind(poolKey, pool)
   }
 
-  pool.set(propertyKey, instanceModel)
+  pool.set(propertyKey, proxyInstanceModel)
 
   logger.info(
     `Inject ${injectable.name} into the ${propertyKey.toString()} property of ${
