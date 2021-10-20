@@ -3,8 +3,8 @@ import { destoryAllPlugin } from '@kever/ioc'
 import { logger } from '@kever/logger'
 
 export const initEvent = (app: Koa) => {
-  app.on('error', (error) => {
-    logger.error(error)
+  app.on('error', (err) => {
+    logger.error(`${err.message} \n ${err.stack}`)
   })
 
   app.on('close', destoryAllPlugin)

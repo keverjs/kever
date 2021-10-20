@@ -53,6 +53,6 @@ export const loadModules = async (
     await Promise.all(loadModelPath)
     await Promise.all(loadModulePath)
   } catch (err) {
-    logger.error(err)
+    logger.error(`${err.message} \n ${err.stack}`)
   }
 }

@@ -25,7 +25,7 @@ export const getFilesPath = async (loadFileDir: string) => {
     }
     await findFile(loadFileDir)
   } catch (err) {
-    logger.error(err)
+    logger.error(`${err.message} \n ${err.stack}`)
   }
   return filesPath
 }
@@ -34,6 +34,6 @@ export const loadFile = async (filePath: string) => {
   try {
     await require(filePath)
   } catch (err) {
-    logger.error(err)
+    logger.error(`${err.message} \n ${err.stack}`)
   }
 }
