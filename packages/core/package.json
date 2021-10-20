@@ -1,6 +1,6 @@
 {
   "name": "@kever/core",
-  "version": "0.15.2",
+  "version": "0.15.3",
   "description": "kever core",
   "author": {
     "name": "kim",
@@ -32,7 +32,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "@kever/ioc": "^0.15.2",
+    "@kever/ioc": "^0.15.3",
     "@kever/logger": "^0.15.0",
     "@kever/router": "^0.15.1",
     "@types/koa": "^2.11.3",
