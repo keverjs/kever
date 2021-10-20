@@ -43,7 +43,7 @@ export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
         router[routeMethod](
           routePath,
           ...beforeMiddleware,
-          (controller as any)[methodName],
+          (controller as any)[methodName].bind(controller),
           ...afterMiddleware
         )
       }
