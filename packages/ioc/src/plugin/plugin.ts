@@ -13,8 +13,7 @@ import {
 
 import { logger } from '@kever/logger'
 import { pluginPatchPool } from './patch'
-import { propertyPool } from 'src/proxy'
-import { toProxyInstance } from 'src'
+import { propertyPool, constructInjectProperty } from '../construct'
 
 const propertyPlugin = (tag: Tag): PropertyDecorator => (
   target,
@@ -163,30 +162,27 @@ export const Plugin = (tag: Tag, type: PluginType): ClassDecorator => (
   const constructor = (target as unknown) as InstanceType
 
   const pluginOptions = pluginPatchPool.use(tag)
-  const pluginInstance = new constructor(pluginOptions)
-  const proxyPluginInstance = toProxyInstance(pluginInstance) as BasePlugin<
-    PluginType.Property | PluginType.Global | PluginType.Router
-  >
+  const pluginInstance = constructInjectProperty(constructor, [pluginOptions])
   if (type !== PluginType.Property) {
     pluginPool.bind(tag, {
       type,
-      instance: proxyPluginInstance,
+      instance: pluginInstance,
     })
     return target
   }
-  const readyResult = proxyPluginInstance.ready() as Promise<any> | any
+  const readyResult = pluginInstance.ready() as Promise<any> | any
   if (isPromise(readyResult)) {
     readyResult.then((payload: unknown) => {
       pluginPool.bind(tag, {
         type,
-        instance: proxyPluginInstance,
+        instance: pluginInstance,
         payload,
       })
     })
   } else {
     pluginPool.bind(tag, {
       type,
-      instance: proxyPluginInstance,
+      instance: pluginInstance,
       payload: readyResult,
     })
   }

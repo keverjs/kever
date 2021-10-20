@@ -2,7 +2,7 @@ import * as Koa from 'koa'
 import { Middleware } from 'koa'
 import { ControllerMetaType } from '@kever/router'
 import { logger } from '@kever/logger'
-import { toProxyInstance } from '@kever/ioc'
+import { constructInjectProperty } from '@kever/ioc'
 import { controllerPoll } from './controller'
 import { koaRuntime } from './koaRuntime'
 import { loadModules } from './loadModules'
@@ -48,9 +48,8 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
     const constrollers = new Set<ControllerMetaType>()
 
     for (let [path, constructor] of controllerPoll.entries()) {
-      const controller = new (constructor as Instance)()
-      const proxyInstance = toProxyInstance(controller)
-      constrollers.add({ path, controller: proxyInstance })
+      const controller = constructInjectProperty(constructor, [])
+      constrollers.add({ path, controller })
     }
 
     const app = koaRuntime(constrollers, koaPlugin)
