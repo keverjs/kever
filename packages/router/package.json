@@ -1,6 +1,6 @@
 {
   "name": "@kever/router",
-  "version": "0.15.1",
+  "version": "0.16.0",
   "description": "kever router",
   "author": {
     "name": "kim",
@@ -30,7 +30,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "@kever/logger": "^0.15.0",
+    "@kever/logger": "^0.16.0",
     "@types/koa": "^2.11.3",
     "@types/koa-router": "^7.4.1",
     "koa": "^2.13.0",
