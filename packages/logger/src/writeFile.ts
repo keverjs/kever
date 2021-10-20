@@ -80,11 +80,11 @@ const writeFileAction = async (logDir: string) => {
   } else {
     for (let key of logInfoMap.keys()) {
       const singleLogInfo = logInfoMap.get(key)
-      logInfoMap.clear()
       if (singleLogInfo) {
         writeFileHandler(`/${key}`, singleLogInfo)
       }
     }
+    logInfoMap.clear()
   }
 }
 

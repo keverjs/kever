@@ -21,7 +21,7 @@ interface LoggerConfig {
 
 const LEVAL_TYPE: Record<number, Array<string>> = {
   0: [],
-  1: ['log', 'warn', 'error'],
+  1: ['info', 'warn', 'error', 'debug'],
   2: ['warn', 'error'],
   3: ['error'],
 }
@@ -48,7 +48,14 @@ class Logger {
    * @param message
    */
   info(message: string) {
-    this._emit(message, 'blue', 'log')
+    this._emit(message, 'blue', 'info')
+  }
+  /**
+   * @description 正常输出
+   * @param message
+   */
+  debug(message: string) {
+    this._emit(message, 'blue', 'debug')
   }
   /**
    * @description 错误
@@ -67,7 +74,7 @@ class Logger {
   private _emit(
     message: string,
     color: 'blue' | 'red' | 'yellow',
-    type: 'log' | 'error' | 'warn'
+    type: 'info' | 'error' | 'warn' | 'debug'
   ) {
     const formatMessage = this._formatLog(message, type)
     const content: string = chalk[color](formatMessage)
