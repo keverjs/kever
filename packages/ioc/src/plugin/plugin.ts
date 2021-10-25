@@ -47,10 +47,9 @@ const propertyPluginPoolEventHandler = (
 
   if (typeof pool === 'boolean') {
     pool = new Map<string, unknown>()
-    propertyPool.bind(poolKey, pool)
   }
-
   pool.set(propertyKey, result)
+  propertyPool.bind(poolKey, pool)
 }
 
 const routerPlugin = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => (

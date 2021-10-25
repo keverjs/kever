@@ -55,10 +55,9 @@ function instancePoolEventHandler(
 
   if (typeof pool === 'boolean') {
     pool = new Map<string, unknown>()
-    propertyPool.bind(poolKey, pool)
   }
-
   pool.set(propertyKey, instance)
+  propertyPool.bind(poolKey, pool)
 
   logger.info(
     `Inject ${injectable.name} into the ${propertyKey.toString()} property of ${
