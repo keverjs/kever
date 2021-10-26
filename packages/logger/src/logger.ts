@@ -1,6 +1,6 @@
 import chalk, { Chalk } from 'chalk'
 import { logHandler } from './writeFile'
-import { _processDate } from './utils'
+import { processDate } from './utils'
 
 interface LoggerConfig {
   format?: string
@@ -28,7 +28,7 @@ const LEVAL_TYPE: Record<number, Array<string>> = {
 
 class Logger {
   // 日志文件中的格式
-  private format = '[kever:{type}]: yyyy-mm-dd hh:mm:ss content'
+  private format = '[KEVER|{type}]: yyyy-mm-dd hh:mm:ss content'
   // 输出日志文件的位置
   private logDir = `${process.cwd()}/log`
   // 输出日志文件中日志的优先级
@@ -86,12 +86,12 @@ class Logger {
   private _formatLog(content: string, type: string): string {
     const date = new Date()
     const year = date.getFullYear()
-    const month = _processDate(date.getMonth() + 1)
-    const day: number | string = _processDate(date.getDate())
-    const hour = _processDate(date.getHours())
-    const minute = _processDate(date.getMinutes())
-    const second = _processDate(date.getSeconds())
-    return `[kever|${type}]: ${year}-${month}-${day} ${hour}:${minute}:${second} | ${content}`
+    const month = processDate(date.getMonth() + 1)
+    const day: number | string = processDate(date.getDate())
+    const hour = processDate(date.getHours())
+    const minute = processDate(date.getMinutes())
+    const second = processDate(date.getSeconds())
+    return `[KEVER|${type.toUpperCase()}]: ${year}-${month}-${day} ${hour}:${minute}:${second} | ${content}`
   }
 }
 const logger = new Logger()

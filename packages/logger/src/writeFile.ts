@@ -1,6 +1,9 @@
-import { _processDate } from './utils'
-import * as fs from 'fs'
-const { stat, mkdir, appendFile, writeFile } = fs.promises
+import {
+  checkFileExistence,
+  checkFolderExistence,
+  processDate,
+  witerFileHandler,
+} from './utils'
 
 interface LogInfoType {
   type: string
@@ -9,55 +12,14 @@ interface LogInfoType {
   isDependentOutput: boolean
 }
 const logInfoMap = new Map<string, Set<LogInfoType>>()
-/**
- * @description 检查log目录是否存在，不存在则创建
- * @param logDir
- */
-const _checkFolderExistence = async (logDir: string) => {
-  try {
-    await stat(logDir)
-  } catch (err) {
-    await mkdir(logDir)
-  }
-}
-/**
- * 检查log文件是否存在，默认一天生成一个log文件，不存在则创建
- * @param logDir
- * @param filename
- */
-const _checkFileExistence = async (filename: string) => {
-  try {
-    await stat(filename)
-    return true
-  } catch (err) {
-    return false
-  }
-}
-/**
- * @description 若文件存在则追加文件，否则写入文件
- * @param filePath
- * @param content
- * @param isFile
- */
-const _witerFileHandler = async (
-  filePath: string,
-  content: string,
-  isFile: boolean
-) => {
-  if (isFile) {
-    await appendFile(filePath, content)
-  } else {
-    await writeFile(filePath, content)
-  }
-}
 
 const writeFileHandler = async (type: string, logInfoSet: Set<LogInfoType>) => {
   let logDir: string | undefined
   let logContent: string = ''
   const date = new Date()
   const year = date.getFullYear()
-  const month = _processDate(date.getMonth() + 1)
-  const day = _processDate(date.getDate())
+  const month = processDate(date.getMonth() + 1)
+  const day = processDate(date.getDate())
   const filename = `${year}-${month}-${day}.log`
   for (let logInfo of logInfoSet) {
     if (!logDir) {
@@ -66,14 +28,14 @@ const writeFileHandler = async (type: string, logInfoSet: Set<LogInfoType>) => {
     logContent += `\r\n${logInfo.content}`
   }
   const fileDir = `${logDir}${type}`
-  await _checkFolderExistence(fileDir)
+  await checkFolderExistence(fileDir)
   const filePath = `${fileDir}/${filename}`
-  const isFile = await _checkFileExistence(filePath)
-  await _witerFileHandler(filePath, `\r\n${logContent}`, isFile)
+  const isFile = await checkFileExistence(filePath)
+  await witerFileHandler(filePath, `\r\n${logContent}`, isFile)
 }
 
 const writeFileAction = async (logDir: string) => {
-  await _checkFolderExistence(logDir)
+  await checkFolderExistence(logDir)
   const allLogInfo = logInfoMap.get('all')
   if (allLogInfo) {
     writeFileHandler('', allLogInfo)
@@ -84,8 +46,8 @@ const writeFileAction = async (logDir: string) => {
         writeFileHandler(`/${key}`, singleLogInfo)
       }
     }
-    logInfoMap.clear()
   }
+  logInfoMap.clear()
 }
 
 /**
