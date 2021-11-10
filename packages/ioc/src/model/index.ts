@@ -1,16 +1,6 @@
 import { logger } from '@kever/logger'
 import { constructInjectProperty } from '../construct'
 import { InstancePool, Tag } from '../instancePool'
-import { PREFIX_HANDLERS } from './handlers'
-
-type Getter<T extends object> = {
-  // eslint-disable-next-line prettier/prettier
-  [K in keyof T & string as `get${Capitalize<K>}`]: () => T[K]
-}
-
-type Setter<T extends object> = {
-  [K in keyof T & string as `set${Capitalize<K>}`]: (value: T[K]) => void
-}
 
 type NonFuncntion<T> = T extends Function ? true : false
 
@@ -18,23 +8,25 @@ type FunctionKeys<T extends object> = {
   [K in keyof T]: NonFuncntion<T[K]> extends true ? K : never
 }[keyof T]
 
-type NonFunctionKeys<T extends object> = {
-  [K in keyof T]: NonFuncntion<T[K]> extends true ? never : K
-}[keyof T]
+type FilterNonFunction<
+  T extends object,
+  Keys extends keyof T = FunctionKeys<T>
+> = Pick<T, Keys>
 
+type ModelInstance<T extends object> = FilterNonFunction<T>
 
-type FilterNonFunction<T extends object, Keys extends keyof T = FunctionKeys<T>> = Pick<T, Keys>
-type FilterFunction<T extends object, Keys extends keyof T = NonFunctionKeys<T>> = Pick<T, Keys>
-
-type GSAccessor<T extends object> = Getter<T> & Setter<T>
-
-interface ModelInstanceMethods<T extends object> {
-  init<V extends T>(value: Partial<V> | JSON): void
-  toJson(): JSON
-  unproxy(): T & {__proxy__: ModelInstance<T>}
+const modelProps = new Map<object, (string | symbol)[]>()
+export const Prop = (): PropertyDecorator => {
+  return (target, property) => {
+    let props = modelProps.get(target)
+    if (props && Array.isArray(props)) {
+      props.push(property)
+    } else {
+      props = [property]
+    }
+    modelProps.set(target, props)
+  }
 }
-
-type ModelInstance<T extends object> = GSAccessor<FilterFunction<T>> & FilterNonFunction<T> & ModelInstanceMethods<T>
 
 const modelPool = new InstancePool<Tag, Function>()
 
@@ -51,31 +43,29 @@ Model.use = <T extends object>(tag: Tag): ModelInstance<T> => {
     return {} as ModelInstance<T>
   }
   const instance = constructInjectProperty(modelConstructor, [])
-  const proxy = new Proxy(instance, {
-    get(target, property: string, receiver) {
-      let prefix: keyof typeof PREFIX_HANDLERS, key: string
-      if (Object.keys(PREFIX_HANDLERS).includes(property)) {
-        prefix = property as keyof typeof PREFIX_HANDLERS
-      } else {
-        const prefixTmp = property.slice(0, 3) as keyof typeof PREFIX_HANDLERS
-        if (prefixTmp === 'set' || prefixTmp === 'get') {
-          prefix = prefixTmp
-          key = property
-          .slice(3)
-          .replace(/([A-Z])/, (match) => match.toLowerCase())
-        }
+  Object.defineProperty(instance, 'toJSON', {
+    value: function () {
+      const props = modelProps.get(Object.getPrototypeOf(this))
+      if (props && Array.isArray(props)) {
+        return partShadowClone(this, props)
       }
-
-      return (value: unknown) => {
-        if (target[prefix] && typeof target[prefix] === 'function') {
-          return target[prefix](value)
-        }
-        if (PREFIX_HANDLERS[prefix] && typeof PREFIX_HANDLERS[prefix] === 'function') {
-          return PREFIX_HANDLERS[prefix](target, key, value, receiver)
-        }
-      }
+      return this
     },
+    writable: false,
+    enumerable: false,
   })
-  instance.__proxy__ = proxy
-  return proxy
+  return instance
+}
+
+function partShadowClone<T extends object, K extends keyof T>(
+  target: T,
+  props: K[]
+) {
+  const cloneTarget = Object.create(null)
+  for (let key in target) {
+    if (target.hasOwnProperty(key) && props.includes((key as unknown) as K)) {
+      cloneTarget[key] = target[key]
+    }
+  }
+  return cloneTarget
 }
