@@ -1,5 +1,6 @@
 import { logger } from '@kever/logger'
-import { InstancePool, InstanceType, Tag } from '../instancePool'
+import { constructInjectProperty } from '../construct'
+import { InstancePool, Tag } from '../instancePool'
 import { PREFIX_HANDLERS } from './handlers'
 
 type Getter<T extends object> = {
@@ -11,6 +12,19 @@ type Setter<T extends object> = {
   [K in keyof T & string as `set${Capitalize<K>}`]: (value: T[K]) => void
 }
 
+type NonFuncntion<T> = T extends Function ? true : false
+
+type FunctionKeys<T extends object> = {
+  [K in keyof T]: NonFuncntion<T[K]> extends true ? K : never
+}[keyof T]
+
+type NonFunctionKeys<T extends object> = {
+  [K in keyof T]: NonFuncntion<T[K]> extends true ? never : K
+}[keyof T]
+
+
+type FilterNonFunction<T extends object, Keys extends keyof T = FunctionKeys<T>> = Pick<T, Keys>
+type FilterFunction<T extends object, Keys extends keyof T = NonFunctionKeys<T>> = Pick<T, Keys>
 
 type GSAccessor<T extends object> = Getter<T> & Setter<T>
 
@@ -20,7 +34,7 @@ interface ModelInstanceMethods<T extends object> {
   unproxy(): T & {__proxy__: ModelInstance<T>}
 }
 
-type ModelInstance<T extends object> = GSAccessor<T> & ModelInstanceMethods<T>
+type ModelInstance<T extends object> = GSAccessor<FilterFunction<T>> & FilterNonFunction<T> & ModelInstanceMethods<T>
 
 const modelPool = new InstancePool<Tag, Function>()
 
@@ -32,11 +46,11 @@ export const Model = (tag: Tag): ClassDecorator => {
 
 Model.use = <T extends object>(tag: Tag): ModelInstance<T> => {
   const modelConstructor = modelPool.use(tag)
-  if (!modelConstructor) {
+  if (typeof modelConstructor === 'boolean') {
     logger.error(`${tag.toString()} type model no exists`)
     return {} as ModelInstance<T>
   }
-  const instance = new (modelConstructor as InstanceType)()
+  const instance = constructInjectProperty(modelConstructor, [])
   const proxy = new Proxy(instance, {
     get(target, property: string, receiver) {
       let prefix: keyof typeof PREFIX_HANDLERS, key: string
