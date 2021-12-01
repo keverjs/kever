@@ -13,7 +13,7 @@ import {
 
 import { logger } from '@kever/logger'
 import { pluginPatchPool } from './patch'
-import { propertyPool, constructInjectProperty } from '../construct'
+import { propertyPool, construct } from '../construct'
 
 const propertyPlugin = (tag: Tag): PropertyDecorator => (
   target,
@@ -161,7 +161,7 @@ export const Plugin = (tag: Tag, type: PluginType): ClassDecorator => (
   const constructor = (target as unknown) as InstanceType
 
   const pluginOptions = pluginPatchPool.use(tag)
-  const pluginInstance = constructInjectProperty(constructor, [pluginOptions])
+  const pluginInstance = construct(constructor, [pluginOptions])
   if (type !== PluginType.Property) {
     pluginPool.bind(tag, {
       type,

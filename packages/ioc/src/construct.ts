@@ -27,11 +27,10 @@ const injectPropertyHandler = (target: Object, pool: Map<Tag, unknown>) => {
   }
 }
 
-export const constructInjectProperty = (
-  target: Function,
-  params: unknown[]
-) => {
+const constructInjectProperty = (target: Function, params: unknown[]) => {
   const instance = createConstruct(target, params)
   injectProperty(instance)
   return instance
 }
+
+export const construct = constructInjectProperty

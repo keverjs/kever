@@ -1,6 +1,6 @@
 import { logger } from '@kever/logger'
 import { InstancePool, Tag, InstanceType } from './instancePool'
-import { propertyPool, constructInjectProperty } from './construct'
+import { propertyPool, construct } from './construct'
 
 const instancePool = new InstancePool<Tag, InstanceType>()
 
@@ -22,17 +22,18 @@ export const Injectable = (tag: Tag): ClassDecorator => (target) => {
  * @description 注入类
  * @param tag
  */
-export const Inject = <T>(tag: Tag, param?: T): PropertyDecorator => (
-  target,
-  propertyKey
-) => {
+export const Inject = <T>(
+  tag: Tag,
+  unNew = false,
+  param?: T
+): PropertyDecorator => (target, propertyKey) => {
   const instance = instancePool.use(tag)
   if (typeof instance === 'boolean') {
     instancePool.on(tag, (injectable) => {
-      instancePoolEventHandler(target, propertyKey, injectable, param)
+      instancePoolEventHandler(target, propertyKey, injectable, unNew, param)
     })
   } else {
-    instancePoolEventHandler(target, propertyKey, instance, param)
+    instancePoolEventHandler(target, propertyKey, instance, unNew, param)
   }
 }
 
@@ -40,15 +41,16 @@ function instancePoolEventHandler(
   target: Object,
   propertyKey: Tag,
   injectable: InstanceType,
-  params: any
+  unNew: boolean,
+  params: unknown
 ) {
-  let parameter: any[]
+  let parameter: unknown[]
   if (Array.isArray(params)) {
     parameter = params
   } else {
     parameter = [params]
   }
-  const instance = constructInjectProperty(injectable, parameter)
+  const instance = unNew ? injectable : construct(injectable, parameter)
 
   const poolKey = target.constructor.name
   let pool = propertyPool.use(poolKey)
