@@ -4,7 +4,7 @@ import { Server } from 'http'
 import process from 'process'
 
 const signalEventHandler = (app: Server) => (type: string, index: number) => {
-  logger.debug(`app will close. signal: ${type}   index: ${index}`)
+  logger.debug(`app will close. [signal: '${type}', number: ${index}]`)
   app.close()
 }
 
