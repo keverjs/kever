@@ -64,7 +64,6 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
       }
     )
     initEvent(server)
-    return server
   } catch (err) {
     logger.error(`${err.message} \n ${err.stack}`)
   }

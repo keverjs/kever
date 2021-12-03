@@ -8,7 +8,7 @@ const signalEventHandler = (app: Server) => (type: string, index: number) => {
   app.close()
 }
 
-const appEventHandler = (_app: Server) => () => {
+const appEventHandler = () => () => {
   // destory all plugin
   destoryAllPlugin()
 }
@@ -22,7 +22,7 @@ export const initEvent = (app: Server) => {
   app.on('error', (err) => {
     logger.error(`${err.message} \n ${err.stack}`)
   })
-  app.on('close', appEventHandler(app))
-  app.on('exit', appEventHandler(app))
+  app.on('close', appEventHandler())
+  app.on('exit', appEventHandler())
   initSignalEvent(app)
 }
