@@ -16,8 +16,6 @@ interface AppOption {
   tsconfig?: string
 }
 
-type Instance = new (...args: any[]) => any
-
 const DEFAULT_OPTION = {
   hostname: '127.0.0.1',
   port: 8080,
@@ -54,15 +52,19 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
 
     const app = koaRuntime(constrollers, koaPlugin)
 
-    initEvent(app)
-
-    app.listen(processOptions.port, processOptions.hostname, () => {
-      logger.info(
-        `server listening http://${processOptions.hostname}:${processOptions.port}`
-      )
-      logger.info('server is running...')
-      callback && callback(app)
-    })
+    const server = app.listen(
+      processOptions.port,
+      processOptions.hostname,
+      () => {
+        logger.info(
+          `server listening http://${processOptions.hostname}:${processOptions.port}`
+        )
+        logger.info('server is running...')
+        callback && callback(app)
+      }
+    )
+    initEvent(server)
+    return server
   } catch (err) {
     logger.error(`${err.message} \n ${err.stack}`)
   }

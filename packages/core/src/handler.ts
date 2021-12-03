@@ -1,12 +1,28 @@
-import * as Koa from 'koa'
 import { destoryAllPlugin } from '@kever/ioc'
 import { logger } from '@kever/logger'
+import { Server } from 'http'
+import process from 'process'
 
-export const initEvent = (app: Koa) => {
+const signalEventHandler = (app: Server) => (type: string, index: number) => {
+  logger.debug(`app will close. signal: ${type}   index: ${index}`)
+  app.close()
+}
+
+const appEventHandler = (_app: Server) => () => {
+  // destory all plugin
+  destoryAllPlugin()
+}
+
+const initSignalEvent = (app: Server) => {
+  process.on('SIGINT', signalEventHandler(app))
+  process.on('SIGTERM', signalEventHandler(app))
+}
+
+export const initEvent = (app: Server) => {
   app.on('error', (err) => {
     logger.error(`${err.message} \n ${err.stack}`)
   })
-
-  app.on('close', destoryAllPlugin)
-  app.on('exit', destoryAllPlugin)
+  app.on('close', appEventHandler(app))
+  app.on('exit', appEventHandler(app))
+  initSignalEvent(app)
 }
