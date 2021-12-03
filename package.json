@@ -1,7 +1,7 @@
 {
   "name": "kever",
   "private": true,
-  "version": "0.20.0",
+  "version": "0.21.0",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "workspaces": [
     "packages/*"
