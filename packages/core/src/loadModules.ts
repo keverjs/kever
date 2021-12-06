@@ -4,7 +4,7 @@ import * as fs from 'fs'
 const { readFile } = fs.promises
 
 export const loadModules = async (
-  plugins: string[],
+  middlewares: string[],
   env: string,
   tsconfigFileName: string
 ) => {
@@ -28,28 +28,30 @@ export const loadModules = async (
     const serviceModuleRootPath = `${moduleRootPath}/service`
     // model
     const modelModuleRootPath = `${moduleRootPath}/model`
-    // plugin
-    const pluginModuleRootPath = `${moduleRootPath}/plugin`
+    // middleware
+    const middlewareModuleRootPath = `${moduleRootPath}/middleware`
     const [
       controllersPath,
       servicesPath,
-      pluginsPath,
+      middlewaresPath,
       modelsPath,
     ] = await Promise.all([
       getFilesPath(controllerModuleRootPath),
       getFilesPath(serviceModuleRootPath),
-      getFilesPath(pluginModuleRootPath),
+      getFilesPath(middlewareModuleRootPath),
       getFilesPath(modelModuleRootPath),
     ])
 
-    const allPluginPath = plugins.concat([...pluginsPath])
-    const loadAllPluginPath = allPluginPath.map((path) => loadFile(path))
+    const allMiddlewarePath = middlewares.concat([...middlewaresPath])
+    const loadAllMiddlewarePath = allMiddlewarePath.map((path) =>
+      loadFile(path)
+    )
     const loadModelPath = Array.from(modelsPath).map((path) => loadFile(path))
     const loadModulePath = [...controllersPath, ...servicesPath].map((path) =>
       loadFile(path)
     )
 
-    await Promise.all(loadAllPluginPath)
+    await Promise.all(loadAllMiddlewarePath)
     await Promise.all(loadModelPath)
     await Promise.all(loadModulePath)
   } catch (err) {

@@ -1,28 +1,28 @@
 import Koa, { Middleware } from 'koa'
 import { parseRouter, ControllerMetaType } from '@kever/router'
-import { getGlobalPlugin } from '@kever/ioc'
+import { getGlobalMiddleware } from '@kever/ioc'
 
 export const koaRuntime = (
   controllers: Set<ControllerMetaType>,
-  koaPlugin: Middleware[]
+  koaMiddleware: Middleware[]
 ) => {
   const router = parseRouter([...controllers])
-  const globalPlugins = getGlobalPlugin()
-  const plugins = [
-    ...koaPlugin,
-    ...globalPlugins,
+  const globalMiddlewares = getGlobalMiddleware()
+  const middlewares = [
+    ...koaMiddleware,
+    ...globalMiddlewares,
     router.routes(),
     router.allowedMethods(),
   ]
   const app = new Koa()
-  // install plugins
-  installPlugins(app, plugins as Koa.Middleware[])
+  // install middlewares
+  installMiddlewares(app, middlewares as Koa.Middleware[])
 
   return app
 }
 
-function installPlugins(app: Koa, plugins: Koa.Middleware[]) {
-  for (const plugin of plugins) {
-    app.use(plugin)
+function installMiddlewares(app: Koa, middlewares: Koa.Middleware[]) {
+  for (const middleware of middlewares) {
+    app.use(middleware)
   }
 }

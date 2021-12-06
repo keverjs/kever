@@ -1,4 +1,4 @@
-import { destoryAllPlugin } from '@kever/ioc'
+import { destoryAllMiddleware } from '@kever/ioc'
 import { logger } from '@kever/logger'
 import { Server } from 'http'
 import process from 'process'
@@ -10,7 +10,7 @@ const signalEventHandler = (app: Server) => (type: string, index: number) => {
 
 const appEventHandler = () => () => {
   // destory all plugin
-  destoryAllPlugin()
+  destoryAllMiddleware()
 }
 
 const initSignalEvent = (app: Server) => {
