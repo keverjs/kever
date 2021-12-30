@@ -37,3 +37,45 @@ export const loadFile = async (filePath: string) => {
     logger.error(`${err.message} \n ${err.stack}`)
   }
 }
+
+export const getAppVersion = async () => {
+  try {
+    return require('../package.json').version
+  } catch (_) {
+    return ''
+  }
+}
+export const getCurrentProjectName = async () => {
+  try {
+    const root = process.cwd()
+    return require(`${root}/package.json`).name
+  } catch (_) {
+    return ''
+  }
+}
+export const fillLine = (
+  data: string | [string, string][],
+  len = 49,
+  pad = ' ',
+  subPad = '.'
+) => {
+  if (data.length === 0) {
+    return pad.padEnd(len)
+  }
+  if (typeof data === 'string') {
+    const padNum = (len - data.length) / 2
+    console.log('padNum', padNum, pad.padEnd(padNum).length)
+    return `${pad.padEnd(padNum)}${data}`.padEnd(len, pad)
+  } else {
+    const subLen = (len - 1) / 2
+    return data
+      .reduce((line, sub) => {
+        const subLine = `${sub[0].padEnd(subLen - sub[1].length, subPad)}${
+          sub[1]
+        }`
+        return `${line} ${subLine}`
+      }, '')
+      .slice(1)
+      .padEnd(len, pad)
+  }
+}

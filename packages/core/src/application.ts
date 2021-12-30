@@ -7,9 +7,11 @@ import { controllerPoll } from './controller'
 import { koaRuntime } from './koaRuntime'
 import { loadModules } from './loadModules'
 import { initEvent } from './handler'
+import { fillLine, getAppVersion, getCurrentProjectName } from './utils'
+import chalk from 'chalk'
 
 interface AppOption {
-  hostname?: string
+  host?: string
   port?: number
   middlewares?: (string | Middleware)[]
   modulePath?: []
@@ -18,7 +20,7 @@ interface AppOption {
 }
 
 const DEFAULT_OPTION = {
-  hostname: '127.0.0.1',
+  host: '127.0.0.1',
   port: 8080,
   middlewares: [],
   modulePath: [],
@@ -57,8 +59,11 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
 
     const app = koaRuntime(constrollers, koaMiddleware)
 
-    const server = app.listen(finalOptions.port, finalOptions.hostname, () => {
+    const server = app.listen(finalOptions.port, finalOptions.host, () => {
       callback && callback(app)
+      if (finalOptions.env === 'development') {
+        outputSetupStatus(finalOptions, constrollers)
+      }
     })
     initEvent(server)
   } catch (err) {
@@ -68,4 +73,36 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
 
 function mergeDefaultOptions(options: AppOption = {}): Required<AppOption> {
   return Object.assign({}, DEFAULT_OPTION, options)
+}
+
+async function outputSetupStatus(
+  options: AppOption,
+  controllers: Set<ControllerMetaType>
+) {
+  try {
+    const [projectName, version] = await Promise.all([
+      getCurrentProjectName(),
+      getAppVersion(),
+    ])
+    const projectNameLine = fillLine(chalk.magenta(projectName))
+    const versionLine = fillLine(chalk.magenta(`Kever v${version}`))
+    const hostLine = fillLine([
+      [chalk.gray('Host'), chalk.blue(String(options.host))],
+      [chalk.gray('Port'), chalk.blue(String(options.port))],
+    ])
+
+    const handlerAndPid = fillLine([
+      [chalk.gray('Handlers'), chalk.blue(String(controllers.size))],
+      [chalk.gray('PID'), chalk.blue(String(process.pid))],
+    ])
+    console.log(`
+    ┌───────────────────────────────────────────────────┐ 
+    │ ${projectNameLine} │
+    │ ${versionLine} │
+    │                                                   │
+    │ ${hostLine} │
+    │ ${handlerAndPid} │
+    └───────────────────────────────────────────────────┘ 
+    `)
+  } catch (_) {}
 }
