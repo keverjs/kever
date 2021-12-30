@@ -92,7 +92,7 @@ async function outputStartupStatus(
     ])
 
     const handlerAndPid = fillLine([
-      [chalk.gray('Handlers'), chalk.blue(String(controllers.size))],
+      [chalk.gray('Controllers'), chalk.blue(String(controllers.size))],
       [chalk.gray('PID'), chalk.blue(String(process.pid))],
     ])
     console.log(`

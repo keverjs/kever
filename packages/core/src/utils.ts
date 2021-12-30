@@ -53,6 +53,7 @@ export const getCurrentProjectName = async () => {
     return ''
   }
 }
+const COLOR_LEN = 10
 export const fillLine = (
   data: string | [string, string][],
   len = 49,
@@ -63,10 +64,11 @@ export const fillLine = (
     return pad.padEnd(len)
   }
   if (typeof data === 'string') {
+    len += COLOR_LEN
     const padNum = (len - data.length) / 2
-    console.log('padNum', padNum, pad.padEnd(padNum).length)
     return `${pad.padEnd(padNum)}${data}`.padEnd(len, pad)
   } else {
+    len += data.flat().length * COLOR_LEN
     const subLen = (len - 1) / 2
     return data
       .reduce((line, sub) => {
