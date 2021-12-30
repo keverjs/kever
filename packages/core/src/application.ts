@@ -62,7 +62,7 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
     const server = app.listen(finalOptions.port, finalOptions.host, () => {
       callback && callback(app)
       if (finalOptions.env === 'development') {
-        outputSetupStatus(finalOptions, constrollers)
+        outputStartupStatus(finalOptions, constrollers)
       }
     })
     initEvent(server)
@@ -75,7 +75,7 @@ function mergeDefaultOptions(options: AppOption = {}): Required<AppOption> {
   return Object.assign({}, DEFAULT_OPTION, options)
 }
 
-async function outputSetupStatus(
+async function outputStartupStatus(
   options: AppOption,
   controllers: Set<ControllerMetaType>
 ) {
