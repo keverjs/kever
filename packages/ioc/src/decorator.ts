@@ -14,7 +14,6 @@ export const Injectable = (tag: Tag): ClassDecorator => (target) => {
     logger.error(` ${tag.toString()} model existence`)
     return
   }
-  logger.info(`${target.name} is already registered for injection`)
   return target
 }
 
@@ -60,10 +59,4 @@ function instancePoolEventHandler(
   }
   pool.set(propertyKey, instance)
   propertyPool.bind(poolKey, pool)
-
-  logger.info(
-    `Inject ${injectable.name} into the ${propertyKey.toString()} property of ${
-      target.constructor.name
-    }`
-  )
 }
