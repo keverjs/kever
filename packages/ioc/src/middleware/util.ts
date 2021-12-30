@@ -1,7 +1,7 @@
 import { InstancePool, Tag } from '../instancePool'
 import { Context, Next } from 'koa'
 
-export const enum Type {
+export const enum MType {
   Global,
   Router,
   Property,
@@ -9,23 +9,23 @@ export const enum Type {
 
 export type KoaMiddleware = (context: Context, next: Next) => void
 
-type BaseMiddlewareReadyParams<T> = T extends Type.Property
+type BaseMiddlewareReadyParams<T> = T extends MType.Property
   ? []
-  : T extends Type.Router
+  : T extends MType.Router
   ? [KoaMiddleware, unknown]
-  : T extends Type.Global
+  : T extends MType.Global
   ? [Context, Next]
   : never
 
-type BaseMiddlewareReadyReturn<T> = T extends Type.Property
+type BaseMiddlewareReadyReturn<T> = T extends MType.Property
   ? unknown | Promise<unknown>
-  : T extends Type.Router
+  : T extends MType.Router
   ? KoaMiddleware
-  : T extends Type.Global
+  : T extends MType.Global
   ? void
   : never
 
-export interface BaseMiddleware<T extends Type> {
+export interface BaseMiddleware<T extends MType> {
   ready(...args: BaseMiddlewareReadyParams<T>): BaseMiddlewareReadyReturn<T>
   destory?: () => void
 }
@@ -37,16 +37,16 @@ export const enum Aop {
 }
 
 export interface GolbalMiddlewareMeta {
-  type: Type.Global
-  instance: BaseMiddleware<Type.Global>
+  type: MType.Global
+  instance: BaseMiddleware<MType.Global>
 }
 export interface RouterMiddlewareMeta {
-  type: Type.Router
-  instance: BaseMiddleware<Type.Router>
+  type: MType.Router
+  instance: BaseMiddleware<MType.Router>
 }
 export interface PropertyMiddlewareMeta {
-  type: Type.Property
-  instance: BaseMiddleware<Type.Property>
+  type: MType.Property
+  instance: BaseMiddleware<MType.Property>
   payload: unknown
 }
 

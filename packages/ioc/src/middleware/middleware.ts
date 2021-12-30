@@ -1,7 +1,7 @@
 import { Tag, InstanceType } from '../instancePool'
 import {
   middlewarePool,
-  Type,
+  MType,
   BaseMiddleware,
   Aop,
   isPromise,
@@ -22,13 +22,13 @@ const propertyMiddleware = (tag: Tag): PropertyDecorator => (
   const middleware = middlewarePool.use(tag)
   if (typeof middleware === 'boolean') {
     middlewarePool.on(tag, (middleware) => {
-      if (middleware.type === Type.Property) {
+      if (middleware.type === MType.Property) {
         propertyMiddlewarePoolEventHandler(target, propertyKey, middleware)
       } else {
         logger.error(`${tag.toString()} type property middleware no exists`)
       }
     })
-  } else if (middleware.type === Type.Property) {
+  } else if (middleware.type === MType.Property) {
     propertyMiddlewarePoolEventHandler(target, propertyKey, middleware)
   } else {
     logger.error(`${tag.toString()} type property middleware no exists`)
@@ -61,7 +61,7 @@ const routerMiddleware = <T>(
 
   if (typeof middleware === 'boolean') {
     middlewarePool.on(tag, (middleware) => {
-      if (middleware.type !== Type.Router) {
+      if (middleware.type !== MType.Router) {
         logger.error(`${tag.toString()} type router middleware no exists`)
       } else {
         routerMiddlewarePoolEventHandler(
@@ -75,7 +75,7 @@ const routerMiddleware = <T>(
         )
       }
     })
-  } else if (middleware.type === Type.Router) {
+  } else if (middleware.type === MType.Router) {
     routerMiddlewarePoolEventHandler(
       tag,
       type,
@@ -127,7 +127,7 @@ export const getGlobalMiddleware = () => {
   const pool = middlewarePool.getPool()
   let globalMiddlewares: Function[] = []
   for (const middlewareMeta of pool.values()) {
-    if (middlewareMeta.type === Type.Global) {
+    if (middlewareMeta.type === MType.Global) {
       const readyFn =
         middlewareMeta.instance &&
         middlewareMeta.instance.ready.bind(middlewareMeta.instance)
@@ -140,7 +140,7 @@ export const getGlobalMiddleware = () => {
 const getAllMiddleware = () => {
   const pool = middlewarePool.getPool()
   let instancePool = new Set<
-    BaseMiddleware<Type.Global | Type.Property | Type.Router>
+    BaseMiddleware<MType.Global | MType.Property | MType.Router>
   >()
   for (const middlewareMeta of pool.values()) {
     instancePool.add(middlewareMeta.instance)
@@ -155,14 +155,14 @@ export const destoryAllMiddleware = () => {
   }
 }
 
-export const Middleware = (tag: Tag, type: Type): ClassDecorator => (
+export const Middleware = (tag: Tag, type: MType): ClassDecorator => (
   target
 ) => {
   const constructor = (target as unknown) as InstanceType
 
   const middlewareOptions = middlewarePatchPool.use(tag)
   const middlewareInstance = construct(constructor, [middlewareOptions])
-  if (type !== Type.Property) {
+  if (type !== MType.Property) {
     middlewarePool.bind(tag, {
       type,
       instance: middlewareInstance,
@@ -194,19 +194,19 @@ interface RouterMiddlewareParams<T> {
   params?: T
 }
 
-type MiddlewareUseParam<T extends Type, U> = T extends Type.Router
+type MiddlewareUseParam<T extends MType, U> = T extends MType.Router
   ? RouterMiddlewareParams<U>
   : Tag
 
-type MiddlewareUseReturn<T extends Type> = T extends Type.Router
+type MiddlewareUseReturn<T extends MType> = T extends MType.Router
   ? MethodDecorator
   : PropertyDecorator
 
-Middleware.use = <T, P extends Type>(
+Middleware.use = <T, P extends MType>(
   type: P,
   param: MiddlewareUseParam<P, T>
 ): MiddlewareUseReturn<P> => {
-  if (type === Type.Property) {
+  if (type === MType.Property) {
     return propertyMiddleware(param as Tag) as MiddlewareUseReturn<P>
   }
   const routerParam = param as RouterMiddlewareParams<T>

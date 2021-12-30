@@ -1,4 +1,4 @@
-export { Type, BaseMiddleware, Aop, routerPool } from './util'
+export { MType, BaseMiddleware, Aop, routerPool } from './util'
 export { middlewarePatch } from './patch'
 export {
   getGlobalMiddleware,
