@@ -5,6 +5,7 @@ const { readFile } = fs.promises
 
 export const loadModules = async (
   middlewares: string[],
+  modulePath: string[],
   env: string,
   tsconfigFileName: string
 ) => {
@@ -30,6 +31,10 @@ export const loadModules = async (
     const modelModuleRootPath = `${moduleRootPath}/model`
     // middleware
     const middlewareModuleRootPath = `${moduleRootPath}/middleware`
+    // Other
+    const otherModuleRootPath = modulePath.map(
+      (module) => `${moduleRootPath}/${module}`
+    )
     const [
       controllersPath,
       servicesPath,
@@ -41,6 +46,9 @@ export const loadModules = async (
       getFilesPath(middlewareModuleRootPath),
       getFilesPath(modelModuleRootPath),
     ])
+    const otherModulesPath = await Promise.all(
+      otherModuleRootPath.map((rootPath) => getFilesPath(rootPath))
+    )
 
     const allMiddlewarePath = middlewares.concat([...middlewaresPath])
     const loadAllMiddlewarePath = allMiddlewarePath.map((path) =>
@@ -51,9 +59,15 @@ export const loadModules = async (
       loadFile(path)
     )
 
+    const loadOtherPath = otherModulesPath
+      .map((paths) => [...paths])
+      .flat()
+      .map((path) => loadFile(path))
+
     await Promise.all(loadAllMiddlewarePath)
     await Promise.all(loadModelPath)
     await Promise.all(loadModulePath)
+    await Promise.all(loadOtherPath)
   } catch (err) {
     logger.error(`${err.message} \n ${err.stack}`)
   }

@@ -12,6 +12,7 @@ interface AppOption {
   hostname?: string
   port?: number
   middlewares?: (string | Middleware)[]
+  modulePath?: []
   env?: string
   tsconfig?: string
 }
@@ -20,6 +21,7 @@ const DEFAULT_OPTION = {
   hostname: '127.0.0.1',
   port: 8080,
   middlewares: [],
+  modulePath: [],
   env: 'development',
   tsconfig: 'tsconfig.json',
 }
@@ -27,11 +29,11 @@ const DEFAULT_OPTION = {
 type Callback = (app: Koa) => void
 export const createApp = async (options: AppOption, callback?: Callback) => {
   try {
-    const processOptions = _handleOptions(options)
+    const finalOptions = mergeDefaultOptions(options)
     let koaMiddleware: Middleware[] = []
     let keverMiddleware: string[] = []
-    for (let i = 0; i < processOptions.middlewares.length; i++) {
-      const middleware = processOptions.middlewares[i]
+    for (let i = 0; i < finalOptions.middlewares.length; i++) {
+      const middleware = finalOptions.middlewares[i]
       if (typeof middleware === 'string') {
         keverMiddleware.push(middleware)
       } else {
@@ -39,13 +41,12 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
       }
     }
     // loadModules
-    logger.info('✅...load file...')
     await loadModules(
       keverMiddleware,
-      processOptions.env,
-      processOptions.tsconfig
+      finalOptions.modulePath,
+      finalOptions.env,
+      finalOptions.tsconfig
     )
-    logger.info('✅...load file done...')
 
     const constrollers = new Set<ControllerMetaType>()
 
@@ -56,23 +57,15 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
 
     const app = koaRuntime(constrollers, koaMiddleware)
 
-    const server = app.listen(
-      processOptions.port,
-      processOptions.hostname,
-      () => {
-        logger.info(
-          `server listening http://${processOptions.hostname}:${processOptions.port}`
-        )
-        logger.info('server is running...')
-        callback && callback(app)
-      }
-    )
+    const server = app.listen(finalOptions.port, finalOptions.hostname, () => {
+      callback && callback(app)
+    })
     initEvent(server)
   } catch (err) {
     logger.error(`${err.message} \n ${err.stack}`)
   }
 }
 
-function _handleOptions(options: AppOption = {}): Required<AppOption> {
+function mergeDefaultOptions(options: AppOption = {}): Required<AppOption> {
   return Object.assign({}, DEFAULT_OPTION, options)
 }
