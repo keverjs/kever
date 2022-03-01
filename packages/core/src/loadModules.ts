@@ -35,17 +35,13 @@ export const loadModules = async (
     const otherModuleRootPath = modulePath.map(
       (module) => `${moduleRootPath}/${module}`
     )
-    const [
-      controllersPath,
-      servicesPath,
-      middlewaresPath,
-      modelsPath,
-    ] = await Promise.all([
-      getFilesPath(controllerModuleRootPath),
-      getFilesPath(serviceModuleRootPath),
-      getFilesPath(middlewareModuleRootPath),
-      getFilesPath(modelModuleRootPath),
-    ])
+    const [controllersPath, servicesPath, middlewaresPath, modelsPath] =
+      await Promise.all([
+        getFilesPath(controllerModuleRootPath),
+        getFilesPath(serviceModuleRootPath),
+        getFilesPath(middlewareModuleRootPath),
+        getFilesPath(modelModuleRootPath),
+      ])
     const otherModulesPath = await Promise.all(
       otherModuleRootPath.map((rootPath) => getFilesPath(rootPath))
     )

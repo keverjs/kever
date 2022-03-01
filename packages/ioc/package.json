@@ -9,9 +9,14 @@
   "publicConfig": {
     "access": "puiblic"
   },
-  "main": "dist/index.js",
-  "types": "ioc.d.ts",
-  "scripts": {},
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:keverjs/kever.git",
@@ -27,9 +32,8 @@
     "dependencies",
     "di"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "@kever/logger": "^0.24.0",
     "@types/koa": "^2.11.3"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"

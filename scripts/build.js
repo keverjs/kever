@@ -1,9 +1,11 @@
 const fs = require('fs').promises
-const { resolve } = require('path')
 const inquirer = require('inquirer')
-const rollup = require('rollup')
 const typescript = require('rollup-plugin-typescript2')
 const chalk = require('chalk')
+const rollup = require('rollup')
+const { resolve } = require('path')
+
+const args = require('minimist')(process.argv.slice(2))
 
 const getPackagesName = async () => {
   const allPackagesName = await fs.readdir(resolve(__dirname, '../packages'))
@@ -13,11 +15,11 @@ const getPackagesName = async () => {
       return !isHiddenFile
     })
     .filter((packageName) => {
-      const isPrivatePackages = require(resolve(
+      const isPrivatePackage = require(resolve(
         __dirname,
         `../packages/${packageName}/package.json`
       )).private
-      return !isPrivatePackages
+      return !isPrivatePackage
     })
 }
 
@@ -65,27 +67,36 @@ const cleanPackagesOldDist = async (packagesName) => {
   for (let packageName of packagesName) {
     const distPath = resolve(__dirname, `../packages/${packageName}/dist`)
     try {
-      fs.rmdir(distPath, {
-        recursive: true,
-      })
+      const stat = await fs.stat(distPath)
+      if (stat.isDirectory()) {
+        await fs.rm(distPath, {
+          recursive: true,
+        })
+      }
     } catch (err) {
-      console.log(chalk.red(`remove @kever/${packageName} dist dir error!`))
+      console.log('err', err)
+      console.log(chalk.red(`remove ${packageName} dist dir error!`))
     }
   }
 }
 
 const cleanPackagesDtsDir = async (packageName) => {
-  const dtsPath = resolve(__dirname, `../packages/${packageName}/dist/src`)
+  const dtsPath = resolve(__dirname, `../packages/${packageName}/dist/packages`)
+  console.log('dtsPath', dtsPath)
   try {
-    fs.rmdir(dtsPath, {
-      recursive: true,
-    })
+    const stat = await fs.stat(dtsPath)
+    if (stat.isDirectory()) {
+      await fs.rm(dtsPath, {
+        recursive: true,
+      })
+    }
   } catch (err) {
-    console.log(chalk.red(`remove ${packageName} dist/dts dir error!`))
+    console.log(err)
+    console.log(chalk.red(`remove ${packageName} dist/packages dir error!`))
   }
 }
 
-const PascalCase = (str) => {
+const pascalCase = (str) => {
   const re = /-(\w)/g
   const newStr = str.replace(re, function (match, group1) {
     return group1.toUpperCase()
@@ -100,17 +111,14 @@ const generateBuildConfigs = (packagesName) => {
       config: {
         input: resolve(__dirname, `../packages/${packageName}/src/index.ts`),
         output: {
-          dir: resolve(__dirname, `../packages/${packageName}/dist`),
-          name: PascalCase(packageName),
-          format: 'cjs',
+          name: pascalCase(packageName),
+          file: resolve(__dirname, `../packages/${packageName}/dist/index.js`),
+          format: 'esm',
         },
         plugins: [
           typescript({
             verbosity: -1,
-            tsconfig: resolve(
-              __dirname,
-              `../packages/${packageName}/tsconfig.json`
-            ),
+            tsconfig: resolve(__dirname, '../tsconfig.json'),
             tsconfigOverride: {
               include: [`package/${packageName}/src`],
             },
@@ -127,9 +135,8 @@ const extractDts = (packageName) => {
     __dirname,
     `../packages/${packageName}/api-extractor.json`
   )
-  const extractorConfig = ExtractorConfig.loadFileAndPrepare(
-    extractorConfigPath
-  )
+  const extractorConfig =
+    ExtractorConfig.loadFileAndPrepare(extractorConfigPath)
   const result = Extractor.invoke(extractorConfig, {
     localBuild: true,
     showVerboseMessages: true,
@@ -137,63 +144,44 @@ const extractDts = (packageName) => {
   return result
 }
 
-const mvDts = async (packageName) => {
-  const sourcePath = resolve(
-    __dirname,
-    `../packages/${packageName}/dist/${packageName}.d.ts`
-  )
-  const targetPath = resolve(
-    __dirname,
-    `../packages/${packageName}/${packageName}.d.ts`
-  )
-  const dtsState = await fs.stat(sourcePath)
-  if (dtsState.isFile) {
-    await fs.rename(sourcePath, targetPath)
-  }
-}
-
 const buildEntry = async (packageConfig) => {
   try {
     const packageBundle = await rollup.rollup(packageConfig.config)
     await packageBundle.write(packageConfig.config.output)
     const extractResult = extractDts(packageConfig.packageName)
-    await Promise.all([
-      cleanPackagesDtsDir(packageConfig.packageName),
-      mvDts(packageConfig.packageName),
-    ])
+    await cleanPackagesDtsDir(packageConfig.packageName)
     if (!extractResult.succeeded) {
-      console.log(
-        chalk.red(`@kever/${packageConfig.packageName} d.ts extract fail!`)
-      )
+      console.log(chalk.red(`${packageConfig.packageName} d.ts extract fail!`))
     }
-    console.log(
-      chalk.green(`@kever/${packageConfig.packageName} build successful! `)
-    )
+    console.log(chalk.green(`${packageConfig.packageName} build successful! `))
   } catch (err) {
-    console.log(chalk.red(`@kever/${packageConfig.packageName} build fail!`))
-    console.log(err)
+    console.log(chalk.red(`${packageConfig.packageName} build fail!`))
   }
 }
 
 const build = async (packagesConfig) => {
-  for (let packageConfig of packagesConfig) {
-    await buildEntry(packageConfig)
+  for (let config of packagesConfig) {
+    await buildEntry(config)
   }
 }
 
 const buildBootstrap = async () => {
   const packagesName = await getPackagesName()
-  packagesName.unshift('all')
-  const answers = await getAnswersFromInquirer(packagesName)
-  if (!answers) {
-    return
+  let buildPackagesName = packagesName
+  if (!args.all) {
+    packagesName.unshift('all')
+    const answers = await getAnswersFromInquirer(packagesName)
+    if (!answers) {
+      return
+    }
+    buildPackagesName = answers
   }
-  cleanPackagesOldDist(answers)
-  const packagesConfig = generateBuildConfigs(answers)
-  await build(packagesConfig)
+  await cleanPackagesOldDist(buildPackagesName)
+  const packagesBuildConfig = generateBuildConfigs(buildPackagesName)
+  await build(packagesBuildConfig)
 }
 
 buildBootstrap().catch((err) => {
-  console.log(err)
+  console.log('err', err)
   process.exit(1)
 })

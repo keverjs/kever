@@ -6,11 +6,13 @@ export const controllerPoll = new Map<string, Function>()
  * controller的标识，将修饰的类注册到controller poll里
  * @param path
  */
-export const Controller = (path = '/'): ClassDecorator => (constructor) => {
-  if (controllerPoll.has(path)) {
-    logger.error(`${path} router already exists`)
+export const Controller =
+  (path = '/'): ClassDecorator =>
+  (constructor) => {
+    if (controllerPoll.has(path)) {
+      logger.error(`${path} router already exists`)
+      return constructor
+    }
+    controllerPoll.set(path, constructor)
     return constructor
   }
-  controllerPoll.set(path, constructor)
-  return constructor
-}

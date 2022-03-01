@@ -9,9 +9,14 @@
   "publicConfig": {
     "access": "puiblic"
   },
-  "main": "dist/index.js",
-  "types": "logger.d.ts",
-  "scripts": {},
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:keverjs/kever.git",

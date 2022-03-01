@@ -15,25 +15,24 @@ import { logger } from '@kever/logger'
 import { middlewarePatchPool } from './patch'
 import { propertyPool, construct } from '../construct'
 
-const propertyMiddleware = (tag: Tag): PropertyDecorator => (
-  target,
-  propertyKey
-) => {
-  const middleware = middlewarePool.use(tag)
-  if (typeof middleware === 'boolean') {
-    middlewarePool.on(tag, (middleware) => {
-      if (middleware.type === MType.Property) {
-        propertyMiddlewarePoolEventHandler(target, propertyKey, middleware)
-      } else {
-        logger.error(`${tag.toString()} type property middleware no exists`)
-      }
-    })
-  } else if (middleware.type === MType.Property) {
-    propertyMiddlewarePoolEventHandler(target, propertyKey, middleware)
-  } else {
-    logger.error(`${tag.toString()} type property middleware no exists`)
+const propertyMiddleware =
+  (tag: Tag): PropertyDecorator =>
+  (target, propertyKey) => {
+    const middleware = middlewarePool.use(tag)
+    if (typeof middleware === 'boolean') {
+      middlewarePool.on(tag, (middleware) => {
+        if (middleware.type === MType.Property) {
+          propertyMiddlewarePoolEventHandler(target, propertyKey, middleware)
+        } else {
+          logger.error(`${tag.toString()} type property middleware no exists`)
+        }
+      })
+    } else if (middleware.type === MType.Property) {
+      propertyMiddlewarePoolEventHandler(target, propertyKey, middleware)
+    } else {
+      logger.error(`${tag.toString()} type property middleware no exists`)
+    }
   }
-}
 
 const propertyMiddlewarePoolEventHandler = (
   target: Object,
@@ -52,44 +51,42 @@ const propertyMiddlewarePoolEventHandler = (
   propertyPool.bind(poolKey, pool)
 }
 
-const routerMiddleware = <T>(
-  tag: Tag,
-  type: Aop,
-  param?: T
-): MethodDecorator => (target, key, description) => {
-  const middleware = middlewarePool.use(tag)
+const routerMiddleware =
+  <T>(tag: Tag, type: Aop, param?: T): MethodDecorator =>
+  (target, key, description) => {
+    const middleware = middlewarePool.use(tag)
 
-  if (typeof middleware === 'boolean') {
-    middlewarePool.on(tag, (middleware) => {
-      if (middleware.type !== MType.Router) {
-        logger.error(`${tag.toString()} type router middleware no exists`)
-      } else {
-        routerMiddlewarePoolEventHandler(
-          tag,
-          type,
-          target,
-          key,
-          (description.value as unknown) as KoaMiddleware,
-          middleware,
-          param
-        )
-      }
-    })
-  } else if (middleware.type === MType.Router) {
-    routerMiddlewarePoolEventHandler(
-      tag,
-      type,
-      target,
-      key,
-      (description.value as unknown) as KoaMiddleware,
-      middleware,
-      param
-    )
-  } else {
-    logger.error(`${tag.toString()} type router middleware no exists`)
+    if (typeof middleware === 'boolean') {
+      middlewarePool.on(tag, (middleware) => {
+        if (middleware.type !== MType.Router) {
+          logger.error(`${tag.toString()} type router middleware no exists`)
+        } else {
+          routerMiddlewarePoolEventHandler(
+            tag,
+            type,
+            target,
+            key,
+            description.value as unknown as KoaMiddleware,
+            middleware,
+            param
+          )
+        }
+      })
+    } else if (middleware.type === MType.Router) {
+      routerMiddlewarePoolEventHandler(
+        tag,
+        type,
+        target,
+        key,
+        description.value as unknown as KoaMiddleware,
+        middleware,
+        param
+      )
+    } else {
+      logger.error(`${tag.toString()} type router middleware no exists`)
+    }
+    return description
   }
-  return description
-}
 const routerMiddlewarePoolEventHandler = <T>(
   tag: Tag,
   type: Aop,
@@ -155,38 +152,38 @@ export const destoryAllMiddleware = () => {
   }
 }
 
-export const Middleware = (tag: Tag, type: MType): ClassDecorator => (
-  target
-) => {
-  const constructor = (target as unknown) as InstanceType
+export const Middleware =
+  (tag: Tag, type: MType): ClassDecorator =>
+  (target) => {
+    const constructor = target as unknown as InstanceType
 
-  const middlewareOptions = middlewarePatchPool.use(tag)
-  const middlewareInstance = construct(constructor, [middlewareOptions])
-  if (type !== MType.Property) {
-    middlewarePool.bind(tag, {
-      type,
-      instance: middlewareInstance,
-    })
-    return target
-  }
-  const readyResult = middlewareInstance.ready() as Promise<any> | any
-  if (isPromise(readyResult)) {
-    readyResult.then((payload: unknown) => {
+    const middlewareOptions = middlewarePatchPool.use(tag)
+    const middlewareInstance = construct(constructor, [middlewareOptions])
+    if (type !== MType.Property) {
       middlewarePool.bind(tag, {
         type,
         instance: middlewareInstance,
-        payload,
       })
-    })
-  } else {
-    middlewarePool.bind(tag, {
-      type,
-      instance: middlewareInstance,
-      payload: readyResult,
-    })
+      return target
+    }
+    const readyResult = middlewareInstance.ready() as Promise<any> | any
+    if (isPromise(readyResult)) {
+      readyResult.then((payload: unknown) => {
+        middlewarePool.bind(tag, {
+          type,
+          instance: middlewareInstance,
+          payload,
+        })
+      })
+    } else {
+      middlewarePool.bind(tag, {
+        type,
+        instance: middlewareInstance,
+        payload: readyResult,
+      })
+    }
+    return target
   }
-  return target
-}
 
 interface RouterMiddlewareParams<T> {
   tag: Tag

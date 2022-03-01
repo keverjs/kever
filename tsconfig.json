@@ -2,14 +2,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": ".",
-    "outDir": "lib",
+    "outDir": "dist",
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "node",
     "removeComments": true,
     "preserveConstEnums": true,
     "declaration": true,
-    "declarationDir": "dts",
     "noEmitOnError": true,
     "paths": {
       "@kever/*": ["packages/*/src"]

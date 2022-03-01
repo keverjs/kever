@@ -3,33 +3,15 @@
   "private": true,
   "version": "0.23.0",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "bootstrap": "lerna bootstrap",
     "build": "node ./scripts/build.js",
     "format": "eslint --fix . --ext .js,.ts",
     "test": "mocha --require ts-node/register ./packages/**/test/*.spec.ts",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md",
-    "preinstall": "node ./scripts/checkYarn.js",
-    "postinstall": "yarn bootstrap",
-    "release": "lerna publish"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md"
   },
-  "repository": "git+https://github.com/hubvue/kever.git",
-  "keywords": [
-    "nodejs",
-    "typescript",
-    "ioc",
-    "http server",
-    "koa"
-  ],
-  "author": "kim",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/keverjs/kever/issues"
+  "publishConfig": {
+    "directory": "packages/*"
   },
-  "homepage": "https://github.com/keverjs/kever#readme",
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
@@ -44,10 +26,9 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.3",
     "execa": "^4.0.2",
-    "husky": "^4.2.5",
     "inquirer": "^7.3.3",
-    "lerna": "^3.22.1",
     "lint-staged": "^10.2.8",
+    "minimist": "^1.2.5",
     "mocha": "^7.2.0",
     "prettier": "^2.0.5",
     "reflect-metadata": "^0.1.13",
@@ -56,12 +37,6 @@
     "supertest": "^4.0.2",
     "ts-node": "^8.10.2",
     "typescript": "^4.2.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   },
   "lint-staged": {
     "{src, test, example}/**/*.ts": [
@@ -79,6 +54,5 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
-  },
-  "main": "index.js"
+  }
 }
