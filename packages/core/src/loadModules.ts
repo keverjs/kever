@@ -13,7 +13,7 @@ export const loadModules = async (
     const baseDir = process.cwd()
     let moduleRootPath: string
     if (env === 'development') {
-      moduleRootPath = `${baseDir}/src/app`
+      moduleRootPath = `${baseDir}/src`
     } else {
       let tsconfigPath = `${baseDir}/${tsconfigFileName}`
       const tsconfigTxt = await readFile(tsconfigPath, {
@@ -21,49 +21,21 @@ export const loadModules = async (
       })
       const tsconfig = JSON.parse(tsconfigTxt)
       const outDir = tsconfig.compilerOptions.outDir
-      moduleRootPath = `${baseDir}/${outDir}/app`
+      moduleRootPath = `${baseDir}/${outDir}`
     }
-    // controller
-    const controllerModuleRootPath = `${moduleRootPath}/controller`
-    // service
-    const serviceModuleRootPath = `${moduleRootPath}/service`
-    // model
-    const modelModuleRootPath = `${moduleRootPath}/model`
-    // middleware
-    const middlewareModuleRootPath = `${moduleRootPath}/middleware`
-    // Other
-    const otherModuleRootPath = modulePath.map(
-      (module) => `${moduleRootPath}/${module}`
-    )
-    const [controllersPath, servicesPath, middlewaresPath, modelsPath] =
-      await Promise.all([
-        getFilesPath(controllerModuleRootPath),
-        getFilesPath(serviceModuleRootPath),
-        getFilesPath(middlewareModuleRootPath),
-        getFilesPath(modelModuleRootPath),
-      ])
-    const otherModulesPath = await Promise.all(
-      otherModuleRootPath.map((rootPath) => getFilesPath(rootPath))
+    const moduleFilesPath = getFilesPath(`${moduleRootPath}/app`)
+    const otherModulesRootPath = modulePath.map((module) =>
+      getFilesPath(`${moduleRootPath}/${module}`)
     )
 
-    const allMiddlewarePath = middlewares.concat([...middlewaresPath])
-    const loadAllMiddlewarePath = allMiddlewarePath.map((path) =>
-      loadFile(path)
+    const allModulesPath = (
+      await Promise.all([moduleFilesPath, ...otherModulesRootPath])
     )
-    const loadModelPath = Array.from(modelsPath).map((path) => loadFile(path))
-    const loadModulePath = [...controllersPath, ...servicesPath].map((path) =>
-      loadFile(path)
-    )
-
-    const loadOtherPath = otherModulesPath
-      .map((paths) => [...paths])
+      .map((modules) => [...modules])
       .flat()
-      .map((path) => loadFile(path))
+      .concat(middlewares)
 
-    await Promise.all(loadAllMiddlewarePath)
-    await Promise.all(loadModelPath)
-    await Promise.all(loadModulePath)
-    await Promise.all(loadOtherPath)
+    await Promise.all(allModulesPath.map((path) => loadFile(path)))
   } catch (err) {
     logger.error(`${err.message} \n ${err.stack}`)
   }
