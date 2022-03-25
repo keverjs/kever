@@ -1,25 +1,24 @@
-const fs = require('fs').promises
-const inquirer = require('inquirer')
-const typescript = require('rollup-plugin-typescript2')
-const chalk = require('chalk')
-const rollup = require('rollup')
-const { resolve } = require('path')
+import fs from 'fs/promises'
+import inquirer from 'inquirer'
+import typescript from 'rollup-plugin-typescript2'
+import chalk from 'chalk'
+import { rollup } from 'rollup'
+import { resolve } from 'path'
+import minimist from 'minimist'
+import { Extractor, ExtractorConfig } from '@microsoft/api-extractor'
 
-const args = require('minimist')(process.argv.slice(2))
+const args = minimist(process.argv.slice(2))
 
 const getPackagesName = async () => {
-  const allPackagesName = await fs.readdir(resolve(__dirname, '../packages'))
+  const allPackagesName = await fs.readdir(resolve('packages'))
   return allPackagesName
     .filter((packageName) => {
       const isHiddenFile = /^\./g.test(packageName)
       return !isHiddenFile
     })
-    .filter((packageName) => {
-      const isPrivatePackage = require(resolve(
-        __dirname,
-        `../packages/${packageName}/package.json`
-      )).private
-      return !isPrivatePackage
+    .filter(async (packageName) => {
+      const pkg = await import(resolve(`packages/${packageName}/package.json`))
+      return !pkg.private
     })
 }
 
@@ -45,7 +44,7 @@ const getAnswersFromInquirer = async (packagesName) => {
     )
     return
   }
-  if (packages.some((package) => package === 'all')) {
+  if (packages.some((p: string) => p === 'all')) {
     packagesName.shift()
     packages = packagesName
   }
@@ -63,37 +62,31 @@ const getAnswersFromInquirer = async (packagesName) => {
   return packages
 }
 
-const cleanPackagesOldDist = async (packagesName) => {
-  for (let packageName of packagesName) {
-    const distPath = resolve(__dirname, `../packages/${packageName}/dist`)
-    try {
-      const stat = await fs.stat(distPath)
-      if (stat.isDirectory()) {
-        await fs.rm(distPath, {
-          recursive: true,
-        })
-      }
-    } catch (err) {
-      console.log('err', err)
-      console.log(chalk.red(`remove ${packageName} dist dir error!`))
-    }
-  }
-}
-
-const cleanPackagesDtsDir = async (packageName) => {
-  const dtsPath = resolve(__dirname, `../packages/${packageName}/dist/packages`)
-  console.log('dtsPath', dtsPath)
+const cleanDir = async (dir: string) => {
   try {
-    const stat = await fs.stat(dtsPath)
+    const stat = await fs.stat(dir)
     if (stat.isDirectory()) {
-      await fs.rm(dtsPath, {
+      await fs.rm(dir, {
         recursive: true,
       })
     }
-  } catch (err) {
-    console.log(err)
-    console.log(chalk.red(`remove ${packageName} dist/packages dir error!`))
-  }
+  } catch (err) {}
+}
+
+const cleanPackagesOldDist = async (packagesName) => {
+  await Promise.all(
+    packagesName.map((name) => cleanDir(`packages/${name}/dist`))
+  )
+}
+
+const cleanPackagesDtsDir = async (packageName) => {
+  const dtsPath = resolve(`packages/${packageName}/dist/packages`)
+  await cleanDir(dtsPath)
+}
+
+const cleanDist = async () => {
+  const distPath = resolve('dist')
+  cleanDir(distPath)
 }
 
 const pascalCase = (str) => {
@@ -104,36 +97,47 @@ const pascalCase = (str) => {
   return newStr.charAt(0).toUpperCase() + newStr.slice(1)
 }
 
+const formats = ['esm', 'cjs']
+const packageOtherConfig = {
+  json2type: {
+    external: ['@cckim/go-wasmer'],
+  },
+}
 const generateBuildConfigs = (packagesName) => {
-  return packagesName.map((packageName) => {
-    return {
-      packageName,
-      config: {
-        input: resolve(__dirname, `../packages/${packageName}/src/index.ts`),
-        output: {
-          name: pascalCase(packageName),
-          file: resolve(__dirname, `../packages/${packageName}/dist/index.js`),
-          format: 'esm',
+  const packagesFormatConfig = packagesName.map((packageName) => {
+    const formatConfigs = []
+    for (let format of formats) {
+      formatConfigs.push({
+        packageName,
+        config: {
+          input: resolve(`packages/${packageName}/src/index.ts`),
+          output: {
+            name: pascalCase(packageName),
+            file: resolve(`packages/${packageName}/dist/index.${format}.js`),
+            inlineDynamicImports: true,
+            format,
+          },
+          plugins: [
+            typescript({
+              verbosity: -1,
+              tsconfig: resolve('tsconfig.json'),
+              tsconfigOverride: {
+                include: [`package/${packageName}/src`],
+              },
+            }),
+          ],
+          ...packageOtherConfig[packageName],
         },
-        plugins: [
-          typescript({
-            verbosity: -1,
-            tsconfig: resolve(__dirname, '../tsconfig.json'),
-            tsconfigOverride: {
-              include: [`package/${packageName}/src`],
-            },
-          }),
-        ],
-      },
+      })
     }
+    return formatConfigs
   })
+  return packagesFormatConfig.flat()
 }
 
 const extractDts = (packageName) => {
-  const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
   const extractorConfigPath = resolve(
-    __dirname,
-    `../packages/${packageName}/api-extractor.json`
+    `packages/${packageName}/api-extractor.json`
   )
   const extractorConfig =
     ExtractorConfig.loadFileAndPrepare(extractorConfigPath)
@@ -146,7 +150,7 @@ const extractDts = (packageName) => {
 
 const buildEntry = async (packageConfig) => {
   try {
-    const packageBundle = await rollup.rollup(packageConfig.config)
+    const packageBundle = await rollup(packageConfig.config)
     await packageBundle.write(packageConfig.config.output)
     const extractResult = extractDts(packageConfig.packageName)
     await cleanPackagesDtsDir(packageConfig.packageName)
@@ -155,6 +159,7 @@ const buildEntry = async (packageConfig) => {
     }
     console.log(chalk.green(`${packageConfig.packageName} build successful! `))
   } catch (err) {
+    console.log('err', err)
     console.log(chalk.red(`${packageConfig.packageName} build fail!`))
   }
 }
@@ -179,6 +184,7 @@ const buildBootstrap = async () => {
   await cleanPackagesOldDist(buildPackagesName)
   const packagesBuildConfig = generateBuildConfigs(buildPackagesName)
   await build(packagesBuildConfig)
+  await cleanDist()
 }
 
 buildBootstrap().catch((err) => {
