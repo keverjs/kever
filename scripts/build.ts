@@ -99,8 +99,17 @@ const pascalCase = (str) => {
 
 const formats = ['esm', 'cjs']
 const packageOtherConfig = {
-  json2type: {
-    external: ['@cckim/go-wasmer'],
+  core: {
+    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+  },
+  ioc: {
+    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+  },
+  router: {
+    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+  },
+  logger: {
+    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
   },
 }
 const generateBuildConfigs = (packagesName) => {
