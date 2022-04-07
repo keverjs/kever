@@ -4,11 +4,16 @@ import { logger } from '@kever/logger'
 import { middlewarePatchPool } from './patch'
 import { construct, defineProperty, isPromise, Tag } from '../utils'
 
-const META_MIDDLEWARE_PROPERTY = Symbol.for('ioc#middleware_property')
-const META_MIDDLEWARE_ROUTE = Symbol.for('ioc#middleware_route')
-const META_MIDDLEWARE_GOLBAL = Symbol.for('ioc#middleware_golbal')
-const META_MIDDLEWARE_ALL = Symbol.for('ioc#middleware_all')
+export const META_MIDDLEWARE_PROPERTY = Symbol.for('ioc#middleware_property')
+export const META_MIDDLEWARE_ROUTE = Symbol.for('ioc#middleware_route')
+export const META_MIDDLEWARE_GLOBAL = Symbol.for('ioc#middleware_global')
+export const META_MIDDLEWARE_ALL = Symbol.for('ioc#middleware_all')
 export const META_MIDDLEWARE_ROUTER = Symbol.for('ioc#middleware_router')
+
+export const MiddlewarePropertyPool = Object.create({})
+export const MiddlewareRoutePool = Object.create({})
+export const MiddlewareGlobalPool = Object.create({})
+export const MiddlewareAllPool = Object.create({})
 
 /**
  * @description property middleware
@@ -18,7 +23,11 @@ export const META_MIDDLEWARE_ROUTER = Symbol.for('ioc#middleware_router')
 const propertyMiddleware =
   (tag: Tag): PropertyDecorator =>
   (target, propertyKey) => {
-    const middleware = Reflect.getMetadata(META_MIDDLEWARE_PROPERTY, tag)
+    const middleware = Reflect.getMetadata(
+      META_MIDDLEWARE_PROPERTY,
+      MiddlewarePropertyPool,
+      tag
+    )
     if (!middleware) {
       logger.error(`${tag.toString()} type property middleware no exists`)
       return
@@ -40,9 +49,10 @@ export interface RouteMiddlewareMeta {
  */
 const routeMiddleware =
   <T>(tag: Tag, type: Aop, param?: T): MethodDecorator =>
-  (_target, key, description) => {
+  (target, key, description) => {
     const middleware = Reflect.getMetadata(
       META_MIDDLEWARE_ROUTE,
+      MiddlewareRoutePool,
       tag
     ) as BaseMiddleware<MType>['ready']
 
@@ -86,8 +96,9 @@ const routeMiddleware =
  */
 export const getGlobalMiddleware = () => {
   const globalMiddlewares = Reflect.getMetadata(
-    META_MIDDLEWARE_GOLBAL,
-    META_MIDDLEWARE_GOLBAL
+    META_MIDDLEWARE_GLOBAL,
+    MiddlewareGlobalPool,
+    META_MIDDLEWARE_GLOBAL
   ) as Set<BaseMiddleware<MType.Global>>
   return [...globalMiddlewares] || []
 }
@@ -98,6 +109,7 @@ export const getGlobalMiddleware = () => {
 export const destoryAllMiddleware = () => {
   const instances = Reflect.getMetadata(
     META_MIDDLEWARE_ALL,
+    MiddlewareAllPool,
     META_MIDDLEWARE_ALL
   ) as Set<BaseMiddleware<MType.Global>>
 
@@ -151,7 +163,12 @@ const defineRouteMiddleware = (
   const readyMethod = (
     middlewareInstance as BaseMiddleware<MType.Route>
   ).ready.bind(middlewareInstance)
-  Reflect.defineMetadata(META_MIDDLEWARE_ROUTE, readyMethod, tag)
+  Reflect.defineMetadata(
+    META_MIDDLEWARE_ROUTE,
+    readyMethod,
+    MiddlewareRoutePool,
+    tag
+  )
 }
 /**
  * @description define property middleware
@@ -168,7 +185,12 @@ const definePropertyMiddleware = (
   if (isPromise(readyResult)) {
     readyResult
       .then((payload: unknown) => {
-        Reflect.defineMetadata(META_MIDDLEWARE_PROPERTY, payload, tag)
+        Reflect.defineMetadata(
+          META_MIDDLEWARE_PROPERTY,
+          payload,
+          MiddlewarePropertyPool,
+          tag
+        )
       })
       .catch((err: unknown) => {
         logger.error(
@@ -176,7 +198,12 @@ const definePropertyMiddleware = (
         )
       })
   } else {
-    Reflect.defineMetadata(META_MIDDLEWARE_PROPERTY, readyResult, tag)
+    Reflect.defineMetadata(
+      META_MIDDLEWARE_PROPERTY,
+      readyResult,
+      MiddlewarePropertyPool,
+      tag
+    )
   }
 }
 /**
@@ -187,8 +214,9 @@ const defineGolbalMiddleware = (
   middlewareInstance: BaseMiddleware<MType.Global>
 ) => {
   let golbalMiddlewares = Reflect.getMetadata(
-    META_MIDDLEWARE_GOLBAL,
-    META_MIDDLEWARE_GOLBAL
+    META_MIDDLEWARE_GLOBAL,
+    MiddlewareGlobalPool,
+    META_MIDDLEWARE_GLOBAL
   ) as Set<BaseMiddleware<MType.Global>['ready']> | undefined
   if (!golbalMiddlewares) {
     golbalMiddlewares = new Set<BaseMiddleware<MType.Global>['ready']>()
@@ -198,9 +226,10 @@ const defineGolbalMiddleware = (
   ).ready.bind(middlewareInstance)
   golbalMiddlewares.add(middleware)
   Reflect.defineMetadata(
-    META_MIDDLEWARE_GOLBAL,
+    META_MIDDLEWARE_GLOBAL,
     golbalMiddlewares,
-    META_MIDDLEWARE_GOLBAL
+    MiddlewareGlobalPool,
+    META_MIDDLEWARE_GLOBAL
   )
 }
 
@@ -211,6 +240,7 @@ const defineGolbalMiddleware = (
 const defineMiddlewareInstance = (middleware: BaseMiddleware<MType.Global>) => {
   let allMiddlewares = Reflect.getMetadata(
     META_MIDDLEWARE_ALL,
+    MiddlewareAllPool,
     META_MIDDLEWARE_ALL
   )
   if (!allMiddlewares) {
@@ -220,6 +250,7 @@ const defineMiddlewareInstance = (middleware: BaseMiddleware<MType.Global>) => {
   Reflect.defineMetadata(
     META_MIDDLEWARE_ALL,
     allMiddlewares,
+    MiddlewareAllPool,
     META_MIDDLEWARE_ALL
   )
 }
