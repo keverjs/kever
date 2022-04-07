@@ -65,9 +65,11 @@ importers:
   packages/core:
     specifiers:
       '@types/koa': ^2.11.3
+      chalk: ^5.0.1
       koa: ^2.13.0
     dependencies:
       '@types/koa': 2.13.4
+      chalk: artifactory.intra.xiaojukeji.com/chalk/5.0.1
       koa: 2.13.4
 
   packages/ioc:
@@ -4466,6 +4468,13 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  artifactory.intra.xiaojukeji.com/chalk/5.0.1:
+    resolution: {integrity: sha1-ylfXHoK7U0opbfY7usxKHCKypLY=, registry: http://npm.intra.xiaojukeji.com/, tarball: http://artifactory.intra.xiaojukeji.com/artifactory/api/npm/npm/chalk/-/chalk-5.0.1.tgz?dl=https%3A%2F%2Fregistry.npmmirror.com%2Fchalk%2F-%2Fchalk-5.0.1.tgz}
+    name: chalk
+    version: 5.0.1
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+    dev: false
+
   artifactory.intra.xiaojukeji.com/chokidar/3.5.3:
     resolution: {integrity: sha1-HPN8hwe5Mr0a8a4iwEMuKs0ZA70=, registry: http://npm.intra.xiaojukeji.com/, tarball: http://artifactory.intra.xiaojukeji.com/artifactory/api/npm/npm/chokidar/-/chokidar-3.5.3.tgz?dl=https%3A%2F%2Fregistry.npmmirror.com%2Fchokidar%2F-%2Fchokidar-3.5.3.tgz}
     name: chokidar
@@ -4909,6 +4918,7 @@ packages:
     resolution: {integrity: sha1-BBsF30V1Xlh6JJQiebnRExRuHJY=, registry: http://npm.intra.xiaojukeji.com/, tarball: http://artifactory.intra.xiaojukeji.com/artifactory/api/npm/npm/graceful-fs/-/graceful-fs-4.2.9.tgz?dl=https%3A%2F%2Fregistry.npmmirror.com%2Fgraceful-fs%2F-%2Fgraceful-fs-4.2.9.tgz}
     name: graceful-fs
     version: 4.2.9
+    requiresBuild: true
     dev: true
     optional: true
 

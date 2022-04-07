@@ -61,16 +61,44 @@ const getAnswersFromInquirer = async (packagesName) => {
 }
 const packageOtherConfig = {
   core: {
-    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+    external: [
+      '@kever/core',
+      '@kever/ioc',
+      '@kever/router',
+      '@kever/logger',
+      'koa',
+      'reflect-metadata',
+      'chalk',
+    ],
   },
   ioc: {
-    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+    external: [
+      '@kever/core',
+      '@kever/ioc',
+      '@kever/router',
+      '@kever/logger',
+      'koa',
+      'reflect-metadata',
+    ],
   },
   router: {
-    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+    external: [
+      '@kever/core',
+      '@kever/ioc',
+      '@kever/router',
+      '@kever/logger',
+      'reflect-metadata',
+      'koa-router',
+    ],
   },
   logger: {
-    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+    external: [
+      '@kever/core',
+      '@kever/ioc',
+      '@kever/router',
+      '@kever/logger',
+      'chalk',
+    ],
   },
 }
 const generateBuildConfigs = (packagesName: string[]): Options[] => {

@@ -36,8 +36,15 @@
     "koa"
   ],
   "license": "ISC",
+  "peerDependencies": {
+    "reflect-metadata": "^0.1.13",
+    "@kever/ioc": ">=0.23.1",
+    "@kever/logger": ">=0.23.1",
+    "@kever/router": ">=0.23.1"
+  },
   "dependencies": {
     "@types/koa": "^2.11.3",
+    "chalk": "^5.0.1",
     "koa": "^2.13.0"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
