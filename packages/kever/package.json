@@ -1,7 +1,7 @@
 {
-  "name": "@kever/ioc",
+  "name": "kever",
   "version": "0.23.1-beta.8",
-  "description": "kever ioc",
+  "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "author": {
     "name": "kim",
     "email": "1191340528@qq.com"
@@ -21,26 +21,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:keverjs/kever.git",
-    "directory": "packages/ioc"
+    "url": "git@github.com:keverjs/kever.git"
   },
   "bugs": {
     "url": "https://github.com/keverjs/kever/issues"
   },
   "homepage": "https://github.com/keverjs/kever#readme",
   "keywords": [
-    "ioc",
-    "node",
-    "dependencies",
-    "di"
+    "nodejs",
+    "framework",
+    "typescript",
+    "kever"
   ],
-  "license": "MIT",
-  "peerDependencies": {
-    "reflect-metadata": "^0.1.13",
-    "@kever/logger": ">=0.23.1"
-  },
+  "license": "ISC",
   "dependencies": {
-    "@types/koa": "^2.11.3"
+    "@kever/core": ">=0.23.1",
+    "@kever/ioc": ">=0.23.1",
+    "@kever/logger": ">=0.23.1",
+    "@kever/router": ">=0.23.1"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }

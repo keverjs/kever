@@ -100,6 +100,9 @@ const packageOtherConfig = {
       'chalk',
     ],
   },
+  kever: {
+    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+  },
 }
 const generateBuildConfigs = (packagesName: string[]): Options[] => {
   return packagesName.map((name) => {
