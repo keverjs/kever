@@ -1,3 +1,4 @@
+export * from './types'
 export const construct = (target: Function, params: unknown[] = []) => {
   return Reflect.construct(target, params)
 }

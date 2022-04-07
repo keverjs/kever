@@ -1,6 +1,5 @@
 import { logger } from '@kever/logger'
-import { construct, defineProperty } from './utils'
-import { Tag } from './utils/types'
+import { construct, defineProperty, Tag } from './utils'
 
 export const META_INJECT = Symbol.for('ioc#meta_inject')
 

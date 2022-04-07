@@ -2,8 +2,7 @@ import { MType, BaseMiddleware, Aop, KoaMiddleware } from './constants'
 
 import { logger } from '@kever/logger'
 import { middlewarePatchPool } from './patch'
-import { Tag } from '../utils/types'
-import { construct, defineProperty, isPromise } from '../utils'
+import { construct, defineProperty, isPromise, Tag } from '../utils'
 
 const META_MIDDLEWARE_PROPERTY = Symbol.for('ioc#middleware_property')
 const META_MIDDLEWARE_ROUTE = Symbol.for('ioc#middleware_route')

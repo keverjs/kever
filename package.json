@@ -19,6 +19,7 @@
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
+    "@microsoft/api-extractor": "^7.20.1",
     "@types/mocha": "^7.0.2",
     "@types/node": "^14.0.14",
     "@typescript-eslint/eslint-plugin": "^4.14.0",
@@ -38,8 +39,9 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
     "reflect-metadata": "^0.1.13",
+    "rollup": "^2.70.1",
+    "rollup-plugin-typescript2": "^0.31.2",
     "supertest": "^4.0.2",
-    "tsup": "^5.12.4",
     "typescript": "^4.6.2"
   },
   "lint-staged": {
