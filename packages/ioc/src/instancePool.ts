@@ -36,14 +36,19 @@ export class InstancePool<K, T> {
 
   public on(key: K, listener: Listener<T>) {
     let listeners: Set<Listener<T>>
-    const pool = this.listenerPool.get(key)
-    if (pool) {
-      listeners = pool
+    const value = this.use(key)
+    if (value && typeof value !== 'boolean') {
+      listener(value)
     } else {
-      listeners = new Set<Listener<T>>()
+      const pool = this.listenerPool.get(key)
+      if (pool) {
+        listeners = pool
+      } else {
+        listeners = new Set<Listener<T>>()
+      }
+      listeners.add(listener)
+      this.listenerPool.set(key, listeners)
     }
-    listeners.add(listener)
-    this.listenerPool.set(key, listeners)
   }
 
   public off(key: K, listener: Listener<T>): boolean {
@@ -62,6 +67,7 @@ export class InstancePool<K, T> {
       listeners.forEach((listener) => {
         listener(instance as T)
       })
+      listeners.clear()
     }
   }
 }

@@ -1,8 +1,8 @@
 import { logger } from '@kever/logger'
-import { construct, defineProperty, Tag } from './utils'
+import { InstancePool } from './instancePool'
+import { construct, defineProperty, InstanceType, Tag } from './utils'
 
-const META_INJECT = Symbol.for('ioc#meta_inject')
-const InjectPool = Object.create(null)
+const InjectPool = new InstancePool<Tag, InstanceType>()
 
 /**
  * @description 标记当前类是可注入的
@@ -11,12 +11,12 @@ const InjectPool = Object.create(null)
 export const Injectable =
   (tag: Tag): ClassDecorator =>
   (target) => {
-    const injectMeta = Reflect.getMetadata(META_INJECT, InjectPool, tag)
+    const injectMeta = InjectPool.use(tag)
     if (injectMeta) {
       logger.error(` ${tag.toString()} model existence`)
       return
     }
-    Reflect.defineMetadata(META_INJECT, target, InjectPool, tag)
+    InjectPool.bind(tag, target as unknown as InstanceType)
     return target
   }
 
@@ -27,20 +27,21 @@ export const Injectable =
 export const Inject =
   <T>(tag: Tag, unNew = false, param?: T): PropertyDecorator =>
   (target, propertyKey) => {
-    const injectMeta = Reflect.getMetadata(META_INJECT, InjectPool, tag)
-    if (!injectMeta) {
-      logger.error(` ${tag.toString()} injectable model not existence`)
-      return
-    }
-    let value = injectMeta
-    if (!unNew) {
-      let parameter: unknown[]
-      if (Array.isArray(param)) {
-        parameter = param
-      } else {
-        parameter = [param]
+    InjectPool.on(tag, (instance) => {
+      if (!instance) {
+        logger.error(` ${tag.toString()} injectable model not existence`)
+        return
       }
-      value = construct(injectMeta, parameter)
-    }
-    defineProperty(target, propertyKey, value)
+      let value = instance
+      if (!unNew) {
+        let parameter: unknown[]
+        if (Array.isArray(param)) {
+          parameter = param
+        } else {
+          parameter = [param]
+        }
+        value = construct(instance, parameter)
+      }
+      defineProperty(target, propertyKey, value)
+    })
   }

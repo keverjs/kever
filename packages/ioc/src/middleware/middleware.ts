@@ -3,17 +3,23 @@ import { MType, BaseMiddleware, Aop, KoaMiddleware } from './constants'
 import { logger } from '@kever/logger'
 import { middlewarePatchPool } from './patch'
 import { construct, defineProperty, isPromise, Tag } from '../utils'
+import { InstancePool } from '../instancePool'
 
-export const META_MIDDLEWARE_PROPERTY = Symbol.for('ioc#middleware_property')
-export const META_MIDDLEWARE_ROUTE = Symbol.for('ioc#middleware_route')
 export const META_MIDDLEWARE_GLOBAL = Symbol.for('ioc#middleware_global')
 export const META_MIDDLEWARE_ALL = Symbol.for('ioc#middleware_all')
 export const META_MIDDLEWARE_ROUTER = Symbol.for('ioc#middleware_router')
 
-export const MiddlewarePropertyPool = Object.create({})
-export const MiddlewareRoutePool = Object.create({})
 export const MiddlewareGlobalPool = Object.create({})
 export const MiddlewareAllPool = Object.create({})
+
+const MiddlewarePropertyPool = new InstancePool<
+  Tag,
+  ReturnType<BaseMiddleware<MType.Property>['ready']>
+>()
+const MiddlewareRoutePool = new InstancePool<
+  Tag,
+  BaseMiddleware<MType.Route>['ready']
+>()
 
 /**
  * @description property middleware
@@ -23,16 +29,13 @@ export const MiddlewareAllPool = Object.create({})
 const propertyMiddleware =
   (tag: Tag): PropertyDecorator =>
   (target, propertyKey) => {
-    const middleware = Reflect.getMetadata(
-      META_MIDDLEWARE_PROPERTY,
-      MiddlewarePropertyPool,
-      tag
-    )
-    if (!middleware) {
-      logger.error(`${tag.toString()} type property middleware no exists`)
-      return
-    }
-    defineProperty(target, propertyKey, middleware)
+    MiddlewarePropertyPool.on(tag, (middleware) => {
+      if (!middleware) {
+        logger.error(`${tag.toString()} type property middleware no exists`)
+        return
+      }
+      defineProperty(target, propertyKey, middleware)
+    })
   }
 
 export interface RouteMiddlewareMeta {
@@ -50,43 +53,40 @@ export interface RouteMiddlewareMeta {
 const routeMiddleware =
   <T>(tag: Tag, type: Aop, param?: T): MethodDecorator =>
   (target, key, description) => {
-    const middleware = Reflect.getMetadata(
-      META_MIDDLEWARE_ROUTE,
-      MiddlewareRoutePool,
-      tag
-    ) as BaseMiddleware<MType>['ready']
-
-    if (!middleware) {
-      logger.error(`${tag.toString()} type router middleware no exists`)
-      return
-    }
-    const middlewareReady = middleware(
-      description.value as unknown as KoaMiddleware,
-      param
-    ) as KoaMiddleware
-
-    let routeMeta: RouteMiddlewareMeta = Reflect.getMetadata(
-      META_MIDDLEWARE_ROUTER,
-      description.value as unknown as Function
-    )
-    if (!routeMeta) {
-      routeMeta = {
-        [Aop.After]: [],
-        [Aop.Before]: [],
-        middlewareKey: key,
+    MiddlewareRoutePool.on(tag, (middleware) => {
+      if (!middleware) {
+        logger.error(`${tag.toString()} type router middleware no exists`)
+        return
       }
-    }
-    if (type === Aop.Duplex) {
-      routeMeta[Aop.After].push(middlewareReady)
-      routeMeta[Aop.Before].push(middlewareReady)
-    } else {
-      routeMeta[type].push(middlewareReady)
-    }
-    Reflect.defineMetadata(
-      META_MIDDLEWARE_ROUTER,
-      routeMeta,
-      description.value as unknown as Function
-    )
+      const middlewareReady = middleware(
+        description.value as unknown as KoaMiddleware,
+        param
+      ) as KoaMiddleware
+
+      let routeMeta: RouteMiddlewareMeta = Reflect.getMetadata(
+        META_MIDDLEWARE_ROUTER,
+        description.value as unknown as Function
+      )
+      if (!routeMeta) {
+        routeMeta = {
+          [Aop.After]: [],
+          [Aop.Before]: [],
+          middlewareKey: key,
+        }
+      }
+      if (type === Aop.Duplex) {
+        routeMeta[Aop.After].push(middlewareReady)
+        routeMeta[Aop.Before].push(middlewareReady)
+      } else {
+        routeMeta[type].push(middlewareReady)
+      }
+
+      Reflect.defineMetadata(
+        META_MIDDLEWARE_ROUTER,
+        routeMeta,
+        description.value as unknown as Function
+      )
+    })
     return description
   }
 
@@ -163,12 +163,7 @@ const defineRouteMiddleware = (
   const readyMethod = (
     middlewareInstance as BaseMiddleware<MType.Route>
   ).ready.bind(middlewareInstance)
-  Reflect.defineMetadata(
-    META_MIDDLEWARE_ROUTE,
-    readyMethod,
-    MiddlewareRoutePool,
-    tag
-  )
+  MiddlewareRoutePool.bind(tag, readyMethod)
 }
 /**
  * @description define property middleware
@@ -185,12 +180,7 @@ const definePropertyMiddleware = (
   if (isPromise(readyResult)) {
     readyResult
       .then((payload: unknown) => {
-        Reflect.defineMetadata(
-          META_MIDDLEWARE_PROPERTY,
-          payload,
-          MiddlewarePropertyPool,
-          tag
-        )
+        MiddlewarePropertyPool.bind(tag, payload)
       })
       .catch((err: unknown) => {
         logger.error(
@@ -198,12 +188,7 @@ const definePropertyMiddleware = (
         )
       })
   } else {
-    Reflect.defineMetadata(
-      META_MIDDLEWARE_PROPERTY,
-      readyResult,
-      MiddlewarePropertyPool,
-      tag
-    )
+    MiddlewarePropertyPool.bind(tag, readyResult)
   }
 }
 /**
