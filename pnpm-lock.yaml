@@ -61,11 +61,11 @@ importers:
   packages/core:
     specifiers:
       '@types/koa': ^2.11.3
-      chalk: ^5.0.1
+      chalk: ^4.0.0
       koa: ^2.13.0
     dependencies:
       '@types/koa': 2.13.4
-      chalk: 5.0.1
+      chalk: 4.1.2
       koa: 2.13.4
 
   packages/ioc:
@@ -1009,11 +1009,6 @@ packages:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
-
-  /chalk/5.0.1:
-    resolution: {integrity: sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==}
-    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
-    dev: false
 
   /chardet/0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
