@@ -100,44 +100,16 @@ const pascalCase = (str) => {
 const formats = ['esm', 'cjs']
 const packageOtherConfig = {
   core: {
-    external: [
-      '@kever/core',
-      '@kever/ioc',
-      '@kever/router',
-      '@kever/logger',
-      'koa',
-      'reflect-metadata',
-      'chalk',
-    ],
+    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
   },
   ioc: {
-    external: [
-      '@kever/core',
-      '@kever/ioc',
-      '@kever/router',
-      '@kever/logger',
-      'koa',
-      'reflect-metadata',
-    ],
+    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
   },
   router: {
-    external: [
-      '@kever/core',
-      '@kever/ioc',
-      '@kever/router',
-      '@kever/logger',
-      'reflect-metadata',
-      'koa-router',
-    ],
+    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
   },
   logger: {
-    external: [
-      '@kever/core',
-      '@kever/ioc',
-      '@kever/router',
-      '@kever/logger',
-      'chalk',
-    ],
+    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
   },
   kever: {
     external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
