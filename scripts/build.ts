@@ -112,6 +112,7 @@ const generateBuildConfigs = (packagesName: string[]): Options[] => {
       entry: [`packages/${name}/src/index.ts`],
       outDir: `packages/${name}/dist`,
       format: ['cjs', 'esm'],
+      legacyOutput: true,
       dts: true,
       replaceNodeEnv: true,
       splitting: true,
