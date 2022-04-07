@@ -1,7 +1,6 @@
 import Router from 'koa-router'
-import { Next, Context } from 'koa'
 import { logger } from '@kever/logger'
-import { Aop, routerPool } from '@kever/ioc'
+import { Aop, META_MIDDLEWARE_ROUTER, RouteMiddlewareMeta } from '@kever/ioc'
 import { getInstanceMethods, resolvePath } from './util'
 import { META_ROUTER, RouterMetadata } from './methodsDecorator'
 
@@ -24,20 +23,22 @@ export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
         META_ROUTER,
         controller[methodName as keyof object]
       )
-      if (!routerMeta) {
+      const middlewareMeta: RouteMiddlewareMeta = Reflect.getMetadata(
+        META_MIDDLEWARE_ROUTER,
+        controller[methodName as keyof object]
+      )
+
+      if (!routerMeta || !middlewareMeta) {
         break
       }
+      // route path
       const { path, methods: routeMethods } = routerMeta
       const routePath = resolvePath(rootPath, path)
 
-      const routerPoolKey = `${
-        controller.constructor.name
-      }-${methodName.toString()}`
-      const routerAopPool = routerPool.use(routerPoolKey)
-      const beforeMiddleware =
-        typeof routerAopPool !== 'boolean' ? [...routerAopPool[Aop.Before]] : []
-      const afterMiddleware =
-        typeof routerAopPool !== 'boolean' ? [...routerAopPool[Aop.After]] : []
+      // middleware
+      middlewareMeta
+      const beforeMiddleware = middlewareMeta[Aop.Before] || []
+      const afterMiddleware = middlewareMeta[Aop.After] || []
 
       for (const routeMethod of routeMethods) {
         router[routeMethod](

@@ -54,7 +54,7 @@ export const All = createHTTPMethodDecorator([
  */
 function createHTTPMethodDecorator(methods: Methods[]) {
   return (path: string): MethodDecorator =>
-    (target, propertyKey, descripator) => {
+    (_target, _propertyKey, descripator) => {
       const routerMetadata: RouterMetadata = {
         methods,
         path,

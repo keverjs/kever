@@ -2,7 +2,6 @@ import * as Koa from 'koa'
 import { Middleware } from 'koa'
 import { ControllerMetaType } from '@kever/router'
 import { logger } from '@kever/logger'
-import { construct } from '@kever/ioc'
 import { controllerPoll } from './controller'
 import { koaRuntime } from './koaRuntime'
 import { loadModules } from './loadModules'
@@ -53,7 +52,7 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
     const constrollers = new Set<ControllerMetaType>()
 
     for (let [path, constructor] of controllerPoll.entries()) {
-      const controller = construct(constructor, [])
+      const controller = Reflect.construct(constructor, [])
       constrollers.add({ path, controller })
     }
 

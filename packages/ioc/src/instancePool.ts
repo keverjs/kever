@@ -1,7 +1,5 @@
-export type Tag = string | symbol
-export type InstanceType = new (...args: any[]) => any
-
 type Listener<T> = (instance: T) => void
+
 export class InstancePool<K, T> {
   private pool = new Map<K, T>()
   private listenerPool = new Map<K, Set<Listener<T>>>()

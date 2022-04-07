@@ -1,4 +1,5 @@
-import { Tag, InstancePool } from '../instancePool'
+import { InstancePool } from '../instancePool'
+import { Tag } from '../utils/types'
 
 type Payload = (() => unknown) | string | number | symbol | any[] | object
 type PayloadExcludeFn = Exclude<Payload, () => unknown>

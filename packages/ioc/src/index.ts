@@ -1,3 +1,3 @@
-export * from './decorator'
+import 'reflect-metadata'
+export * from './inject'
 export * from './middleware'
-export * from './construct'
