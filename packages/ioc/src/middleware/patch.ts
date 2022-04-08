@@ -1,10 +1,9 @@
-import { InstancePool } from '../instancePool'
-import { Tag } from '../utils/types'
+import { Tag, Container } from '@kever/shared'
 
 type Payload = (() => unknown) | string | number | symbol | any[] | object
 type PayloadExcludeFn = Exclude<Payload, () => unknown>
 
-export const middlewarePatchPool = new InstancePool<Tag, PayloadExcludeFn>()
+export const middlewarePatchContainer = new Container<Tag, PayloadExcludeFn>()
 
 export const middlewarePatch = (tag: Tag, payload: Payload) => {
   let option: PayloadExcludeFn
@@ -13,5 +12,5 @@ export const middlewarePatch = (tag: Tag, payload: Payload) => {
   } else {
     option = payload
   }
-  middlewarePatchPool.bind(tag, option)
+  middlewarePatchContainer.bind(tag, option)
 }

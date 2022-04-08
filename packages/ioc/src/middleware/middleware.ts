@@ -11,7 +11,7 @@ import {
   poolContainer,
   isBoolean,
 } from '@kever/shared'
-import { middlewarePatchPool } from './patch'
+import { middlewarePatchContainer } from './patch'
 import { isPromise } from '../utils'
 
 export const middlewareGlobalContainer = Object.create({})
@@ -138,7 +138,7 @@ export const destoryAllMiddleware = () => {
 export const Middleware =
   (tag: Tag, type: MType): ClassDecorator =>
   (target) => {
-    const middlewareOptions = middlewarePatchPool.use(tag)
+    const middlewareOptions = middlewarePatchContainer.use(tag)
     const parameter: unknown[] = []
     if (middlewareOptions) {
       parameter.push(middlewareOptions)
