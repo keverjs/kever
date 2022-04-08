@@ -1,9 +1,8 @@
 import { logger } from '@kever/logger'
-import { construct, defineProperty } from '@kever/shared'
-import { InstancePool } from './instancePool'
+import { construct, defineProperty, Container } from '@kever/shared'
 import { InstanceType, Tag } from './utils'
 
-const InjectPool = new InstancePool<Tag, InstanceType>()
+const injectContainer = new Container<Tag, InstanceType>()
 
 /**
  * @description 标记当前类是可注入的
@@ -12,12 +11,12 @@ const InjectPool = new InstancePool<Tag, InstanceType>()
 export const Injectable =
   (tag: Tag): ClassDecorator =>
   (target) => {
-    const injectMeta = InjectPool.use(tag)
+    const injectMeta = injectContainer.use(tag)
     if (injectMeta) {
       logger.error(` ${tag.toString()} model existence`)
       return
     }
-    InjectPool.bind(tag, target as unknown as InstanceType)
+    injectContainer.bind(tag, target as unknown as InstanceType)
     return target
   }
 
@@ -28,7 +27,7 @@ export const Injectable =
 export const Inject =
   <T>(tag: Tag, unNew = false, param?: T): PropertyDecorator =>
   (target, propertyKey) => {
-    InjectPool.on(tag, (instance) => {
+    injectContainer.on(tag, (instance) => {
       if (!instance) {
         logger.error(` ${tag.toString()} injectable model not existence`)
         return

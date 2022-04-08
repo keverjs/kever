@@ -12,6 +12,7 @@ export const defineProperty = (
   value: unknown
 ) => {
   const instance = instancePool.get(target)
+
   Object.defineProperty(instance ? instance : target, propertyKey, {
     value,
     writable: false,

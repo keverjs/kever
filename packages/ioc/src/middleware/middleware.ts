@@ -7,19 +7,19 @@ import {
   META_MIDDLEWARE_ALL,
   META_MIDDLEWARE_GLOBAL,
   META_MIDDLEWARE_ROUTER,
+  Container,
 } from '@kever/shared'
 import { middlewarePatchPool } from './patch'
 import { isPromise, Tag } from '../utils'
-import { InstancePool } from '../instancePool'
 
-export const MiddlewareGlobalPool = Object.create({})
-export const MiddlewareAllPool = Object.create({})
+export const middlewareGlobalContainer = Object.create({})
+export const middlewareAllContainer = Object.create({})
 
-const MiddlewarePropertyPool = new InstancePool<
+const middlewarePropertyContainer = new Container<
   Tag,
   ReturnType<BaseMiddleware<MType.Property>['ready']>
 >()
-const MiddlewareRoutePool = new InstancePool<
+const middlewareRouteContainer = new Container<
   Tag,
   BaseMiddleware<MType.Route>['ready']
 >()
@@ -32,7 +32,7 @@ const MiddlewareRoutePool = new InstancePool<
 const propertyMiddleware =
   (tag: Tag): PropertyDecorator =>
   (target, propertyKey) => {
-    MiddlewarePropertyPool.on(tag, (middleware) => {
+    middlewarePropertyContainer.on(tag, (middleware) => {
       if (!middleware) {
         logger.error(`${tag.toString()} type property middleware no exists`)
         return
@@ -56,7 +56,7 @@ export interface RouteMiddlewareMeta {
 const routeMiddleware =
   <T>(tag: Tag, type: Aop, param?: T): MethodDecorator =>
   (target, key, description) => {
-    MiddlewareRoutePool.on(tag, (middleware) => {
+    middlewareRouteContainer.on(tag, (middleware) => {
       if (!middleware) {
         logger.error(`${tag.toString()} type router middleware no exists`)
         return
@@ -100,7 +100,7 @@ const routeMiddleware =
 export const getGlobalMiddleware = () => {
   const globalMiddlewares = Reflect.getMetadata(
     META_MIDDLEWARE_GLOBAL,
-    MiddlewareGlobalPool,
+    middlewareGlobalContainer,
     META_MIDDLEWARE_GLOBAL
   ) as Set<BaseMiddleware<MType.Global>>
   return [...globalMiddlewares] || []
@@ -112,7 +112,7 @@ export const getGlobalMiddleware = () => {
 export const destoryAllMiddleware = () => {
   const instances = Reflect.getMetadata(
     META_MIDDLEWARE_ALL,
-    MiddlewareAllPool,
+    middlewareAllContainer,
     META_MIDDLEWARE_ALL
   ) as Set<BaseMiddleware<MType.Global>>
 
@@ -166,7 +166,7 @@ const defineRouteMiddleware = (
   const readyMethod = (
     middlewareInstance as BaseMiddleware<MType.Route>
   ).ready.bind(middlewareInstance)
-  MiddlewareRoutePool.bind(tag, readyMethod)
+  middlewareRouteContainer.bind(tag, readyMethod)
 }
 /**
  * @description define property middleware
@@ -183,7 +183,7 @@ const definePropertyMiddleware = (
   if (isPromise(readyResult)) {
     readyResult
       .then((payload: unknown) => {
-        MiddlewarePropertyPool.bind(tag, payload)
+        middlewarePropertyContainer.bind(tag, payload)
       })
       .catch((err: unknown) => {
         logger.error(
@@ -191,7 +191,7 @@ const definePropertyMiddleware = (
         )
       })
   } else {
-    MiddlewarePropertyPool.bind(tag, readyResult)
+    middlewarePropertyContainer.bind(tag, readyResult)
   }
 }
 /**
@@ -203,7 +203,7 @@ const defineGolbalMiddleware = (
 ) => {
   let golbalMiddlewares = Reflect.getMetadata(
     META_MIDDLEWARE_GLOBAL,
-    MiddlewareGlobalPool,
+    middlewareGlobalContainer,
     META_MIDDLEWARE_GLOBAL
   ) as Set<BaseMiddleware<MType.Global>['ready']> | undefined
   if (!golbalMiddlewares) {
@@ -216,7 +216,7 @@ const defineGolbalMiddleware = (
   Reflect.defineMetadata(
     META_MIDDLEWARE_GLOBAL,
     golbalMiddlewares,
-    MiddlewareGlobalPool,
+    middlewareGlobalContainer,
     META_MIDDLEWARE_GLOBAL
   )
 }
@@ -228,7 +228,7 @@ const defineGolbalMiddleware = (
 const defineMiddlewareInstance = (middleware: BaseMiddleware<MType.Global>) => {
   let allMiddlewares = Reflect.getMetadata(
     META_MIDDLEWARE_ALL,
-    MiddlewareAllPool,
+    middlewareAllContainer,
     META_MIDDLEWARE_ALL
   )
   if (!allMiddlewares) {
@@ -238,7 +238,7 @@ const defineMiddlewareInstance = (middleware: BaseMiddleware<MType.Global>) => {
   Reflect.defineMetadata(
     META_MIDDLEWARE_ALL,
     allMiddlewares,
-    MiddlewareAllPool,
+    middlewareAllContainer,
     META_MIDDLEWARE_ALL
   )
 }
