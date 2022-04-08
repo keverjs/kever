@@ -8,6 +8,7 @@ import { loadModules } from './loadModules'
 import { initEvent } from './handler'
 import { fillLine, getAppVersion, getCurrentProjectName } from './utils'
 import chalk from 'chalk'
+import { construct } from '@kever/shared'
 
 interface AppOption {
   host?: string
@@ -52,7 +53,7 @@ export const createApp = async (options: AppOption, callback?: Callback) => {
     const constrollers = new Set<ControllerMetaType>()
 
     for (let [path, constructor] of controllerPoll.entries()) {
-      const controller = Reflect.construct(constructor, [])
+      const controller = construct(constructor, [])
       constrollers.add({ path, controller })
     }
 

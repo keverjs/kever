@@ -1,13 +1,16 @@
 import { MType, BaseMiddleware, Aop, KoaMiddleware } from './constants'
 
 import { logger } from '@kever/logger'
+import {
+  construct,
+  defineProperty,
+  META_MIDDLEWARE_ALL,
+  META_MIDDLEWARE_GLOBAL,
+  META_MIDDLEWARE_ROUTER,
+} from '@kever/shared'
 import { middlewarePatchPool } from './patch'
-import { construct, defineProperty, isPromise, Tag } from '../utils'
+import { isPromise, Tag } from '../utils'
 import { InstancePool } from '../instancePool'
-
-export const META_MIDDLEWARE_GLOBAL = Symbol.for('ioc#middleware_global')
-export const META_MIDDLEWARE_ALL = Symbol.for('ioc#middleware_all')
-export const META_MIDDLEWARE_ROUTER = Symbol.for('ioc#middleware_router')
 
 export const MiddlewareGlobalPool = Object.create({})
 export const MiddlewareAllPool = Object.create({})

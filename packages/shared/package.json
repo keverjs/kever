@@ -1,7 +1,7 @@
 {
-  "name": "@kever/router",
+  "name": "@kever/shared",
   "version": "0.23.1-beta.16",
-  "description": "kever router",
+  "description": "Shared data",
   "author": {
     "name": "kim",
     "email": "1191340528@qq.com"
@@ -32,22 +32,14 @@
     "nodejs",
     "http",
     "server",
-    "decorator",
-    "router"
+    "shared"
   ],
   "license": "ISC",
   "peerDependencies": {
-    "reflect-metadata": "^0.1.13",
     "@kever/logger": ">=0.23.1",
     "@kever/ioc": ">=0.23.1",
     "@kever/core": ">=0.23.1",
-    "@kever/shared": ">=0.23.1"
-  },
-  "dependencies": {
-    "@types/koa": "^2.11.3",
-    "@types/koa-router": "^7.4.1",
-    "koa": "^2.13.0",
-    "koa-router": "^9.0.1"
+    "@kever/router": ">=0.23.1"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }

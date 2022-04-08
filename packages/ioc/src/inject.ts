@@ -1,6 +1,7 @@
 import { logger } from '@kever/logger'
+import { construct, defineProperty } from '@kever/shared'
 import { InstancePool } from './instancePool'
-import { construct, defineProperty, InstanceType, Tag } from './utils'
+import { InstanceType, Tag } from './utils'
 
 const InjectPool = new InstancePool<Tag, InstanceType>()
 

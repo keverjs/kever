@@ -1,8 +1,9 @@
 import Router from 'koa-router'
 import { logger } from '@kever/logger'
-import { Aop, META_MIDDLEWARE_ROUTER, RouteMiddlewareMeta } from '@kever/ioc'
+import { Aop, RouteMiddlewareMeta } from '@kever/ioc'
 import { getInstanceMethods, resolvePath } from './util'
 import { META_ROUTER, RouterMetadata } from './methodsDecorator'
+import { META_MIDDLEWARE_ROUTER } from '@kever/shared'
 
 export interface ControllerMetaType {
   path: string

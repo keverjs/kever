@@ -37,7 +37,8 @@
   "license": "MIT",
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
-    "@kever/logger": ">=0.23.1"
+    "@kever/logger": ">=0.23.1",
+    "@kever/shared": ">=0.23.1"
   },
   "dependencies": {
     "@types/koa": "^2.11.3"

@@ -4,6 +4,5 @@ export {
   getGlobalMiddleware,
   destoryAllMiddleware,
   Middleware,
-  META_MIDDLEWARE_ROUTER,
   RouteMiddlewareMeta,
 } from './middleware'
