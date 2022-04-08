@@ -44,6 +44,7 @@ const propertyMiddleware =
         pool = new Container<PropertyKey, unknown>()
       }
       pool.bind(propertyKey, middleware)
+      poolContainer.bind(target, pool)
     })
   }
 

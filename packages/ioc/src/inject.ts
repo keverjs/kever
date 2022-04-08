@@ -54,5 +54,6 @@ export const Inject =
         pool = new Container<PropertyKey, unknown>()
       }
       pool.bind(propertyKey, value)
+      poolContainer.bind(target, pool)
     })
   }
