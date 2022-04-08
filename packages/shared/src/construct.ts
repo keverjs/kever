@@ -10,8 +10,12 @@ export const construct = (target: Function, params: unknown[] = []) => {
   const instance = Reflect.construct(target, params)
   const instanceContainer = poolContainer.use(target.prototype)
   if (!isBoolean(instanceContainer)) {
-    for (let [key, value] of instanceContainer.getPool().entries()) {
-      defineProperty(instance, key, value)
+    for (let key in instance) {
+      if (instance.hasOwnProperty(key)) {
+        instanceContainer.on(key, (inject) => {
+          defineProperty(instance, key, inject)
+        })
+      }
     }
   }
   return instance
