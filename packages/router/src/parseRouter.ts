@@ -29,7 +29,7 @@ export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
         controller[methodName as keyof object]
       )
 
-      if (!routerMeta || !middlewareMeta) {
+      if (!routerMeta) {
         break
       }
       // route path
@@ -37,9 +37,8 @@ export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
       const routePath = resolvePath(rootPath, path)
 
       // middleware
-      middlewareMeta
-      const beforeMiddleware = middlewareMeta[Aop.Before] || []
-      const afterMiddleware = middlewareMeta[Aop.After] || []
+      const beforeMiddleware = middlewareMeta ? middlewareMeta[Aop.Before] : []
+      const afterMiddleware = middlewareMeta ? middlewareMeta[Aop.After] : []
 
       for (const routeMethod of routeMethods) {
         router[routeMethod](
