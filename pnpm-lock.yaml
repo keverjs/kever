@@ -76,15 +76,17 @@ importers:
 
   packages/kever:
     specifiers:
-      '@kever/core': '>=0.23.1'
-      '@kever/ioc': '>=0.23.1'
-      '@kever/logger': '>=0.23.1'
-      '@kever/router': '>=0.23.1'
+      '@kever/core': '>=0.25.0'
+      '@kever/ioc': '>=0.25.0'
+      '@kever/logger': '>=0.25.0'
+      '@kever/router': '>=0.25.0'
+      '@kever/shared': '>=0.25.0'
     dependencies:
-      '@kever/core': 0.24.1
-      '@kever/ioc': 0.24.0
-      '@kever/logger': 0.24.0
-      '@kever/router': 0.24.0
+      '@kever/core': link:../core
+      '@kever/ioc': link:../ioc
+      '@kever/logger': link:../logger
+      '@kever/router': link:../router
+      '@kever/shared': link:../shared
 
   packages/logger:
     specifiers:
@@ -103,6 +105,9 @@ importers:
       '@types/koa-router': 7.4.4
       koa: 2.13.4
       koa-router: 9.4.0
+
+  packages/shared:
+    specifiers: {}
 
 packages:
 
@@ -309,43 +314,6 @@ packages:
       string-argv: 0.3.1
       type-detect: 4.0.8
     dev: true
-
-  /@kever/core/0.24.1:
-    resolution: {integrity: sha512-ik+oKWu1DAjjhLk+If7Va6LpATB7rdo3L/oEZFJJxXfK14qAW0VPawVfF836ybLfnyigAiAPlhfkLg6ZGVJ41g==}
-    dependencies:
-      '@kever/ioc': 0.24.0
-      '@kever/logger': 0.24.0
-      '@kever/router': 0.24.0
-      '@types/koa': 2.13.4
-      koa: 2.13.4
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@kever/ioc/0.24.0:
-    resolution: {integrity: sha512-KIl+6yfK/9zJCOH1K79j27Ql+ABbq8E8o5fFAYwWlHL+b2ATovGUOix/d41A4ezoYAPcFHOYgnnnd+rJkKt5KA==}
-    dependencies:
-      '@kever/logger': 0.24.0
-      '@types/koa': 2.13.4
-    dev: false
-
-  /@kever/logger/0.24.0:
-    resolution: {integrity: sha512-OXyRW3jQPPoE8QsONMdL0SaJm7O4CiwJcbB8CmuWzpU5SeKSaN4IURDDgJjPEVR+5aiAnqIsTUJZII67Zb4oug==}
-    dependencies:
-      chalk: 4.1.2
-    dev: false
-
-  /@kever/router/0.24.0:
-    resolution: {integrity: sha512-A7q3DTTAkyq4cikqQKwn/j5kv1gwzTjiPsmIcatZUTGM2UqL51MNWINbIxZ7h2IEOmVFMJsr5d27rqZQWMlLgQ==}
-    dependencies:
-      '@kever/logger': 0.24.0
-      '@types/koa': 2.13.4
-      '@types/koa-router': 7.4.4
-      koa: 2.13.4
-      koa-router: 9.4.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
 
   /@marionebl/sander/0.6.1:
     resolution: {integrity: sha1-GViWWHTyS8Ub5Ih1/rUNZC/EH3s=}
