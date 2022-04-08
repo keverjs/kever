@@ -30,7 +30,7 @@ export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
       )
 
       if (!routerMeta) {
-        break
+        continue
       }
       // route path
       const { path, methods: routeMethods } = routerMeta
