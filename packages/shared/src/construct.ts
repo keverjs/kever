@@ -1,8 +1,19 @@
-export const instancePool = new Map<Object, Object>()
+import { Container } from './container'
+import { isBoolean } from './type'
+
+export const poolContainer = new Container<
+  Object,
+  Container<PropertyKey, unknown>
+>()
 
 export const construct = (target: Function, params: unknown[] = []) => {
   const instance = Reflect.construct(target, params)
-  instancePool.set(target.prototype, instance)
+  const instanceContainer = poolContainer.use(target.prototype)
+  if (!isBoolean(instanceContainer)) {
+    for (let [key, value] of instanceContainer.getPool().entries()) {
+      defineProperty(instance, key, value)
+    }
+  }
   return instance
 }
 
@@ -11,9 +22,7 @@ export const defineProperty = (
   propertyKey: PropertyKey,
   value: unknown
 ) => {
-  const instance = instancePool.get(target)
-
-  Object.defineProperty(instance ? instance : target, propertyKey, {
+  Object.defineProperty(target, propertyKey, {
     value,
     writable: false,
     enumerable: false,

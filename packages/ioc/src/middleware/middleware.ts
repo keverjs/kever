@@ -3,14 +3,16 @@ import { MType, BaseMiddleware, Aop, KoaMiddleware } from './constants'
 import { logger } from '@kever/logger'
 import {
   construct,
-  defineProperty,
   META_MIDDLEWARE_ALL,
   META_MIDDLEWARE_GLOBAL,
   META_MIDDLEWARE_ROUTER,
   Container,
+  Tag,
+  poolContainer,
+  isBoolean,
 } from '@kever/shared'
 import { middlewarePatchPool } from './patch'
-import { isPromise, Tag } from '../utils'
+import { isPromise } from '../utils'
 
 export const middlewareGlobalContainer = Object.create({})
 export const middlewareAllContainer = Object.create({})
@@ -37,7 +39,11 @@ const propertyMiddleware =
         logger.error(`${tag.toString()} type property middleware no exists`)
         return
       }
-      defineProperty(target, propertyKey, middleware)
+      let pool = poolContainer.use(target)
+      if (isBoolean(pool)) {
+        pool = new Container<PropertyKey, unknown>()
+      }
+      pool.bind(propertyKey, middleware)
     })
   }
 

@@ -1,3 +1,5 @@
 export * from './metakey'
 export * from './construct'
 export * from './container'
+export * from './types'
+export * from './type'

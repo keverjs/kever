@@ -1,6 +1,13 @@
 import { logger } from '@kever/logger'
-import { construct, defineProperty, Container } from '@kever/shared'
-import { InstanceType, Tag } from './utils'
+import {
+  construct,
+  defineProperty,
+  Container,
+  Tag,
+  InstanceType,
+  poolContainer,
+  isBoolean,
+} from '@kever/shared'
 
 const injectContainer = new Container<Tag, InstanceType>()
 
@@ -42,6 +49,10 @@ export const Inject =
         }
         value = construct(instance, parameter)
       }
-      defineProperty(target, propertyKey, value)
+      let pool = poolContainer.use(target)
+      if (isBoolean(pool)) {
+        pool = new Container<PropertyKey, unknown>()
+      }
+      pool.bind(propertyKey, value)
     })
   }
