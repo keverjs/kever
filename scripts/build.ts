@@ -100,19 +100,49 @@ const pascalCase = (str) => {
 const formats = ['esm', 'cjs']
 const packageOtherConfig = {
   core: {
-    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+    external: [
+      '@kever/core',
+      '@kever/ioc',
+      '@kever/router',
+      '@kever/logger',
+      '@kever/shared',
+    ],
   },
   ioc: {
-    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+    external: [
+      '@kever/core',
+      '@kever/ioc',
+      '@kever/router',
+      '@kever/logger',
+      '@kever/shared',
+    ],
   },
   router: {
-    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+    external: [
+      '@kever/core',
+      '@kever/ioc',
+      '@kever/router',
+      '@kever/logger',
+      '@kever/shared',
+    ],
   },
   logger: {
-    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+    external: [
+      '@kever/core',
+      '@kever/ioc',
+      '@kever/router',
+      '@kever/logger',
+      '@kever/shared',
+    ],
   },
   kever: {
-    external: ['@kever/core', '@kever/ioc', '@kever/router', '@kever/logger'],
+    external: [
+      '@kever/core',
+      '@kever/ioc',
+      '@kever/router',
+      '@kever/logger',
+      '@kever/shared',
+    ],
   },
 }
 const generateBuildConfigs = (packagesName) => {
