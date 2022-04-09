@@ -1,31 +1,28 @@
-type Listener<T> = (instance: T) => void
+type Listener<T> = (value: T) => void
 
 export class Container<K, T> {
   private pool = new Map<K, T>()
   private listeners = new Map<K, Set<Listener<T>>>()
 
-  public bind(key: K, instance: T): boolean {
-    if (this.pool.has(key)) {
-      return false
-    }
-    this.pool.set(key, instance)
+  public bind(key: K, value: T): boolean {
+    this.pool.set(key, value)
     this.trigger(key)
     return true
   }
 
   public unbind(key: K): boolean | T {
-    const instance = this.pool.get(key)
-    if (instance) {
+    const value = this.pool.get(key)
+    if (value) {
       this.pool.delete(key)
-      return instance
+      return value
     }
     return true
   }
 
   public use(key: K): boolean | T {
-    const instance = this.pool.get(key)
-    if (instance) {
-      return instance
+    const value = this.pool.get(key)
+    if (value) {
+      return value
     }
     return false
   }
@@ -61,11 +58,11 @@ export class Container<K, T> {
   }
 
   public trigger(key: K) {
-    const instance = this.pool.get(key)
+    const value = this.pool.get(key)
     const listeners = this.listeners.get(key)
     if (listeners) {
       listeners.forEach((listener) => {
-        listener(instance as T)
+        listener(value as T)
       })
       listeners.clear()
     }
