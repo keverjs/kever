@@ -35,11 +35,11 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "@kever/core": ">=0.25.0",
-    "@kever/ioc": ">=0.25.0",
-    "@kever/logger": ">=0.25.0",
-    "@kever/router": ">=0.25.0",
-    "@kever/shared": ">=0.25.0"
+    "@kever/core": "^0.25.5",
+    "@kever/ioc": "^0.25.5",
+    "@kever/logger": "^0.25.5",
+    "@kever/router": "^0.25.5",
+    "@kever/shared": "^0.25.5"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }
