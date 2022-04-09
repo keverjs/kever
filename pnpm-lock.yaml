@@ -76,11 +76,11 @@ importers:
 
   packages/kever:
     specifiers:
-      '@kever/core': '>=0.25.0'
-      '@kever/ioc': '>=0.25.0'
-      '@kever/logger': '>=0.25.0'
-      '@kever/router': '>=0.25.0'
-      '@kever/shared': '>=0.25.0'
+      '@kever/core': ^0.25.5
+      '@kever/ioc': ^0.25.5
+      '@kever/logger': ^0.25.5
+      '@kever/router': ^0.25.5
+      '@kever/shared': ^0.25.5
     dependencies:
       '@kever/core': link:../core
       '@kever/ioc': link:../ioc
