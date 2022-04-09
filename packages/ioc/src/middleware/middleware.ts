@@ -34,17 +34,20 @@ const middlewareRouteContainer = new Container<
 const propertyMiddleware =
   (tag: Tag): PropertyDecorator =>
   (target, propertyKey) => {
+    let pool = poolContainer.use(target)
+    if (isBoolean(pool)) {
+      pool = new Container<PropertyKey, unknown>()
+    }
+    pool.bind(propertyKey, undefined)
+    poolContainer.bind(target, pool)
     middlewarePropertyContainer.on(tag, (middleware) => {
       if (!middleware) {
         logger.error(`${tag.toString()} type property middleware no exists`)
         return
       }
-      let pool = poolContainer.use(target)
-      if (isBoolean(pool)) {
-        pool = new Container<PropertyKey, unknown>()
+      if (!isBoolean(pool)) {
+        pool.bind(propertyKey, middleware)
       }
-      pool.bind(propertyKey, middleware)
-      poolContainer.bind(target, pool)
     })
   }
 

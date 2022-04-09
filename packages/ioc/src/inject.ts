@@ -34,6 +34,13 @@ export const Injectable =
 export const Inject =
   <T>(tag: Tag, unNew = false, param?: T): PropertyDecorator =>
   (target, propertyKey) => {
+    let pool = poolContainer.use(target)
+    if (isBoolean(pool)) {
+      pool = new Container<PropertyKey, unknown>()
+    }
+    pool.bind(propertyKey, undefined)
+    poolContainer.bind(target, pool)
+
     injectContainer.on(tag, (instance) => {
       if (!instance) {
         logger.error(` ${tag.toString()} injectable model not existence`)
@@ -49,11 +56,8 @@ export const Inject =
         }
         value = construct(instance, parameter)
       }
-      let pool = poolContainer.use(target)
-      if (isBoolean(pool)) {
-        pool = new Container<PropertyKey, unknown>()
+      if (!isBoolean(pool)) {
+        pool.bind(propertyKey, value)
       }
-      pool.bind(propertyKey, value)
-      poolContainer.bind(target, pool)
     })
   }

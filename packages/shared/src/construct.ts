@@ -1,5 +1,5 @@
 import { Container } from './container'
-import { isBoolean } from './type'
+import { isBoolean, isUndef } from './type'
 
 export const poolContainer = new Container<
   Object,
@@ -10,8 +10,10 @@ export const construct = (target: Function, params: unknown[] = []) => {
   const instance = Reflect.construct(target, params)
   const instanceContainer = poolContainer.use(target.prototype)
   if (!isBoolean(instanceContainer)) {
-    for (let key in instance) {
-      if (instance.hasOwnProperty(key)) {
+    for (let [key, value] of instanceContainer.getPool().entries()) {
+      if (isUndef(value)) {
+        defineProperty(instance, key, value)
+      } else {
         instanceContainer.on(key, (inject) => {
           defineProperty(instance, key, inject)
         })
