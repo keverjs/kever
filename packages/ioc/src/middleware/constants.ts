@@ -1,4 +1,4 @@
-import type { Context, Next } from 'koa'
+import type { KeverMiddleware, Context, Next } from '@kever/shared'
 
 export const enum MType {
   Global,
@@ -6,12 +6,10 @@ export const enum MType {
   Property,
 }
 
-export type KoaMiddleware = (context: Context, next: Next) => void
-
 type BaseMiddlewareReadyParams<T> = T extends MType.Property
   ? []
   : T extends MType.Route
-  ? [KoaMiddleware, unknown]
+  ? [KeverMiddleware, unknown]
   : T extends MType.Global
   ? [Context, Next]
   : never
@@ -19,7 +17,7 @@ type BaseMiddlewareReadyParams<T> = T extends MType.Property
 type BaseMiddlewareReadyReturn<T> = T extends MType.Property
   ? unknown | Promise<unknown>
   : T extends MType.Route
-  ? KoaMiddleware
+  ? KeverMiddleware
   : T extends MType.Global
   ? void
   : never

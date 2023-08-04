@@ -1,8 +1,6 @@
 import Router from 'koa-router'
 import { Aop, RouteMiddlewareMeta } from '@kever/ioc'
 import type { Logger } from '@kever/core'
-import { getInstanceMethods } from './util'
-import { RouterMetadata } from './methodsDecorator'
 import { 
   META_MIDDLEWARE_ROUTER,
   META_ROUTER,
@@ -12,6 +10,9 @@ import {
   resolvePath, 
   type ControllerMeta
 } from '@kever/shared'
+import { getInstanceMethods } from './util'
+import { RouterMetadata } from './methodsDecorator'
+import { enhanceMiddleware } from './enhance'
 
 export function parseRouter(controllerMetas: Set<ControllerMeta>): Router {
   const router = new Router()
@@ -38,13 +39,15 @@ export function parseRouter(controllerMetas: Set<ControllerMeta>): Router {
       // middleware
       const beforeMiddleware = middlewareMeta ? middlewareMeta[Aop.Before] : []
       const afterMiddleware = middlewareMeta ? middlewareMeta[Aop.After] : []
-
       for (const routeMethod of routeMethods) {
         router[routeMethod](
           routePath,
-          ...beforeMiddleware,
-          (controller as any)[methodName].bind(controller),
-          ...afterMiddleware
+          ...enhanceMiddleware([
+            ...beforeMiddleware,
+            controller[methodName as keyof typeof controller].bind(controller),
+            ...afterMiddleware
+            ]
+          )
         )
       }
     }

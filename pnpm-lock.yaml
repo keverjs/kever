@@ -71,21 +71,13 @@ importers:
     specifiers:
       '@kever/core': workspace:*
       '@kever/ioc': workspace:*
-      '@kever/logger': workspace:*
       '@kever/router': workspace:*
       '@kever/shared': workspace:*
     dependencies:
       '@kever/core': link:../core
       '@kever/ioc': link:../ioc
-      '@kever/logger': link:../logger
       '@kever/router': link:../router
       '@kever/shared': link:../shared
-
-  packages/logger:
-    specifiers:
-      chalk: ^4.0.0
-    dependencies:
-      chalk: 4.1.2
 
   packages/router:
     specifiers:
@@ -100,7 +92,12 @@ importers:
       koa-router: 9.4.0
 
   packages/shared:
-    specifiers: {}
+    specifiers:
+      '@types/koa': ^2.13.8
+      koa: ^2.13.0
+    dependencies:
+      '@types/koa': 2.13.8
+      koa: 2.13.4
 
 packages:
 

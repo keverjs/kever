@@ -1,4 +1,4 @@
-export type { Context, Next } from 'koa'
+export type { Context, Next } from '@kever/shared'
 export { Controller } from './controller'
 export { Env, createApp } from './application'
 export type { App, AppOptions} from './application'

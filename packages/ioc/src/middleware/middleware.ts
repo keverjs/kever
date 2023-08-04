@@ -1,5 +1,6 @@
-import type { Context, Next } from 'koa'
-import { MType, BaseMiddleware, Aop, KoaMiddleware } from './constants'
+import * as Koa from 'koa'
+import type { KeverMiddleware } from '@kever/shared'
+import { MType, type BaseMiddleware, Aop } from './constants'
 import {
   construct,
   META_MIDDLEWARE_ALL,
@@ -49,8 +50,8 @@ const propertyMiddleware = (tag: Tag): PropertyDecorator => (target, propertyKey
 }
 
 export interface RouteMiddlewareMeta {
-  [Aop.After]: KoaMiddleware[]
-  [Aop.Before]: KoaMiddleware[]
+  [Aop.After]: KeverMiddleware[]
+  [Aop.Before]: KeverMiddleware[]
   middlewareKey: Tag
 }
 /**
@@ -68,9 +69,9 @@ const routeMiddleware = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => 
       return
     }
     const middlewareReady = middleware(
-      description.value as unknown as KoaMiddleware,
+      description.value as unknown as KeverMiddleware,
       param
-    ) as KoaMiddleware
+    ) as KeverMiddleware
 
     let routeMeta = getMetadata<RouteMiddlewareMeta>(
       META_MIDDLEWARE_ROUTER,
