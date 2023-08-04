@@ -92,7 +92,7 @@ export const fillLine = (data: string | [string, string][], len = 49, pad = ' ',
     return `${pad.padEnd(padNum)}${data}`.padEnd(len, pad)
   } else {
     len += data.flat().length * COLOR_LEN
-    const subLen = (len - 1) / 2
+    const subLen = len / data.length
     return data
       .reduce((line, sub) => {
         const subLine = `${sub[0].padEnd(subLen - sub[1].length, subPad)}${
