@@ -37,6 +37,9 @@
     "dist"
   ],
   "license": "MIT",
+  "scripts": {
+    "build": "unbuild"
+  },
   "dependencies": {
     "@kever/core": "workspace:*",
     "@kever/ioc": "workspace:*",

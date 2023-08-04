@@ -38,6 +38,9 @@
     "dist"
   ],
   "license": "MIT",
+  "scripts": {
+    "build": "unbuild"
+  },
   "dependencies": {
     "chalk": "^4.0.0"
   },

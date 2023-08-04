@@ -1,8 +1,9 @@
-export { MType, BaseMiddleware, Aop } from './constants'
+export { MType, Aop } from './constants'
+export type { BaseMiddleware } from './constants'
 export { middlewarePatch } from './patch'
 export {
   getGlobalMiddleware,
   destoryAllMiddleware,
   Middleware,
-  RouteMiddlewareMeta,
 } from './middleware'
+export type { RouteMiddlewareMeta } from './middleware'

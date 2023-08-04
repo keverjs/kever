@@ -9,12 +9,12 @@
   "publicConfig": {
     "access": "puiblic"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     }
@@ -38,13 +38,17 @@
     "dist"
   ],
   "license": "MIT",
+  "scripts": {
+    "build": "unbuild"
+  },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
     "@kever/logger": "workspace:*",
     "@kever/shared": "workspace:*"
   },
   "dependencies": {
-    "@types/koa": "^2.11.3"
+    "@types/koa": "^2.13.8",
+    "koa": "^2.13.0"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }

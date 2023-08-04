@@ -5,8 +5,8 @@
     "outDir": "dist",
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
     "removeComments": true,
+    "moduleResolution": "NodeNext",
     "preserveConstEnums": true,
     "declaration": true,
     "noEmitOnError": true,
@@ -26,5 +26,5 @@
     "esModuleInterop": true
   },
   "include": ["packages/*/src"],
-  "exclude": ["packages/*/lib", "packages/*/test"]
+  "exclude": ["packages/*/dist", "packages/*/test"]
 }
