@@ -42,12 +42,12 @@
     "build": "unbuild"
   },
   "peerDependencies": {
-    "reflect-metadata": "^0.1.13",
-    "@kever/shared": "workspace:*"
+    "reflect-metadata": "^0.1.13"
   },
   "dependencies": {
     "@types/koa": "^2.13.8",
-    "koa": "^2.13.0"
+    "koa": "^2.13.0",
+    "@kever/shared": "workspace:*"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }

@@ -41,15 +41,12 @@
   "scripts": {
     "build": "unbuild"
   },
-  "peerDependencies": {
-    "@kever/logger": "workspace:*",
+  "dependencies": {
+    "@types/koa": "^2.13.8",
+    "koa": "^2.13.0",
     "@kever/ioc": "workspace:*",
     "@kever/core": "workspace:*",
     "@kever/router": "workspace:*"
-  },
-  "dependencies": {
-    "@types/koa": "^2.13.8",
-    "koa": "^2.13.0"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }

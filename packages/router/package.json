@@ -43,16 +43,16 @@
     "build": "unbuild"
   },
   "peerDependencies": {
-    "reflect-metadata": "^0.1.13",
-    "@kever/ioc": "workspace:*",
-    "@kever/core": "workspace:*",
-    "@kever/shared": "workspace:*"
+    "reflect-metadata": "^0.1.13"
   },
   "dependencies": {
     "@types/koa": "^2.13.8",
     "@types/koa-router": "^7.4.1",
     "koa": "^2.13.0",
-    "koa-router": "^9.0.1"
+    "koa-router": "^9.0.1",
+    "@kever/ioc": "workspace:*",
+    "@kever/core": "workspace:*",
+    "@kever/shared": "workspace:*"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }

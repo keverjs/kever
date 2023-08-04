@@ -51,19 +51,27 @@ importers:
 
   packages/core:
     specifiers:
+      '@kever/ioc': workspace:*
+      '@kever/router': workspace:*
+      '@kever/shared': workspace:*
       '@types/koa': ^2.13.8
       chalk: ^4.0.0
       koa: ^2.13.0
     dependencies:
+      '@kever/ioc': link:../ioc
+      '@kever/router': link:../router
+      '@kever/shared': link:../shared
       '@types/koa': 2.13.8
       chalk: 4.1.2
       koa: 2.13.4
 
   packages/ioc:
     specifiers:
+      '@kever/shared': workspace:*
       '@types/koa': ^2.13.8
       koa: ^2.13.0
     dependencies:
+      '@kever/shared': link:../shared
       '@types/koa': 2.13.8
       koa: 2.13.4
 
@@ -81,11 +89,17 @@ importers:
 
   packages/router:
     specifiers:
+      '@kever/core': workspace:*
+      '@kever/ioc': workspace:*
+      '@kever/shared': workspace:*
       '@types/koa': ^2.13.8
       '@types/koa-router': ^7.4.1
       koa: ^2.13.0
       koa-router: ^9.0.1
     dependencies:
+      '@kever/core': link:../core
+      '@kever/ioc': link:../ioc
+      '@kever/shared': link:../shared
       '@types/koa': 2.13.8
       '@types/koa-router': 7.4.4
       koa: 2.13.4
@@ -93,9 +107,15 @@ importers:
 
   packages/shared:
     specifiers:
+      '@kever/core': workspace:*
+      '@kever/ioc': workspace:*
+      '@kever/router': workspace:*
       '@types/koa': ^2.13.8
       koa: ^2.13.0
     dependencies:
+      '@kever/core': link:../core
+      '@kever/ioc': link:../ioc
+      '@kever/router': link:../router
       '@types/koa': 2.13.8
       koa: 2.13.4
 
