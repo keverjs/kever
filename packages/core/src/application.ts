@@ -8,6 +8,7 @@ import { koaRuntime } from './koaRuntime'
 import { loadModules } from './loadModules'
 import { initEvent } from './handler'
 import { defaultLogger, type Logger } from './logger'
+import { getMiddlewaresNum, getInjectableNum } from '@kever/ioc'
 
 /**
  * app env
@@ -127,10 +128,13 @@ const outputStartupStatus = async (options: AppOptions, controllerMetas: Set<Con
       [chalk.gray('Host'), chalk.blue(String(options.host))],
       [chalk.gray('Port'), chalk.blue(String(options.port))],
     ])
-
-    const handlerAndPid = fillLine([
+    const pid = fillLine([[chalk.gray('PID'), chalk.blue(String(process.pid))]])
+    const controllerAndService = fillLine([
       [chalk.gray('Controllers'), chalk.blue(String(controllerMetas.size))],
-      [chalk.gray('PID'), chalk.blue(String(process.pid))],
+      [chalk.gray('Services'), chalk.blue(String(getInjectableNum()))]
+    ])
+    const middlewares = fillLine([
+      [chalk.gray('Middlewares'), chalk.blue(String(getMiddlewaresNum()))]
     ])
     console.log(`
     ┌───────────────────────────────────────────────────┐ 
@@ -140,7 +144,10 @@ const outputStartupStatus = async (options: AppOptions, controllerMetas: Set<Con
     | ${apiLine} │
     |                                                   |  
     │ ${hostLine} │
-    │ ${handlerAndPid} │
+    │ ${pid} │
+    |                                                   |
+    │ ${controllerAndService} │
+    │ ${middlewares} │
     └───────────────────────────────────────────────────┘ 
     `)
   } catch (_) { /* empty */ }

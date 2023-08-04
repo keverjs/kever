@@ -122,6 +122,19 @@ export const destoryAllMiddleware = () => {
 }
 
 /**
+ * middlewares num
+ * @returns 
+ */
+export const getMiddlewaresNum = () => {
+  const mds = getMetadata<Set<BaseMiddleware<MType.Global>>>(
+    META_MIDDLEWARE_ALL,
+    MD_ALL_TARGET,
+    META_MIDDLEWARE_ALL
+  )
+  return mds ? mds.size : 0
+}
+
+/**
  * @description Middleware
  * @param tag
  * @param type

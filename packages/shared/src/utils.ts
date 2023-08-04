@@ -8,14 +8,15 @@ import type { Logger } from '@kever/core'
  * @returns 
  */
 export const getFilesPath = async (loadFileDir: string, logger: Logger) => {
-  let filesPath: Set<string> = new Set()
+  const filesPath: Set<string> = new Set()
   try {
+    // eslint-disable-next-line no-inner-declarations
     async function findFile(path: string) {
       if (!existsSync(path)) {
         return
       }
-      let files = await promises.readdir(path)
-      for (let file of files) {
+      const files = await promises.readdir(path)
+      for (const file of files) {
         const fpath = join(path, file)
         const stats = statSync(fpath)
         if (stats.isDirectory()) {

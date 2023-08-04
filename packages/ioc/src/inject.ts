@@ -28,6 +28,15 @@ export const Injectable = (tag: Tag): ClassDecorator => (target) => {
 }
 
 /**
+ * injectable instance num
+ * @returns 
+ */
+export const getInjectableNum = () => {
+  const pool = injectContainer.getPool()
+  return pool.size
+}
+
+/**
  * @description DI
  * @param tag
  */
