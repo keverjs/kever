@@ -1,6 +1,6 @@
 {
   "name": "kever",
-  "version": "0.25.10-beta.7",
+  "version": "0.25.10-beta.8",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "author": {
     "name": "kim",
