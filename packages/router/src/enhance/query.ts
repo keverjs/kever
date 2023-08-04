@@ -2,7 +2,7 @@ import { type Context, type KoaContext } from '@kever/shared'
 
 declare module '@kever/shared' {
   export interface Context {
-    getQuery: <T>(key?: string) => T | undefined
+    
   }
 }
 
