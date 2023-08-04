@@ -13,12 +13,12 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2.2.4
         with:
-          version: 6.15.1
+          version: 7.11.0
 
       - name: Use Node.js v16
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: v16
           registry-url: https://registry.npmjs.org/
