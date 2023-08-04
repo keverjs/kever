@@ -1,3 +1,4 @@
+import type { Context, Next } from 'koa'
 import { MType, BaseMiddleware, Aop, KoaMiddleware } from './constants'
 import {
   construct,
