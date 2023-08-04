@@ -45,7 +45,6 @@
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
     "@kever/ioc": "workspace:*",
-    "@kever/logger": "workspace:*",
     "@kever/router": "workspace:*",
     "@kever/shared": "workspace:*"
   },

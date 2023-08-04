@@ -1,11 +1,10 @@
 import { setMetadata, META_ROUTER } from '@kever/shared'
+
 type Methods = 'get' | 'post' | 'put' | 'delete' | 'head' | 'options' | 'patch'
 export interface RouterMetadata {
   methods: Methods[]
   path: string
 }
-
-
 
 // create http request method decorator
 /**

@@ -1,61 +1,53 @@
-import { logger } from '@kever/logger'
+import type { Logger } from '@kever/core'
 import {
   construct,
-  defineProperty,
   Container,
   Tag,
-  InstanceType,
+  Instance,
   poolContainer,
   isBoolean,
+  META_LOGGER,
+  getMetadataStore
 } from '@kever/shared'
 
-const injectContainer = new Container<Tag, InstanceType>()
+const injectContainer = new Container<Tag, Instance>()
 
 /**
- * @description 标记当前类是可注入的
+ * Marks the current class as injectable
  * @param tag
  */
-export const Injectable =
-  (tag: Tag): ClassDecorator =>
-  (target) => {
-    const injectMeta = injectContainer.use(tag)
-    if (injectMeta) {
-      logger.error(` ${tag.toString()} model existence`)
-      return
-    }
-    injectContainer.bind(tag, target as unknown as InstanceType)
-    return target
+export const Injectable = (tag: Tag): ClassDecorator => (target) => {
+  const injectMeta = injectContainer.use(tag)
+  if (injectMeta) {
+    const logger = getMetadataStore<Logger>(META_LOGGER)
+    logger.error(` ${tag.toString()} model existence`)
+    return
   }
+  injectContainer.bind(tag, target as unknown as Instance)
+  return target
+}
 
 /**
- * @description 注入类
+ * @description DI
  * @param tag
  */
 export const Inject = <T>(tag: Tag, unNew = false, param?: T): PropertyDecorator => (target, propertyKey) => {
-    let pool = poolContainer.use(target)
-    if (isBoolean(pool)) {
-      pool = new Container<PropertyKey, unknown>()
-    }
-    pool.bind(propertyKey, undefined)
-    poolContainer.bind(target, pool)
-
-    injectContainer.on(tag, (instance) => {
-      if (!instance) {
-        logger.error(` ${tag.toString()} injectable model not existence`)
-        return
-      }
-      let value = instance
-      if (!unNew) {
-        let parameter: unknown[]
-        if (Array.isArray(param)) {
-          parameter = param
-        } else {
-          parameter = [param]
-        }
-        value = construct(instance, parameter)
-      }
-      if (!isBoolean(pool)) {
-        pool.bind(propertyKey, value)
-      }
-    })
+  let pool = poolContainer.use(target)
+  if (isBoolean(pool)) {
+    pool = new Container<PropertyKey, unknown>()
   }
+  pool.bind(propertyKey, undefined)
+  poolContainer.bind(target, pool)
+
+  injectContainer.on(tag, (instance) => {
+    if (!instance) {
+      const logger = getMetadataStore<Logger>(META_LOGGER)
+      logger.error(` ${tag.toString()} injectable model not existence`)
+      return
+    }
+    let value = !unNew ? construct(instance, Array.isArray(param) ? param : [param]) : instance
+    if (!isBoolean(pool)) {
+      pool.bind(propertyKey, value)
+    }
+  })
+}

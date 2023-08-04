@@ -1,18 +1,28 @@
-import { getMetadataStore, META_LOGGER } from '@kever/shared'
+import { getMetadataStore, META_LOGGER, Container, construct } from '@kever/shared'
+import type { ControllerMeta } from '@kever/shared'
 import type { Logger } from './logger'
-export const controllerPool = new Map<string, Function>()
+
+const container = new Container<string, Function>()
 /**
- * controller的标识，将修饰的类注册到controller poll里
+ * controller的标识，将修饰的类注册到controller container里
  * @param path
  */
 export const Controller = (path = '/'): ClassDecorator => (constructor) => {
-  if (controllerPool.has(path)) {
+  if (container.has(path)) {
     const logger = getMetadataStore<Logger>(META_LOGGER)
-    if (logger) {
-      logger.error(`${path} router already exists`)
-    }
+    logger && logger.error(`${path} router already exists`)
     return constructor
   }
-  controllerPool.set(path, constructor)
+  container.bind(path, constructor)
   return constructor
+}
+
+export const getControllerMetas = () => {
+  const controllerMetas = new Set<ControllerMeta>()
+  const pool = container.getPool()
+  for (let [path, constructor] of pool.entries()) {
+    const controller = construct(constructor, [])
+    controllerMetas.add({ path, controller })
+  }
+  return controllerMetas
 }

@@ -2,8 +2,8 @@ import type * as Koa from 'koa'
 import type { Middleware } from 'koa'
 import chalk from 'chalk'
 import type { ControllerMeta } from '@kever/shared'
-import { construct, fillLine, getAppVersion, getProjectName, setMetadataStore, META_LOGGER } from '@kever/shared'
-import { controllerPool } from './controller'
+import { fillLine, getAppVersion, getProjectName, setMetadataStore, META_LOGGER } from '@kever/shared'
+import { getControllerMetas } from './controller'
 import { koaRuntime } from './koaRuntime'
 import { loadModules } from './loadModules'
 import { initEvent } from './handler'
@@ -69,7 +69,6 @@ const DEFAULT_OPTION: Required<AppOptions> = {
 }
 
 type Callback = (app: App) => void
-
 /**
  * create Kever App
  * @param options 
@@ -81,21 +80,18 @@ export const createApp = async (options: AppOptions, callback?: Callback) => {
   const [koaMiddle, keverMiddle] = categorizeMiddleware(opts.middlewares)
 
   try {
-    // loadModules
+    // 1. loadModules
     await loadModules(keverMiddle, opts)
+    // 2. get controllers meta
+    const controllerMetas = getControllerMetas()
+    
 
-    const constrollers = new Set<ControllerMeta>()
-    for (let [path, constructor] of controllerPool.entries()) {
-      const controller = construct(constructor, [])
-      constrollers.add({ path, controller })
-    }
-
-    const app = koaRuntime(opts, constrollers, koaMiddle)
+    const app = koaRuntime(opts, controllerMetas, koaMiddle)
 
     const server = app.listen(opts.port, opts.host, () => {
       callback && callback(app)
       if (opts.env === Env.DEV) {
-        outputStartupStatus(opts, constrollers)
+        outputStartupStatus(opts, controllerMetas)
       }
     })
     initEvent(app, server)
@@ -121,7 +117,7 @@ const categorizeMiddleware = (middlewares: (string | Middleware)[]): [Middleware
 const mergeOptions = (options: AppOptions = {}): Required<AppOptions> =>
   Object.assign({}, DEFAULT_OPTION, options)
 
-const outputStartupStatus = async (options: AppOptions, controllers: Set<ControllerMeta>) => {
+const outputStartupStatus = async (options: AppOptions, controllerMetas: Set<ControllerMeta>) => {
   try {
     const [projectName, version] = await Promise.all([getProjectName(), getAppVersion()])
     const projectNameLine = fillLine(chalk.magenta(projectName))
@@ -132,7 +128,7 @@ const outputStartupStatus = async (options: AppOptions, controllers: Set<Control
     ])
 
     const handlerAndPid = fillLine([
-      [chalk.gray('Controllers'), chalk.blue(String(controllers.size))],
+      [chalk.gray('Controllers'), chalk.blue(String(controllerMetas.size))],
       [chalk.gray('PID'), chalk.blue(String(process.pid))],
     ])
     console.log(`

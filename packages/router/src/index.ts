@@ -1,4 +1,4 @@
 import 'reflect-metadata'
 
-export * from './methodsDecorator'
-export * from './parseRouter'
+export { All, Get, Patch, Post, Put, Delete, Head, Options } from './methodsDecorator'
+export { parseRouter } from './parseRouter'

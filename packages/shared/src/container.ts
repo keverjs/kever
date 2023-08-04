@@ -1,16 +1,15 @@
 type Listener<T> = (value: T) => void
 
-export class Container<K, T> {
-  private pool = new Map<K, T>()
-  private listeners = new Map<K, Set<Listener<T>>>()
+export class Container<K, V> {
+  private pool = new Map<K, V>()
+  private listeners = new Map<K, Set<Listener<V>>>()
 
-  public bind(key: K, value: T): boolean {
+  public bind(key: K, value: V): boolean {
     this.pool.set(key, value)
     this.trigger(key)
     return true
   }
-
-  public unbind(key: K): boolean | T {
+  public unbind(key: K): boolean | V {
     const value = this.pool.get(key)
     if (value) {
       this.pool.delete(key)
@@ -18,8 +17,10 @@ export class Container<K, T> {
     }
     return true
   }
-
-  public use(key: K): boolean | T {
+  public has(key: K): boolean {
+    return this.pool.has(key)
+  }
+  public use(key: K): boolean | V {
     const value = this.pool.get(key)
     if (value) {
       return value
@@ -27,24 +28,24 @@ export class Container<K, T> {
     return false
   }
 
-  public getPool(): Map<K, T> {
+  public getPool(): Map<K, V> {
     return this.pool
   }
 
-  public on(key: K, listener: Listener<T>) {
-    let listeners: Set<Listener<T>>
+  public on(key: K, listener: Listener<V>) {
+    let listeners: Set<Listener<V>>
     const value = this.use(key)
     if (value && typeof value !== 'boolean') {
       listener(value)
     } else {
       const pool = this.listeners.get(key)
-      listeners = pool || new Set<Listener<T>>()
+      listeners = pool || new Set<Listener<V>>()
       listeners.add(listener)
       this.listeners.set(key, listeners)
     }
   }
 
-  public off(key: K, listener: Listener<T>): boolean {
+  public off(key: K, listener: Listener<V>): boolean {
     const listeners = this.listeners.get(key)
     if (listeners) {
       listeners.delete(listener)
@@ -58,7 +59,7 @@ export class Container<K, T> {
     const listeners = this.listeners.get(key)
     if (listeners) {
       listeners.forEach((listener) => {
-        listener(value as T)
+        listener(value as V)
       })
       listeners.clear()
     }

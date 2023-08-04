@@ -1,6 +1,4 @@
 import { MType, BaseMiddleware, Aop, KoaMiddleware } from './constants'
-
-import { logger } from '@kever/logger'
 import {
   construct,
   META_MIDDLEWARE_ALL,
@@ -10,46 +8,44 @@ import {
   Tag,
   poolContainer,
   isBoolean,
+  isPromise,
+  getMetadata,
+  setMetadata,
+  getMetadataStore,
+  META_LOGGER
 } from '@kever/shared'
-import { middlewarePatchContainer } from './patch'
-import { isPromise } from '../utils'
+import { mdPatchContainer } from './patch'
+import type { Logger } from '@kever/core'
 
-export const middlewareGlobalContainer = Object.create({})
-export const middlewareAllContainer = Object.create({})
+const MD_GOLABL_TARGET = Object.create(null)
+const MD_ALL_TARGET = Object.create(null)
 
-const middlewarePropertyContainer = new Container<
-  Tag,
-  ReturnType<BaseMiddleware<MType.Property>['ready']>
->()
-const middlewareRouteContainer = new Container<
-  Tag,
-  BaseMiddleware<MType.Route>['ready']
->()
+const mdPropertyContainer = new Container<Tag, ReturnType<BaseMiddleware<MType.Property>['ready']>>()
+const mdRouteContainer = new Container<Tag, BaseMiddleware<MType.Route>['ready']>()
 
 /**
  * @description property middleware
  * @param tag
  * @returns
  */
-const propertyMiddleware =
-  (tag: Tag): PropertyDecorator =>
-  (target, propertyKey) => {
-    let pool = poolContainer.use(target)
-    if (isBoolean(pool)) {
-      pool = new Container<PropertyKey, unknown>()
-    }
-    pool.bind(propertyKey, undefined)
-    poolContainer.bind(target, pool)
-    middlewarePropertyContainer.on(tag, (middleware) => {
-      if (!middleware) {
-        logger.error(`${tag.toString()} type property middleware no exists`)
-        return
-      }
-      if (!isBoolean(pool)) {
-        pool.bind(propertyKey, middleware)
-      }
-    })
+const propertyMiddleware = (tag: Tag): PropertyDecorator => (target, propertyKey) => {
+  let pool = poolContainer.use(target)
+  if (isBoolean(pool)) {
+    pool = new Container<PropertyKey, unknown>()
   }
+  pool.bind(propertyKey, undefined)
+  poolContainer.bind(target, pool)
+  mdPropertyContainer.on(tag, (middleware) => {
+    if (!middleware) {
+      const logger = getMetadataStore<Logger>(META_LOGGER)
+      logger.error(`${tag.toString()} type property middleware no exists`)
+      return
+    }
+    if (!isBoolean(pool)) {
+      pool.bind(propertyKey, middleware)
+    }
+  })
+}
 
 export interface RouteMiddlewareMeta {
   [Aop.After]: KoaMiddleware[]
@@ -63,74 +59,64 @@ export interface RouteMiddlewareMeta {
  * @param param
  * @returns
  */
-const routeMiddleware =
-  <T>(tag: Tag, type: Aop, param?: T): MethodDecorator =>
-  (target, key, description) => {
-    middlewareRouteContainer.on(tag, (middleware) => {
-      if (!middleware) {
-        logger.error(`${tag.toString()} type router middleware no exists`)
-        return
-      }
-      const middlewareReady = middleware(
-        description.value as unknown as KoaMiddleware,
-        param
-      ) as KoaMiddleware
+const routeMiddleware = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => (_, key, description) => {
+  mdRouteContainer.on(tag, (middleware) => {
+    if (!middleware) {
+      const logger = getMetadataStore<Logger>(META_LOGGER)
+      logger.error(`${tag.toString()} type router middleware no exists`)
+      return
+    }
+    const middlewareReady = middleware(
+      description.value as unknown as KoaMiddleware,
+      param
+    ) as KoaMiddleware
 
-      let routeMeta: RouteMiddlewareMeta = Reflect.getMetadata(
-        META_MIDDLEWARE_ROUTER,
-        description.value as unknown as Function
-      )
-      if (!routeMeta) {
-        routeMeta = {
-          [Aop.After]: [],
-          [Aop.Before]: [],
-          middlewareKey: key,
-        }
-      }
-      if (type === Aop.Duplex) {
-        routeMeta[Aop.After].push(middlewareReady)
-        routeMeta[Aop.Before].push(middlewareReady)
-      } else {
-        routeMeta[type].push(middlewareReady)
-      }
+    let routeMeta = getMetadata<RouteMiddlewareMeta>(
+      META_MIDDLEWARE_ROUTER,
+      description.value as unknown as Function
+    )
+    if (!routeMeta) {
+      routeMeta = { [Aop.After]: [], [Aop.Before]: [], middlewareKey: key }
+    }
+    if (type === Aop.Duplex) {
+      routeMeta[Aop.After].push(middlewareReady)
+      routeMeta[Aop.Before].push(middlewareReady)
+    } else {
+      routeMeta[type].push(middlewareReady)
+    }
 
-      Reflect.defineMetadata(
-        META_MIDDLEWARE_ROUTER,
-        routeMeta,
-        description.value as unknown as Function
-      )
-    })
-    return description
-  }
+    setMetadata(
+      META_MIDDLEWARE_ROUTER,
+      routeMeta,
+      description.value as unknown as Function
+    )
+  })
+  return description
+}
 
 /**
  * @description get all global middleware
  * @returns
  */
 export const getGlobalMiddleware = () => {
-  const globalMiddlewares = Reflect.getMetadata(
+  const gMds = getMetadata<Set<BaseMiddleware<MType.Global>['ready']>>(
     META_MIDDLEWARE_GLOBAL,
-    middlewareGlobalContainer,
+    MD_GOLABL_TARGET,
     META_MIDDLEWARE_GLOBAL
-  ) as Set<BaseMiddleware<MType.Global>>
-  return [...globalMiddlewares] || []
+  )
+  return gMds || new Set()
 }
 
 /**
  * @description destory all middleware
  */
 export const destoryAllMiddleware = () => {
-  const instances = Reflect.getMetadata(
+  const mds = getMetadata<Set<BaseMiddleware<MType.Global>>>(
     META_MIDDLEWARE_ALL,
-    middlewareAllContainer,
+    MD_ALL_TARGET,
     META_MIDDLEWARE_ALL
-  ) as Set<BaseMiddleware<MType.Global>>
-
-  if (instances) {
-    for (let instance of instances) {
-      instance.destory && instance.destory()
-    }
-  }
+  )
+  mds && mds.forEach(md => (md.destory && md.destory()))
 }
 
 /**
@@ -139,96 +125,72 @@ export const destoryAllMiddleware = () => {
  * @param type
  * @returns
  */
-export const Middleware =
-  (tag: Tag, type: MType): ClassDecorator =>
-  (target) => {
-    const middlewareOptions = middlewarePatchContainer.use(tag)
-    const parameter: unknown[] = []
-    if (middlewareOptions) {
-      parameter.push(middlewareOptions)
-    }
-    const middlewareInstance = construct(target, parameter)
-    switch (type) {
-      case MType.Property:
-        definePropertyMiddleware(middlewareInstance, tag)
-        break
-      case MType.Route:
-        defineRouteMiddleware(middlewareInstance, tag)
-        break
-      case MType.Global:
-        defineGolbalMiddleware(middlewareInstance)
-        break
-    }
-    // Store all middleware instances
-    defineMiddlewareInstance(middlewareInstance)
-    return target
+export const Middleware = (tag: Tag, type: MType): ClassDecorator => (target) => {
+  const mdOptions = mdPatchContainer.use(tag)
+  const parameter: unknown[] = []
+  if (mdOptions) {
+    parameter.push(mdOptions)
   }
+  const mdInstance = construct(target, parameter)
+  switch (type) {
+    case MType.Property:
+      definePropertyMiddleware(mdInstance, tag)
+      break
+    case MType.Route:
+      defineRouteMiddleware(mdInstance, tag)
+      break
+    case MType.Global:
+      defineGolbalMiddleware(mdInstance)
+      break
+  }
+  // Store all middleware instances
+  defineMiddlewareInstance(mdInstance)
+  return target
+}
 
 /**
  * @description define route middleware
  * @param middlewareInstance
  * @param tag
  */
-const defineRouteMiddleware = (
-  middlewareInstance: BaseMiddleware<MType.Route>,
-  tag: Tag
-) => {
-  const readyMethod = (
-    middlewareInstance as BaseMiddleware<MType.Route>
-  ).ready.bind(middlewareInstance)
-  middlewareRouteContainer.bind(tag, readyMethod)
+const defineRouteMiddleware = (mdInstance: BaseMiddleware<MType.Route>, tag: Tag) => {
+  const ready = (mdInstance as BaseMiddleware<MType.Route>).ready.bind(mdInstance)
+  mdRouteContainer.bind(tag, ready)
 }
 /**
  * @description define property middleware
  * @param middlewareInstance
  * @param tag
  */
-const definePropertyMiddleware = (
-  middlewareInstance: BaseMiddleware<MType.Property>,
-  tag: Tag
-) => {
-  const readyResult = (
-    middlewareInstance as BaseMiddleware<MType.Property>
-  ).ready() as Promise<any> | any
+const definePropertyMiddleware = (mdInstance: BaseMiddleware<MType.Property>, tag: Tag) => {
+  const readyResult = (mdInstance as BaseMiddleware<MType.Property>).ready() as Promise<any> | any
   if (isPromise(readyResult)) {
     readyResult
-      .then((payload: unknown) => {
-        middlewarePropertyContainer.bind(tag, payload)
-      })
+      .then((payload: unknown) => mdPropertyContainer.bind(tag, payload))
       .catch((err: unknown) => {
-        logger.error(
-          `${tag.toString()} property middleware ready method error ${err}`
-        )
+        const logger = getMetadataStore<Logger>(META_LOGGER)
+        logger.error(`${tag.toString()} property middleware ready method error ${err}`)
       })
   } else {
-    middlewarePropertyContainer.bind(tag, readyResult)
+    mdPropertyContainer.bind(tag, readyResult)
   }
 }
 /**
  * @description define golbal middleware
  * @param middlewareInstance
  */
-const defineGolbalMiddleware = (
-  middlewareInstance: BaseMiddleware<MType.Global>
-) => {
-  let golbalMiddlewares = Reflect.getMetadata(
+const defineGolbalMiddleware = (middlewareInstance: BaseMiddleware<MType.Global>) => {
+  let gMiddlewares = getMetadata<Set<BaseMiddleware<MType.Global>['ready']> | undefined>(
     META_MIDDLEWARE_GLOBAL,
-    middlewareGlobalContainer,
-    META_MIDDLEWARE_GLOBAL
-  ) as Set<BaseMiddleware<MType.Global>['ready']> | undefined
-  if (!golbalMiddlewares) {
-    golbalMiddlewares = new Set<BaseMiddleware<MType.Global>['ready']>()
-  }
-  const middleware = (
-    middlewareInstance as BaseMiddleware<MType.Global>
-  ).ready.bind(middlewareInstance)
-  golbalMiddlewares.add(middleware)
-  Reflect.defineMetadata(
-    META_MIDDLEWARE_GLOBAL,
-    golbalMiddlewares,
-    middlewareGlobalContainer,
+    MD_GOLABL_TARGET,
     META_MIDDLEWARE_GLOBAL
   )
+  if (!gMiddlewares) {
+    gMiddlewares = new Set<BaseMiddleware<MType.Global>['ready']>()
+  }
+  const middleware = (middlewareInstance as BaseMiddleware<MType.Global>).ready.bind(middlewareInstance)
+  gMiddlewares.add(middleware)
+  setMetadata(META_MIDDLEWARE_GLOBAL, gMiddlewares, MD_GOLABL_TARGET, META_MIDDLEWARE_GLOBAL)
 }
 
 /**
@@ -236,21 +198,16 @@ const defineGolbalMiddleware = (
  * @param middleware
  */
 const defineMiddlewareInstance = (middleware: BaseMiddleware<MType.Global>) => {
-  let allMiddlewares = Reflect.getMetadata(
+  let mds = getMetadata<Set<BaseMiddleware<MType.Global>>>(
     META_MIDDLEWARE_ALL,
-    middlewareAllContainer,
+    MD_ALL_TARGET,
     META_MIDDLEWARE_ALL
   )
-  if (!allMiddlewares) {
-    allMiddlewares = new Set<BaseMiddleware<MType.Global>>()
+  if (!mds) {
+    mds = new Set<BaseMiddleware<MType.Global>>()
   }
-  allMiddlewares.add(middleware)
-  Reflect.defineMetadata(
-    META_MIDDLEWARE_ALL,
-    allMiddlewares,
-    middlewareAllContainer,
-    META_MIDDLEWARE_ALL
-  )
+  mds.add(middleware)
+  setMetadata(META_MIDDLEWARE_ALL, mds, MD_ALL_TARGET, META_MIDDLEWARE_ALL)
 }
 
 interface RouterMiddlewareParams<T> {
@@ -273,10 +230,7 @@ type MiddlewareUseReturn<T extends MType> = T extends MType.Route
  * @param param
  * @returns
  */
-Middleware.use = <T, P extends MType>(
-  type: P,
-  param: MiddlewareUseParam<P, T>
-): MiddlewareUseReturn<P> => {
+Middleware.use = <T, P extends MType>(type: P, param: MiddlewareUseParam<P, T>): MiddlewareUseReturn<P> => {
   if (type === MType.Property) {
     return propertyMiddleware(param as Tag) as MiddlewareUseReturn<P>
   }

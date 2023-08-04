@@ -1,10 +1,7 @@
 import { Container } from './container'
 import { isBoolean, isDef } from './type'
 
-export const poolContainer = new Container<
-  Object,
-  Container<PropertyKey, unknown>
->()
+export const poolContainer = new Container<Object, Container<PropertyKey, unknown>>()
 
 export const construct = (target: Function, params: unknown[] = []) => {
   const instance = Reflect.construct(target, params)

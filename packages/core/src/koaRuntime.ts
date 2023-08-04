@@ -4,14 +4,13 @@ import { getGlobalMiddleware } from '@kever/ioc'
 import { type ControllerMeta} from '@kever/shared'
 import type { AppOptions, App } from './application'
 
-export const koaRuntime = (opts: Required<AppOptions>,controllers: Set<ControllerMeta>, koaMiddleware: Middleware[]) => {
+export const koaRuntime = (opts: Required<AppOptions>, controllerMetas: Set<ControllerMeta>, koaMiddleware: Middleware[]) => {
   const app = new Koa() as App
   app.options = opts
 
-  const router = parseRouter(app, controllers)
+  const router = parseRouter(controllerMetas)
 
-  const globalMiddlewares = getGlobalMiddleware()
-
+  const globalMiddlewares = getGlobalMiddleware();
   const middlewares = [
     ...koaMiddleware,
     ...globalMiddlewares,

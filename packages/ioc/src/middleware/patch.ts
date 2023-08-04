@@ -1,9 +1,9 @@
 import { Tag, Container } from '@kever/shared'
 
-type Payload = (() => unknown) | string | number | symbol | any[] | object
+type Payload = (() => unknown) | string | number | symbol | unknown[] | object
 type PayloadExcludeFn = Exclude<Payload, () => unknown>
 
-export const middlewarePatchContainer = new Container<Tag, PayloadExcludeFn>()
+export const mdPatchContainer = new Container<Tag, PayloadExcludeFn>()
 
 export const middlewarePatch = (tag: Tag, payload: Payload) => {
   let option: PayloadExcludeFn
@@ -12,5 +12,5 @@ export const middlewarePatch = (tag: Tag, payload: Payload) => {
   } else {
     option = payload
   }
-  middlewarePatchContainer.bind(tag, option)
+  mdPatchContainer.bind(tag, option)
 }

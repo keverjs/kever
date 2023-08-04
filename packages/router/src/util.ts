@@ -3,10 +3,3 @@ export const getInstanceMethods = <T extends object>(instance: T): string[] => {
     (name) => typeof instance[name as keyof T] === 'function'
   )
 }
-
-export const resolvePath = (rootPath: string, path: string): string => {
-  if (rootPath === '/') {
-    return path
-  }
-  return `${rootPath}${path}`
-}
