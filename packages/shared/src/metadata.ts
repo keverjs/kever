@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * meta key
  */
@@ -89,7 +90,7 @@ export const setMetadataStore = (metadataKey: string | symbol, value: any) => {
   if (STORE_KEY_CACHE.has(metadataKey)) {
     return false
   }
-  setMetadata(metadataKey, META_STORE_TARGET, value)
+  setMetadata(metadataKey, value, META_STORE_TARGET)
   STORE_KEY_CACHE.add(metadataKey)
   return true
 }

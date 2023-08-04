@@ -122,7 +122,7 @@ const outputStartupStatus = async (options: AppOptions, controllerMetas: Set<Con
     const [projectName, version] = await Promise.all([getProjectName(), getAppVersion()])
     const projectNameLine = fillLine(chalk.magenta(projectName))
     const versionLine = fillLine(chalk.magenta(`Kever v${version}`))
-    const apiLine = fillLine(chalk.gray(`http://${options.host}:${options.port}`))
+    const apiLine = fillLine(chalk.blue(`http://${options.host}:${options.port}`))
     const hostLine = fillLine([
       [chalk.gray('Host'), chalk.blue(String(options.host))],
       [chalk.gray('Port'), chalk.blue(String(options.port))],
