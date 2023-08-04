@@ -1,21 +1,21 @@
 {
   "name": "@kever/shared",
   "version": "0.25.9",
-  "description": "Shared data",
+  "description": "kever shared module",
   "author": {
     "name": "kim",
-    "email": "1191340528@qq.com"
+    "email": "cckcc.kim@gmail.com"
   },
   "publicConfig": {
     "access": "puiblic"
   },
-  "main": "./dist/index.cjs.js",
-  "module": "./dist/index.esm.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/index.cjs.js",
-      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     }
   },
@@ -34,12 +34,15 @@
     "server",
     "shared"
   ],
-  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
   "peerDependencies": {
-    "@kever/logger": ">=0.23.1",
-    "@kever/ioc": ">=0.23.1",
-    "@kever/core": ">=0.23.1",
-    "@kever/router": ">=0.23.1"
+    "@kever/logger": "workspace:*",
+    "@kever/ioc": "workspace:*",
+    "@kever/core": "workspace:*",
+    "@kever/router": "workspace:*"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }

@@ -1,10 +1,11 @@
+import { setMetadata, META_ROUTER } from '@kever/shared'
 type Methods = 'get' | 'post' | 'put' | 'delete' | 'head' | 'options' | 'patch'
 export interface RouterMetadata {
   methods: Methods[]
   path: string
 }
 
-export const META_ROUTER = Symbol.for('router#meta_router')
+
 
 // create http request method decorator
 /**
@@ -49,7 +50,7 @@ export const All = createHTTPMethodDecorator([
 ])
 
 /**
- * @description 路由装饰器生成器
+ * @description router decroator generator
  * @param methods
  */
 function createHTTPMethodDecorator(methods: Methods[]) {
@@ -59,10 +60,6 @@ function createHTTPMethodDecorator(methods: Methods[]) {
         methods,
         path,
       }
-      Reflect.defineMetadata(
-        META_ROUTER,
-        routerMetadata,
-        descripator.value as Object
-      )
+      setMetadata(META_ROUTER, routerMetadata, descripator.value)
     }
 }

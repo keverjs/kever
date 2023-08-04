@@ -1,33 +1,23 @@
 import Router from 'koa-router'
-import { logger } from '@kever/logger'
 import { Aop, RouteMiddlewareMeta } from '@kever/ioc'
+import type { App } from '@kever/core'
 import { getInstanceMethods, resolvePath } from './util'
-import { META_ROUTER, RouterMetadata } from './methodsDecorator'
-import { META_MIDDLEWARE_ROUTER } from '@kever/shared'
+import { RouterMetadata } from './methodsDecorator'
+import { META_MIDDLEWARE_ROUTER, META_ROUTER, getMetadata, type ControllerMeta } from '@kever/shared'
 
-export interface ControllerMetaType {
-  path: string
-  controller: Object
-}
-export function parseRouter(controllerMetas: ControllerMetaType[]): Router {
+export function parseRouter(app: App, controllerMetas: Set<ControllerMeta>): Router {
   const router = new Router()
   for (const controllerMeta of controllerMetas) {
     const { path: rootPath, controller } = controllerMeta
     if (!rootPath) {
-      logger.error('this class is not controller')
+      app.options.logger.error('this class is not controller')
     }
     const controllerMethods = getInstanceMethods(controller).filter(
       (methodName) => methodName !== 'constructor'
     )
     for (const methodName of controllerMethods) {
-      const routerMeta: RouterMetadata = Reflect.getMetadata(
-        META_ROUTER,
-        controller[methodName as keyof object]
-      )
-      const middlewareMeta: RouteMiddlewareMeta = Reflect.getMetadata(
-        META_MIDDLEWARE_ROUTER,
-        controller[methodName as keyof object]
-      )
+      const routerMeta = getMetadata<RouterMetadata>(META_ROUTER, controller[methodName as keyof object])
+      const middlewareMeta = getMetadata<RouteMiddlewareMeta>(META_MIDDLEWARE_ROUTER, controller[methodName as keyof object])
 
       if (!routerMeta) {
         continue

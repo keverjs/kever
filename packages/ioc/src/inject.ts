@@ -31,9 +31,7 @@ export const Injectable =
  * @description 注入类
  * @param tag
  */
-export const Inject =
-  <T>(tag: Tag, unNew = false, param?: T): PropertyDecorator =>
-  (target, propertyKey) => {
+export const Inject = <T>(tag: Tag, unNew = false, param?: T): PropertyDecorator => (target, propertyKey) => {
     let pool = poolContainer.use(target)
     if (isBoolean(pool)) {
       pool = new Container<PropertyKey, unknown>()

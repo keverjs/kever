@@ -38,11 +38,7 @@ export class Container<K, T> {
       listener(value)
     } else {
       const pool = this.listeners.get(key)
-      if (pool) {
-        listeners = pool
-      } else {
-        listeners = new Set<Listener<T>>()
-      }
+      listeners = pool || new Set<Listener<T>>()
       listeners.add(listener)
       this.listeners.set(key, listeners)
     }

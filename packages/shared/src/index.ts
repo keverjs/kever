@@ -1,5 +1,6 @@
-export * from './metakey'
+export * from './metadata'
 export * from './construct'
 export * from './container'
 export * from './types'
 export * from './type'
+export * from './utils'

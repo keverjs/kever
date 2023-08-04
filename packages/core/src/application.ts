@@ -1,89 +1,129 @@
-import * as Koa from 'koa'
-import { Middleware } from 'koa'
-import { ControllerMetaType } from '@kever/router'
-import { logger } from '@kever/logger'
-import { controllerPoll } from './controller'
+import type * as Koa from 'koa'
+import type { Middleware } from 'koa'
+import chalk from 'chalk'
+import type { ControllerMeta } from '@kever/shared'
+import { construct, fillLine, getAppVersion, getProjectName, setMetadataStore, META_LOGGER } from '@kever/shared'
+import { controllerPool } from './controller'
 import { koaRuntime } from './koaRuntime'
 import { loadModules } from './loadModules'
 import { initEvent } from './handler'
-import { fillLine, getAppVersion, getCurrentProjectName } from './utils'
-import chalk from 'chalk'
-import { construct } from '@kever/shared'
+import { defaultLogger, type Logger } from './logger'
 
-interface AppOption {
-  host?: string
-  port?: number
-  middlewares?: (string | Middleware)[]
-  modulePath?: []
-  env?: string
-  tsconfig?: string
+/**
+ * app env
+ */
+export const enum Env {
+  DEV = 'development',
+  PROD = 'production'
 }
 
-const DEFAULT_OPTION = {
+/**
+ * app
+ */
+export interface App extends Koa {
+  options: Required<AppOptions>
+}
+
+/**
+ * Kever app option
+ */
+export interface AppOptions {
+  /**
+   * http host, default is 127.0.0.1
+   */
+  host?: string
+  /**
+   * http port, default is 8080
+   */
+  port?: number
+  /**
+   * koa or kever middlewares
+   */
+  middlewares?: (string | Middleware)[]
+  /**
+   * auto load modules file path
+   */
+  modulePath?: []
+  /**
+   * app env, default is development
+   */
+  env?: Env
+  /**
+   * tsoncifg file path, default is root tsconfig file
+   */
+  tsconfig?: string
+  /**
+   * custom logger, default is console
+   */
+  logger?: Logger
+}
+
+const DEFAULT_OPTION: Required<AppOptions> = {
   host: '127.0.0.1',
   port: 8080,
   middlewares: [],
   modulePath: [],
-  env: 'development',
+  env: Env.DEV,
   tsconfig: 'tsconfig.json',
+  logger: defaultLogger,
 }
 
-type Callback = (app: Koa) => void
-export const createApp = async (options: AppOption, callback?: Callback) => {
+type Callback = (app: App) => void
+
+/**
+ * create Kever App
+ * @param options 
+ * @param callback 
+ */
+export const createApp = async (options: AppOptions, callback?: Callback) => {
+  const opts = mergeOptions(options)
+  setMetadataStore(META_LOGGER, opts.logger)
+  const [koaMiddle, keverMiddle] = categorizeMiddleware(opts.middlewares)
+
   try {
-    const finalOptions = mergeDefaultOptions(options)
-    let koaMiddleware: Middleware[] = []
-    let keverMiddleware: string[] = []
-    for (let i = 0; i < finalOptions.middlewares.length; i++) {
-      const middleware = finalOptions.middlewares[i]
-      if (typeof middleware === 'string') {
-        keverMiddleware.push(middleware)
-      } else {
-        koaMiddleware.push(middleware)
-      }
-    }
     // loadModules
-    await loadModules(
-      keverMiddleware,
-      finalOptions.modulePath,
-      finalOptions.env,
-      finalOptions.tsconfig
-    )
+    await loadModules(keverMiddle, opts)
 
-    const constrollers = new Set<ControllerMetaType>()
-
-    for (let [path, constructor] of controllerPoll.entries()) {
+    const constrollers = new Set<ControllerMeta>()
+    for (let [path, constructor] of controllerPool.entries()) {
       const controller = construct(constructor, [])
       constrollers.add({ path, controller })
     }
 
-    const app = koaRuntime(constrollers, koaMiddleware)
+    const app = koaRuntime(opts, constrollers, koaMiddle)
 
-    const server = app.listen(finalOptions.port, finalOptions.host, () => {
+    const server = app.listen(opts.port, opts.host, () => {
       callback && callback(app)
-      if (finalOptions.env === 'development') {
-        outputStartupStatus(finalOptions, constrollers)
+      if (opts.env === Env.DEV) {
+        outputStartupStatus(opts, constrollers)
       }
     })
-    initEvent(server)
+    initEvent(app, server)
   } catch (err) {
-    logger.error(`${err.message} \n ${err.stack}`)
+    opts.logger.error(`${err.message} \n ${err.stack}`)
   }
 }
 
-function mergeDefaultOptions(options: AppOption = {}): Required<AppOption> {
-  return Object.assign({}, DEFAULT_OPTION, options)
+const categorizeMiddleware = (middlewares: (string | Middleware)[]): [Middleware[], string[]] => {
+  let koa: Middleware[] = []
+  let kever: string[] = []
+  for (let i = 0; i < middlewares.length; i++) {
+    const middleware = middlewares[i]
+    if (typeof middleware === 'string') {
+      kever.push(middleware)
+    } else {
+      koa.push(middleware)
+    }
+  }
+  return [koa, kever]
 }
 
-async function outputStartupStatus(
-  options: AppOption,
-  controllers: Set<ControllerMetaType>
-) {
+const mergeOptions = (options: AppOptions = {}): Required<AppOptions> =>
+  Object.assign({}, DEFAULT_OPTION, options)
+
+const outputStartupStatus = async (options: AppOptions, controllers: Set<ControllerMeta>) => {
   try {
-    const [projectName, version] = await Promise.all([
-      getCurrentProjectName(),
-      getAppVersion(),
-    ])
+    const [projectName, version] = await Promise.all([getProjectName(), getAppVersion()])
     const projectNameLine = fillLine(chalk.magenta(projectName))
     const versionLine = fillLine(chalk.magenta(`Kever v${version}`))
     const hostLine = fillLine([

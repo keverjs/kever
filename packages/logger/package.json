@@ -1,21 +1,21 @@
 {
   "name": "@kever/logger",
   "version": "0.25.9",
-  "description": "kever logger",
+  "description": "kever logger module",
   "author": {
     "name": "kim",
-    "email": "1191340528@qq.com"
+    "email": "cckcc.kim@gmail.com"
   },
   "publicConfig": {
     "access": "puiblic"
   },
-  "main": "./dist/index.cjs.js",
-  "module": "./dist/index.esm.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/index.cjs.js",
-      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     }
   },
@@ -34,7 +34,10 @@
     "kever",
     "logger"
   ],
-  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
   "dependencies": {
     "chalk": "^4.0.0"
   },

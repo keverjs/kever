@@ -1,20 +1,23 @@
-import * as fs from 'fs'
-import { promisify } from 'util'
-import { join } from 'path'
-import { logger } from '@kever/logger'
-const readDirPromise = promisify(fs.readdir)
+import { existsSync, statSync, promises } from 'node:fs'
+import { join } from 'node:path'
+import type { Logger } from '@kever/core'
 
-export const getFilesPath = async (loadFileDir: string) => {
+/**
+ * get files path in dir
+ * @param loadFileDir 
+ * @returns 
+ */
+export const getFilesPath = async (loadFileDir: string, logger: Logger) => {
   let filesPath: Set<string> = new Set()
   try {
     async function findFile(path: string) {
-      if (!fs.existsSync(path)) {
+      if (!existsSync(path)) {
         return
       }
-      let files = await readDirPromise(path)
+      let files = await promises.readdir(path)
       for (let file of files) {
         const fpath = join(path, file)
-        const stats = fs.statSync(fpath)
+        const stats = statSync(fpath)
         if (stats.isDirectory()) {
           await findFile(fpath)
         }
@@ -30,7 +33,11 @@ export const getFilesPath = async (loadFileDir: string) => {
   return filesPath
 }
 
-export const loadFile = async (filePath: string) => {
+/**
+ * load module
+ * @param filePath 
+ */
+export const loadModule = async (filePath: string, logger: Logger) => {
   try {
     await require(filePath)
   } catch (err) {
@@ -38,28 +45,43 @@ export const loadFile = async (filePath: string) => {
   }
 }
 
-export const getAppVersion = async () => {
-  try {
-    return require('../package.json').version
-  } catch (_) {
-    return ''
-  }
-}
-export const getCurrentProjectName = async () => {
+const getPkg = async (): Promise<Record<string, unknown>> => {
   try {
     const root = process.cwd()
-    return require(`${root}/package.json`).name
-  } catch (_) {
-    return ''
+    return require(`${root}/package.json`)
+  } catch(_) {
+    return {}
   }
 }
+
+/**
+ * get project version by package.json
+ * @returns 
+ */
+export const getAppVersion = async () => {
+  const pkg = await getPkg()
+  return pkg.version
+}
+
+/**
+ * get project name by package.json
+ * @returns 
+ */
+export const getProjectName = async () => {
+  const pkg = await getPkg()
+  return pkg.name
+}
+
 const COLOR_LEN = 10
-export const fillLine = (
-  data: string | [string, string][],
-  len = 49,
-  pad = ' ',
-  subPad = '.'
-) => {
+/**
+ * fillLine
+ * @param data 
+ * @param len 
+ * @param pad 
+ * @param subPad 
+ * @returns 
+ */
+export const fillLine = (data: string | [string, string][], len = 49, pad = ' ', subPad = '.') => {
   if (data.length === 0) {
     return pad.padEnd(len)
   }

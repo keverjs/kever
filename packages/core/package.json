@@ -1,21 +1,21 @@
 {
   "name": "@kever/core",
   "version": "0.25.9",
-  "description": "kever core",
+  "description": "kever core module",
   "author": {
     "name": "kim",
-    "email": "1191340528@qq.com"
+    "email": "cckcc.kim@gmail.com"
   },
   "publicConfig": {
     "access": "puiblic"
   },
-  "main": "./dist/index.cjs.js",
-  "module": "./dist/index.esm.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/index.cjs.js",
-      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     }
   },
@@ -35,13 +35,16 @@
     "http",
     "koa"
   ],
-  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
-    "@kever/ioc": ">=0.23.1",
-    "@kever/logger": ">=0.23.1",
-    "@kever/router": ">=0.23.1",
-    "@kever/shared": ">=0.23.1"
+    "@kever/ioc": "workspace:*",
+    "@kever/logger": "workspace:*",
+    "@kever/router": "workspace:*",
+    "@kever/shared": "workspace:*"
   },
   "dependencies": {
     "@types/koa": "^2.11.3",

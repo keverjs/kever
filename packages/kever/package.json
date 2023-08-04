@@ -4,18 +4,18 @@
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "author": {
     "name": "kim",
-    "email": "1191340528@qq.com"
+    "email": "cckcc.kim@gmail.com"
   },
   "publicConfig": {
     "access": "puiblic"
   },
-  "main": "./dist/index.cjs.js",
-  "module": "./dist/index.esm.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/index.cjs.js",
-      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     }
   },
@@ -33,13 +33,16 @@
     "typescript",
     "kever"
   ],
-  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
   "dependencies": {
-    "@kever/core": "^0.25.5",
-    "@kever/ioc": "^0.25.5",
-    "@kever/logger": "^0.25.5",
-    "@kever/router": "^0.25.5",
-    "@kever/shared": "^0.25.5"
+    "@kever/core": "workspace:*",
+    "@kever/ioc": "workspace:*",
+    "@kever/logger": "workspace:*",
+    "@kever/router": "workspace:*",
+    "@kever/shared": "workspace:*"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }

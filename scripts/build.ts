@@ -1,11 +1,9 @@
 import fs from 'fs/promises'
 import inquirer from 'inquirer'
-import typescript from 'rollup-plugin-typescript2'
+import { build as tsupBuild, Options } from 'tsup'
 import chalk from 'chalk'
-import { rollup } from 'rollup'
 import { resolve } from 'path'
 import minimist from 'minimist'
-import { Extractor, ExtractorConfig } from '@microsoft/api-extractor'
 
 const args = minimist(process.argv.slice(2))
 
@@ -17,7 +15,9 @@ const getPackagesName = async () => {
       return !isHiddenFile
     })
     .filter(async (packageName) => {
-      const pkg = await import(resolve(`packages/${packageName}/package.json`))
+      const pkg = await import(resolve(
+        `packages/${packageName}/package.json`
+      ))
       return !pkg.private
     })
 }
@@ -62,151 +62,36 @@ const getAnswersFromInquirer = async (packagesName) => {
   return packages
 }
 
-const cleanDir = async (dir: string) => {
+const generateBuildConfigs = (packagesName: string[]): Options[] => {
+  return packagesName.map(name => {
+    return {
+      name,
+      target: 'esnext',
+      entry: [`packages/${name}/src/index.ts`],
+      outDir: `packages/${name}/dist`,
+      format: ['cjs', 'esm'],
+      dts: true,
+      replaceNodeEnv: true,
+      splitting: false,
+      clean: true,
+      shims: false,
+      minify: false,
+      tsconfig: resolve('tsconfig.json'),
+      external: ['koa', 'chalk']
+    }
+  })
+}
+
+const buildEntry = async (packageConfig: Options) => {
   try {
-    const stat = await fs.stat(dir)
-    if (stat.isDirectory()) {
-      await fs.rm(dir, {
-        recursive: true,
-      })
-    }
-  } catch (err) {}
-}
-
-const cleanPackagesOldDist = async (packagesName) => {
-  await Promise.all(
-    packagesName.map((name) => cleanDir(`packages/${name}/dist`))
-  )
-}
-
-const cleanPackagesDtsDir = async (packageName) => {
-  const dtsPath = resolve(`packages/${packageName}/dist/packages`)
-  await cleanDir(dtsPath)
-}
-
-const cleanDist = async () => {
-  const distPath = resolve('dist')
-  cleanDir(distPath)
-}
-
-const pascalCase = (str) => {
-  const re = /-(\w)/g
-  const newStr = str.replace(re, function (match, group1) {
-    return group1.toUpperCase()
-  })
-  return newStr.charAt(0).toUpperCase() + newStr.slice(1)
-}
-
-const formats = ['esm', 'cjs']
-const packageOtherConfig = {
-  core: {
-    external: [
-      '@kever/core',
-      '@kever/ioc',
-      '@kever/router',
-      '@kever/logger',
-      '@kever/shared',
-    ],
-  },
-  ioc: {
-    external: [
-      '@kever/core',
-      '@kever/ioc',
-      '@kever/router',
-      '@kever/logger',
-      '@kever/shared',
-    ],
-  },
-  router: {
-    external: [
-      '@kever/core',
-      '@kever/ioc',
-      '@kever/router',
-      '@kever/logger',
-      '@kever/shared',
-    ],
-  },
-  logger: {
-    external: [
-      '@kever/core',
-      '@kever/ioc',
-      '@kever/router',
-      '@kever/logger',
-      '@kever/shared',
-    ],
-  },
-  kever: {
-    external: [
-      '@kever/core',
-      '@kever/ioc',
-      '@kever/router',
-      '@kever/logger',
-      '@kever/shared',
-    ],
-  },
-}
-const generateBuildConfigs = (packagesName) => {
-  const packagesFormatConfig = packagesName.map((packageName) => {
-    const formatConfigs = []
-    for (let format of formats) {
-      formatConfigs.push({
-        packageName,
-        config: {
-          input: resolve(`packages/${packageName}/src/index.ts`),
-          output: {
-            name: pascalCase(packageName),
-            file: resolve(`packages/${packageName}/dist/index.${format}.js`),
-            inlineDynamicImports: true,
-            format,
-          },
-          plugins: [
-            typescript({
-              verbosity: -1,
-              tsconfig: resolve('tsconfig.json'),
-              tsconfigOverride: {
-                include: [`package/${packageName}/src`],
-              },
-            }),
-          ],
-          ...packageOtherConfig[packageName],
-        },
-      })
-    }
-    return formatConfigs
-  })
-  return packagesFormatConfig.flat()
-}
-
-const extractDts = (packageName) => {
-  const extractorConfigPath = resolve(
-    `packages/${packageName}/api-extractor.json`
-  )
-  const extractorConfig =
-    ExtractorConfig.loadFileAndPrepare(extractorConfigPath)
-  const result = Extractor.invoke(extractorConfig, {
-    localBuild: true,
-    showVerboseMessages: true,
-  })
-  return result
-}
-
-const buildEntry = async (packageConfig) => {
-  try {
-    const packageBundle = await rollup(packageConfig.config)
-    await packageBundle.write(packageConfig.config.output)
-    const extractResult = extractDts(packageConfig.packageName)
-    await cleanPackagesDtsDir(packageConfig.packageName)
-    if (!extractResult.succeeded) {
-      console.log(chalk.red(`${packageConfig.packageName} d.ts extract fail!`))
-    }
-    console.log(chalk.green(`${packageConfig.packageName} build successful! `))
+    await tsupBuild(packageConfig)
   } catch (err) {
     console.log('err', err)
-    console.log(chalk.red(`${packageConfig.packageName} build fail!`))
+    console.log(chalk.red(`${packageConfig.name} build fail!`))
   }
 }
 
-const build = async (packagesConfig) => {
+const build = async (packagesConfig: Options[]) => {
   for (let config of packagesConfig) {
     await buildEntry(config)
   }
@@ -223,10 +108,8 @@ const buildBootstrap = async () => {
     }
     buildPackagesName = answers
   }
-  await cleanPackagesOldDist(buildPackagesName)
   const packagesBuildConfig = generateBuildConfigs(buildPackagesName)
   await build(packagesBuildConfig)
-  await cleanDist()
 }
 
 buildBootstrap().catch((err) => {
