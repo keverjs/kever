@@ -101,8 +101,8 @@ export const createApp = async (options: AppOptions, callback?: Callback) => {
 }
 
 const categorizeMiddleware = (middlewares: (string | Middleware)[]): [Middleware[], string[]] => {
-  let koa: Middleware[] = []
-  let kever: string[] = []
+  const koa: Middleware[] = []
+  const kever: string[] = []
   for (let i = 0; i < middlewares.length; i++) {
     const middleware = middlewares[i]
     if (typeof middleware === 'string') {
@@ -140,5 +140,5 @@ const outputStartupStatus = async (options: AppOptions, controllerMetas: Set<Con
     │ ${handlerAndPid} │
     └───────────────────────────────────────────────────┘ 
     `)
-  } catch (_) {}
+  } catch (_) { /* empty */ }
 }

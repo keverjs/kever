@@ -45,7 +45,7 @@ export const Inject = <T>(tag: Tag, unNew = false, param?: T): PropertyDecorator
       logger.error(` ${tag.toString()} injectable model not existence`)
       return
     }
-    let value = !unNew ? construct(instance, Array.isArray(param) ? param : [param]) : instance
+    const value = !unNew ? construct(instance, Array.isArray(param) ? param : [param]) : instance
     if (!isBoolean(pool)) {
       pool.bind(propertyKey, value)
     }

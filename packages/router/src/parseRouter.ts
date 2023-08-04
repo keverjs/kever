@@ -21,7 +21,7 @@ export function parseRouter(controllerMetas: Set<ControllerMeta>): Router {
       const logger = getMetadataStore<Logger>(META_LOGGER)
       logger.error('this class is not controller')
     }
-    const controllerMethods = getInstanceMethods(controller).filter(
+    const controllerMethods = getInstanceMethods(controller as Record<string, unknown>).filter(
       (methodName) => methodName !== 'constructor'
     )
     for (const methodName of controllerMethods) {
