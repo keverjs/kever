@@ -1,6 +1,6 @@
 {
   "name": "@kever/router",
-  "version": "0.25.10-beta.12",
+  "version": "0.25.10-beta.13",
   "description": "kever router module",
   "author": {
     "name": "kim",
@@ -54,7 +54,6 @@
     "@kever/core": "workspace:*",
     "@kever/shared": "workspace:*",
     "@kever/enhance": "workspace:*"
-    
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }
