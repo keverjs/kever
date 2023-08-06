@@ -12,7 +12,7 @@ import {
 } from '@kever/shared'
 import { getInstanceMethods } from './util'
 import { RouterMetadata } from './methodsDecorator'
-import { enhanceMiddleware } from './enhance'
+import { enhanceMiddleware } from '@kever/enhance'
 
 export function parseRouter(controllerMetas: Set<ControllerMeta>): Router {
   const router = new Router()

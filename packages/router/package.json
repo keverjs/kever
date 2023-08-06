@@ -52,7 +52,9 @@
     "koa-router": "^9.0.1",
     "@kever/ioc": "workspace:*",
     "@kever/core": "workspace:*",
-    "@kever/shared": "workspace:*"
+    "@kever/shared": "workspace:*",
+    "@kever/enhance": "workspace:*"
+    
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }

@@ -65,6 +65,14 @@ importers:
       chalk: 4.1.2
       koa: 2.13.4
 
+  packages/enhance:
+    specifiers:
+      '@kever/core': workspace:*
+      '@kever/shared': workspace:*
+    dependencies:
+      '@kever/core': link:../core
+      '@kever/shared': link:../shared
+
   packages/ioc:
     specifiers:
       '@kever/shared': workspace:*
@@ -90,6 +98,7 @@ importers:
   packages/router:
     specifiers:
       '@kever/core': workspace:*
+      '@kever/enhance': workspace:*
       '@kever/ioc': workspace:*
       '@kever/shared': workspace:*
       '@types/koa': ^2.13.8
@@ -98,6 +107,7 @@ importers:
       koa-router: ^9.0.1
     dependencies:
       '@kever/core': link:../core
+      '@kever/enhance': link:../enhance
       '@kever/ioc': link:../ioc
       '@kever/shared': link:../shared
       '@types/koa': 2.13.8

@@ -1,7 +1,7 @@
 {
-  "name": "@kever/shared",
+  "name": "@kever/enhance",
   "version": "0.25.10-beta.12",
-  "description": "kever shared module",
+  "description": "kever enhance module",
   "author": {
     "name": "kim",
     "email": "cckcc.kim@gmail.com"
@@ -22,7 +22,7 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:keverjs/kever.git",
-    "directory": "packages/shared"
+    "directory": "packages/enhance"
   },
   "bugs": {
     "url": "https://github.com/keverjs/kever/issues"
@@ -32,7 +32,9 @@
     "nodejs",
     "http",
     "server",
-    "shared"
+    "context",
+    "koa",
+    "enhance"
   ],
   "files": [
     "dist"
@@ -42,11 +44,8 @@
     "build": "unbuild"
   },
   "dependencies": {
-    "@types/koa": "^2.13.8",
-    "koa": "^2.13.0",
-    "@kever/ioc": "workspace:*",
     "@kever/core": "workspace:*",
-    "@kever/router": "workspace:*"
+    "@kever/shared": "workspace:*"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }
