@@ -86,11 +86,13 @@ importers:
   packages/kever:
     specifiers:
       '@kever/core': workspace:*
+      '@kever/enhance': 'workspace: *'
       '@kever/ioc': workspace:*
       '@kever/router': workspace:*
       '@kever/shared': workspace:*
     dependencies:
       '@kever/core': link:../core
+      '@kever/enhance': link:../enhance
       '@kever/ioc': link:../ioc
       '@kever/router': link:../router
       '@kever/shared': link:../shared
