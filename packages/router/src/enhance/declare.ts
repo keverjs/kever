@@ -5,7 +5,7 @@ declare module '@kever/shared' {
     logger: Logger
     getBody: <T>(key?: string) => T | undefined
     getQuery: <T>(key?: string) => T | undefined
-    getHeader: (key: string) => string | undefined
-    setHeader: (key: string, value: string) => void
+    html: (string: string) => void
+    json: (object: Record<string, unknown>) => void
   }
 }
