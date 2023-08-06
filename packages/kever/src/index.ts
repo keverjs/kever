@@ -1,5 +1,5 @@
-import '@kever/enhance'
 export type { Context, Next } from '@kever/shared'
 export * from '@kever/core'
 export * from '@kever/ioc'
 export * from '@kever/router'
+export * from '@kever/enhance'
