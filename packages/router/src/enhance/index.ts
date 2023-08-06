@@ -2,6 +2,8 @@ import type { Context, KeverMiddleware, KoaContext, KoaNext } from '@kever/share
 import { enhanceLogger } from './logger'
 import { enhanceQuery } from './query'
 import { enhanceBody } from './body'
+import { enhanceHTML } from './html'
+import { enhanceJSON } from './json'
 
 export const enhanceMiddleware = (middlewares: KeverMiddleware[]) => {
   return middlewares.map(md => (ctx: KoaContext, next: KoaNext) => {
@@ -19,7 +21,9 @@ const enhanceContext = (ctx: KoaContext): Context => {
   const context = enhance([
     enhanceLogger,
     enhanceQuery,
-    enhanceBody
+    enhanceBody,
+    enhanceHTML,
+    enhanceJSON
   ])(ctx)
   return context
 }
