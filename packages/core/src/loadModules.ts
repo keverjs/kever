@@ -10,7 +10,7 @@ export const loadModules = async (middlewares: string[], options: Required<AppOp
     if (env === Env.DEV) {
       moduleRootPath = `${baseDir}/src`
     } else {
-      let tsconfigPath = `${baseDir}/${tsconfigFileName}`
+      const tsconfigPath = `${baseDir}/${tsconfigFileName}`
       const tsconfigTxt = await readFile(tsconfigPath, { encoding: 'utf8' })
       const tsconfig = JSON.parse(tsconfigTxt)
       const outDir = tsconfig.compilerOptions.outDir

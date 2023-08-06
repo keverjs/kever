@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as Koa from 'koa'
 import type { KeverMiddleware } from '@kever/shared'
 import { MType, type BaseMiddleware, Aop } from './constants'
@@ -72,9 +73,9 @@ const routeMiddleware = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => 
       description.value as unknown as KeverMiddleware,
       param
     ) as KeverMiddleware
-
     let routeMeta = getMetadata<RouteMiddlewareMeta>(
       META_MIDDLEWARE_ROUTER,
+      // eslint-disable-next-line @typescript-eslint/ban-types
       description.value as unknown as Function
     )
     if (!routeMeta) {
@@ -90,6 +91,7 @@ const routeMiddleware = <T>(tag: Tag, type: Aop, param?: T): MethodDecorator => 
     setMetadata(
       META_MIDDLEWARE_ROUTER,
       routeMeta,
+      // eslint-disable-next-line @typescript-eslint/ban-types
       description.value as unknown as Function
     )
   })
@@ -178,7 +180,7 @@ const defineRouteMiddleware = (mdInstance: BaseMiddleware<MType.Route>, tag: Tag
  * @param tag
  */
 const definePropertyMiddleware = (mdInstance: BaseMiddleware<MType.Property>, tag: Tag) => {
-  const readyResult = (mdInstance as BaseMiddleware<MType.Property>).ready() as Promise<any> | any
+  const readyResult = (mdInstance as BaseMiddleware<MType.Property>).ready() as Promise<unknown>
   if (isPromise(readyResult)) {
     readyResult
       .then((payload: unknown) => mdPropertyContainer.bind(tag, payload))

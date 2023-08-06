@@ -1,7 +1,7 @@
-export const isBoolean = (value: any): value is boolean =>
+export const isBoolean = (value: unknown): value is boolean =>
   typeof value === 'boolean'
 
-export const isDef = (value: any): value is undefined =>
+export const isDef = (value: unknown): value is undefined =>
   typeof value !== 'undefined'
 
 
