@@ -1,7 +1,7 @@
 {
   "name": "@kever/monorepo",
   "private": true,
-  "version": "0.25.10-beta.11",
+  "version": "0.25.10-beta.12",
   "module": "true",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "scripts": {
