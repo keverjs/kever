@@ -43,14 +43,14 @@ export interface AppOptions {
   middlewares?: (string | Middleware)[]
   /**
    * Auto load modules file path，follow the glob npm package rules.
-   * By default it will include 'src/app/**\/*.{ts,js}'
+   * By default it will include ['src/app/**\/*.{ts,js}']
    * The current working directory in which to search. Defaults to `process.cwd()`.
    * @see — https://www.npmjs.com/package/glob
    */
   include?: string[]
   /**
    * Exclude load modules file path，follow the glob npm package rules.
-   * By default it will exclude 'node_modules/**'.
+   * By default it will exclude ['node_modules/**'].
    * The current working directory in which to search. Defaults to `process.cwd()`.
    * @see — https://www.npmjs.com/package/glob
    */
@@ -73,8 +73,8 @@ const DEFAULT_OPTION: Required<AppOptions> = {
   host: '127.0.0.1',
   port: 8080,
   middlewares: [],
-  exclude: ['src/app/**/*.{ts,js}'],
-  include: ['node_modules/**'],
+  include: ['src/app/**/*.{ts,js}'],
+  exclude: ['node_modules/**'],
   env: Env.DEV,
   tsconfig: 'tsconfig.json',
   logger: defaultLogger,
