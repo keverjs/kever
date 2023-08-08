@@ -46,12 +46,13 @@
     "reflect-metadata": "^0.1.13"
   },
   "dependencies": {
-    "@types/koa": "^2.13.8",
-    "koa": "^2.13.0",
-    "chalk": "^4.0.0",
     "@kever/ioc": "workspace:*",
     "@kever/router": "workspace:*",
-    "@kever/shared": "workspace:*"
+    "@kever/shared": "workspace:*",
+    "@types/koa": "^2.13.8",
+    "chalk": "^4.0.0",
+    "glob": "^10.3.3",
+    "koa": "^2.13.0"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90"
 }
