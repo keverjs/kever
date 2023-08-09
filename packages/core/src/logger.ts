@@ -4,6 +4,7 @@ export interface Logger {
   warn: (msg: string) => void
   info: (msg: string) => void
   debug: (msg: string) => void
+  trace: (msg: string) => void
 }
 
 export const defaultLogger: Logger = {
@@ -22,4 +23,7 @@ export const defaultLogger: Logger = {
   debug(msg) {
     console.debug(msg)
   },
+  trace(msg) {
+    console.info(msg)
+  }
 }
