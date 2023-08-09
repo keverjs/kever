@@ -1,6 +1,6 @@
 export { MType, Aop } from './constants'
 export type { BaseMiddleware } from './constants'
-export { middlewarePatch } from './patch'
+export { patchMiddleware } from './patch'
 export {
   getGlobalMiddleware,
   destoryAllMiddleware,
