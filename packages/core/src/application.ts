@@ -1,5 +1,6 @@
 import type * as Koa from 'koa'
 import type { Middleware } from 'koa'
+import bodyparser from 'koa-bodyparser'
 import chalk from 'chalk'
 import type { ControllerMeta } from '@kever/shared'
 import { fillLine, getAppVersion, getProjectName, setMetadataStore, META_LOGGER } from '@kever/shared'
@@ -9,6 +10,8 @@ import { loadModules } from './loadModules'
 import { initEvent } from './handler'
 import { defaultLogger, type Logger } from './logger'
 import { getMiddlewaresNum, getInjectableNum } from '@kever/ioc'
+
+type BodyparserOptions = Parameters<typeof bodyparser>[0]
 
 /**
  * app env
@@ -67,6 +70,7 @@ export interface AppOptions {
    * custom logger, default is console
    */
   logger?: Logger
+  body?: BodyparserOptions
 }
 
 const DEFAULT_OPTION: Required<AppOptions> = {
@@ -78,6 +82,7 @@ const DEFAULT_OPTION: Required<AppOptions> = {
   env: Env.DEV,
   tsconfig: 'tsconfig.json',
   logger: defaultLogger,
+  body: {}
 }
 
 type Callback = (app: App) => void
