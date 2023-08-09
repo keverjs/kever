@@ -12,8 +12,8 @@ interface ConsideredRequest {
  */
 export const enhanceBody = (ctx: KoaContext): Context => {
   ctx.getBody = <T>(key?: string): T | undefined => {
-    const { method, body } = ctx.request as unknown as ConsideredRequest
-    if (method === 'POST' && body) {
+    const { body } = ctx.request as unknown as ConsideredRequest
+    if (body) {
       if (key) {
         return body[key] as T
       }
