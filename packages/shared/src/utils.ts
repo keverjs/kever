@@ -1,5 +1,5 @@
-import { existsSync, statSync, promises } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, statSync, promises } from 'fs'
+import { join } from 'path'
 import type { Logger } from '@kever/core'
 
 /**

@@ -6,7 +6,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "removeComments": true,
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node",
     "preserveConstEnums": true,
     "declaration": true,
     "noEmitOnError": true,

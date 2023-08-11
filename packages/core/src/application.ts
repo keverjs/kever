@@ -1,6 +1,6 @@
 import type * as Koa from 'koa'
 import type { Middleware } from 'koa'
-import bodyparser from '@koa/bodyparser'
+import bodyparser from 'koa-bodyparser'
 import chalk from 'chalk'
 import type { ControllerMeta } from '@kever/shared'
 import { fillLine, getAppVersion, getProjectName, setMetadataStore, META_LOGGER } from '@kever/shared'

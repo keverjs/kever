@@ -1,5 +1,5 @@
 import { destoryAllMiddleware } from '@kever/ioc'
-import { Server } from 'node:http'
+import { Server } from 'http'
 import process from 'process'
 import type { App } from './application'
 

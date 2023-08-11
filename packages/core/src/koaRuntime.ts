@@ -1,5 +1,5 @@
 import Koa, { Middleware } from 'koa'
-import bodyparser from '@koa/bodyparser'
+import bodyparser from 'koa-bodyparser'
 import { parseRouter } from '@kever/router'
 import { getGlobalMiddleware } from '@kever/ioc'
 import { type ControllerMeta} from '@kever/shared'
