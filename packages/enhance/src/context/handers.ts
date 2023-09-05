@@ -39,7 +39,7 @@ export const enhanceQuery = (ctx: KoaContext): Context => {
   return ctx as Context
 }
 
-export const enhanceParams = (ctx: Context): Context => {
+export const enhanceParams = (ctx: KoaContext): Context => {
   ctx.getParams = <T>(key?: string) => {
     const params = Object.assign({}, ctx.getBody(), ctx.getQuery())
     if (key) {
@@ -47,7 +47,7 @@ export const enhanceParams = (ctx: Context): Context => {
     }
     return params as T
   }
-  return ctx
+  return ctx as Context
 }
 
 /**

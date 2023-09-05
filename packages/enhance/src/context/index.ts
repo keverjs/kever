@@ -4,6 +4,7 @@ import {
   enhanceLogger,
   enhanceQuery,
   enhanceBody,
+  enhanceParams,
   enhanceHTML,
   enhanceJSON
 } from './handers'
@@ -18,6 +19,7 @@ export const enhanceContext = (ctx: KoaContext): Context => {
     enhanceLogger,
     enhanceQuery,
     enhanceBody,
+    enhanceParams,
     enhanceHTML,
     enhanceJSON
   ])(ctx)
