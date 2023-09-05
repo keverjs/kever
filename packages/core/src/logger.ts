@@ -1,29 +1,29 @@
 export interface Logger {
   fatal: (msg: string) => void
-  error: (msg: string) => void
-  warn: (msg: string) => void
-  info: (msg: string) => void
-  debug: (msg: string) => void
-  trace: (msg: string) => void
+  error: (msg: string, ...args: unknown[]) => void
+  warn: (msg: string, ...args: unknown[]) => void
+  info: (msg: string, ...args: unknown[]) => void
+  debug: (msg: string, ...args: unknown[]) => void
+  trace: (msg: string, ...args: unknown[]) => void
 }
 
 export const defaultLogger: Logger = {
   fatal(msg) {
     throw new Error(msg)
   },
-  error(msg) {
-    console.error(msg)
+  error(msg, ...args: unknown[]) {
+    console.error(msg, args)
   },
-  warn(msg) {
-    console.warn(msg)
+  warn(msg, ...args: unknown[]) {
+    console.warn(msg, args)
   },
-  info(msg) {
-    console.info(msg)
+  info(msg, ...args: unknown[]) {
+    console.info(msg, args)
   },
-  debug(msg) {
-    console.debug(msg)
+  debug(msg, ...args: unknown[]) {
+    console.debug(msg, args)
   },
-  trace(msg) {
-    console.info(msg)
+  trace(msg, ...args: unknown[]) {
+    console.info(msg, args)
   }
 }
