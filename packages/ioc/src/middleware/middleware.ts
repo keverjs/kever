@@ -258,3 +258,25 @@ Middleware.use = <T, P extends MType>(type: P, param: MiddlewareUseParam<P, T>):
     routerParam.params
   ) as MiddlewareUseReturn<P>
 }
+
+/**
+ * @description Property Middleware alias
+ * @param param 
+ * @returns 
+ */
+export const Property = <T>(param: MiddlewareUseParam<MType.Property, T>): MiddlewareUseReturn<MType.Property> =>
+  Middleware.use(MType.Property, param)
+
+/**
+ * @description Route Middleware alias
+ * @param tag 
+ * @param aop 
+ * @param param 
+ * @returns 
+ */
+export const Route = <T>(tag: Tag, aop: Aop, param?: T): MiddlewareUseReturn<MType.Route> =>
+  Middleware.use(MType.Route, {
+    tag,
+    aop,
+    params: param
+  })
