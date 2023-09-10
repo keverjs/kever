@@ -6,5 +6,7 @@ export {
   destoryAllMiddleware,
   getMiddlewaresNum,
   Middleware,
+  Property,
+  Route
 } from './middleware'
 export type { RouteMiddlewareMeta } from './middleware'
