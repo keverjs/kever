@@ -74,7 +74,7 @@ export const gitClone = (projectName: string, gitUrl: string, rmGit = true): Pro
       }
       resolve(true)
       spinner.stopAndPersist(stopOptions)
-      rmGit && rimrafSync(`./${projectName}.git`)
+      rmGit && rimrafSync(`./${projectName}/.git`)
     })
   })
 }
