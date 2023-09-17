@@ -2,7 +2,7 @@
 
 import { program } from 'commander'
 import { readPackage } from 'read-pkg'
-import cli from '../dist/cli.mjs'
+import cli from '../dist/index.mjs'
 
 const run = async () => {
     const { version } = await readPackage()
