@@ -1,6 +1,7 @@
 {
   "name": "kever",
   "version": "0.26.5",
+  "type": "module",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "author": {
     "name": "kim",
@@ -8,6 +9,9 @@
   },
   "publicConfig": {
     "access": "puiblic"
+  },
+  "bin": {
+    "kever": "./bin/kever.mjs"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -42,13 +46,22 @@
   },
   "dependencies": {
     "@kever/core": "workspace:*",
+    "@kever/enhance": "workspace:*",
     "@kever/ioc": "workspace:*",
     "@kever/router": "workspace:*",
     "@kever/shared": "workspace:*",
-    "@kever/enhance": "workspace:*"
+    "commander": "^11.0.0",
+    "inquirer": "^9.2.11",
+    "log-symbols": "^5.1.0",
+    "ora": "6.3.1",
+    "read-pkg": "^8.1.0",
+    "rimraf": "^5.0.1"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90",
   "engines": {
     "node": ">=14"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.3"
   }
 }
