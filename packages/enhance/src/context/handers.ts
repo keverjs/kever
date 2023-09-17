@@ -32,7 +32,7 @@ export const enhanceBody = (ctx: KoaContext): Context => {
 export const enhanceQuery = (ctx: KoaContext): Context => {
   ctx.getQuery = (key?: string) => {
     if (key) {
-      return ctx.query['key']
+      return ctx.query[key]
     }
     return ctx.query
   }
@@ -43,7 +43,7 @@ export const enhanceParams = (ctx: KoaContext): Context => {
   ctx.getParams = <T>(key?: string) => {
     const params = ctx.params || {}
     if (key) {
-      return params['key' as keyof typeof params]
+      return params[key]
     }
     return params as T
   }
