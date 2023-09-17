@@ -10,7 +10,7 @@ export const createProjectQuestion = () => {
       if (value.match(/\w+/)) {
         return true
       }
-      return 'error'
+      return 'Please enter the correct file name (numeric text underlined)'
     }
   }]
 
