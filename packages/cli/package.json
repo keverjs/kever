@@ -1,6 +1,6 @@
 {
   "name": "@kever/cli",
-  "version": "0.27.0-beta.2",
+  "version": "0.27.0-beta.3",
   "type": "module",
   "description": "A lightweight inversion of control container for Node.js apps powered by TypeScript and Koa runtime",
   "author": {
