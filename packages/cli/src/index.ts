@@ -24,7 +24,7 @@ const projectQuestions = async () => {
   return finalName
 }
 
-const versionUpateNotifi = async () => {
+const versionUpateNotify = async () => {
   try {
     const pkg = await readPackage({
       cwd: resolve(dirname(), '..')
@@ -34,7 +34,7 @@ const versionUpateNotifi = async () => {
 }
 
 export default async () => {
-  await versionUpateNotifi()
+  await versionUpateNotify()
   const name = await projectQuestions()
   const inited = await initialTemplate(name)
 
