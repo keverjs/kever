@@ -35,19 +35,21 @@
     "build": "unbuild"
   },
   "dependencies": {
+    "chalk": "^4.1.2",
     "commander": "^10.0.1",
     "inquirer": "^9.2.11",
     "log-symbols": "^5.1.0",
     "ora": "6.3.1",
     "read-pkg": "^7.1.0",
     "rimraf": "^5.0.1",
-    "chalk": "^4.1.2"
+    "update-notifier": "^6.0.2"
   },
   "gitHead": "9e62d20cc11b371c2b5ba9b1234d3a5b0648ba90",
   "engines": {
     "node": ">=14"
   },
   "devDependencies": {
-    "@types/inquirer": "^9.0.3"
+    "@types/inquirer": "^9.0.3",
+    "@types/update-notifier": "^6.0.5"
   }
 }

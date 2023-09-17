@@ -1,9 +1,11 @@
 import { resolve } from 'node:path'
 import { rimrafSync } from 'rimraf'
 import chalk from 'chalk'
+import { readPackage } from 'read-pkg'
+import updateNotifier from 'update-notifier'
 import { createProjectQuestion, createOverrideQuestion } from './question'
 import { initialTemplate } from './template'
-import { exists } from './utils'
+import { exists, dirname } from './utils'
 
 const projectQuestions = async () => {
   let finalName: string = ''
@@ -22,7 +24,17 @@ const projectQuestions = async () => {
   return finalName
 }
 
+const versionUpateNotifi = async () => {
+  try {
+    const pkg = await readPackage({
+      cwd: resolve(dirname(), '..')
+  })
+    updateNotifier({ pkg }).notify()
+  } catch(_err) { /* empty */ }
+}
+
 export default async () => {
+  await versionUpateNotifi()
   const name = await projectQuestions()
   const inited = await initialTemplate(name)
 
