@@ -41,7 +41,7 @@ export const enhanceQuery = (ctx: KoaContext): Context => {
 
 export const enhanceParams = (ctx: KoaContext): Context => {
   ctx.getParams = <T>(key?: string) => {
-    const params = Object.assign({}, ctx.getBody(), ctx.getQuery())
+    const params = ctx.params || {}
     if (key) {
       return params['key' as keyof typeof params]
     }
