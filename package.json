@@ -10,7 +10,8 @@
     "test": "mocha --require ts-node/register ./packages/**/test/*.spec.ts",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s && git add ./CHANGELOG.md",
     "ci": "bumpp package.json packages/*/package.json --commit --push --tag",
-    "release": "run-s build ci"
+    "release": "run-s build ci",
+    "docs": "rimraf docs && typedoc ./packages/*/src/index.ts"
   },
   "publishConfig": {
     "directory": "packages/*"
@@ -35,6 +36,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^5.0.1",
     "supertest": "^4.0.2",
+    "typedoc": "^0.25.12",
     "typescript": "^5.1.6",
     "unbuild": "^1.2.1"
   },
